@@ -18,6 +18,7 @@ public class ConnexionServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Utilisateur utilisateur = new Utilisateur("UTILISATEUR", false);
 		request.getSession().setAttribute("utilisateur", utilisateur);
+		response.sendRedirect("eleve/fichiers");
 	}
 
 }

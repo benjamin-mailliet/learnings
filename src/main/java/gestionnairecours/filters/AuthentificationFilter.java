@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebFilter("/s/*")
+@WebFilter("/eleve/*")
 public class AuthentificationFilter implements Filter {
 
 	public void init(FilterConfig filterConfig) throws ServletException {

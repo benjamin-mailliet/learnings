@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/s/fichiers")
+@WebServlet("/eleve/fichiers")
 public class FichiersUtilesServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -5862878402579733845L;

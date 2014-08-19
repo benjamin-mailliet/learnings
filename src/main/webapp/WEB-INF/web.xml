@@ -5,6 +5,6 @@
 	version="2.5">
 	<display-name>Gestionnaire de cours</display-name>
 	<welcome-file-list>
-		<welcome-file>/accueil</welcome-file>
+		<welcome-file>accueil</welcome-file>
 	</welcome-file-list>
 </web-app>
