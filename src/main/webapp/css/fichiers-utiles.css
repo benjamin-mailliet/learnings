@@ -1,0 +1,39 @@
+header.panel-heading{
+	cursor:pointer;
+}
+
+header.panel-heading:hover{
+	background-color: #EDEDED;
+}
+
+article.tp-article header.panel-heading span.glyphicon{
+	-webkit-transition: all 2s ease-out;
+	-moz-transition: all 2s ease-out;
+	-ms-transition: all 2s ease-out;
+	-o-transition: all 2s ease-out;
+	transition: all 2s ease-out;
+	
+	
+	-moz-transform: rotate(0deg);
+	-webkit-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	transform: rotate(0deg);	
+	
+}
+
+article.tp-article.rotated header.panel-heading span.glyphicon{
+	-webkit-transition: all 2s ease-out;
+	-moz-transition: all 2s ease-out;
+	-ms-transition: all 2s ease-out;
+	-o-transition: all 2s ease-out;
+	transition: all 2s ease-out;
+	
+	-moz-transform: rotate(202.5deg);
+	-webkit-transform: rotate(202.5deg);
+	-o-transform: rotate(202.5deg);
+	-ms-transform: rotate(202.5deg);
+	transform: rotate(202.5deg);	
+	
+}
+
