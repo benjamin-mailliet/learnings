@@ -5,16 +5,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import learnings.dao.DataSourceProvider;
+import javax.sql.DataSource;
+
 import learnings.dao.UtilisateurDao;
 import learnings.model.Utilisateur;
 
 public class UtilisateurDaoImpl implements UtilisateurDao {
 
+	private DataSource dataSource;
+
+	public UtilisateurDaoImpl(DataSource dataSource) {
+		super();
+		this.dataSource = dataSource;
+	}
+
 	public Utilisateur getUtilisateur(String identifiant) {
 		Utilisateur utilisateur = null;
 		try {
-			Connection connection = DataSourceProvider.getDataSource().getConnection();
+			Connection connection = dataSource.getConnection();
 			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE email=?");
 			stmt.setString(1, identifiant);
 			ResultSet results = stmt.executeQuery();
@@ -33,7 +41,7 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 	public String getMotDePasseUtilisateurHashe(String identifiant) {
 		String motDePasse = null;
 		try {
-			Connection connection = DataSourceProvider.getDataSource().getConnection();
+			Connection connection = dataSource.getConnection();
 			PreparedStatement stmt = connection.prepareStatement("SELECT motdepasse FROM utilisateur WHERE email=?");
 			stmt.setString(1, identifiant);
 			ResultSet results = stmt.executeQuery();
