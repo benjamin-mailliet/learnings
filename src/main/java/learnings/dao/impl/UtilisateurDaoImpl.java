@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -17,6 +20,23 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 	public UtilisateurDaoImpl(DataSource dataSource) {
 		super();
 		this.dataSource = dataSource;
+	}
+
+	public List<Utilisateur> listerUtilisateurs() {
+		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
+		try {
+			Connection connection = dataSource.getConnection();
+			Statement stmt = connection.createStatement();
+			ResultSet results = stmt.executeQuery("SELECT id, email, admin FROM utilisateur ORDER BY email");
+			while (results.next()) {
+				utilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return utilisateurs;
 	}
 
 	public Utilisateur getUtilisateur(String identifiant) {

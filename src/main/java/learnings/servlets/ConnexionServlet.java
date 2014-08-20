@@ -29,17 +29,16 @@ public class ConnexionServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String identifiant = request.getParameter("identifiant");
 		String motDePasse = request.getParameter("motDePasse");
-		if (identifiant == null || "".equals(identifiant)) {
-			request.setAttribute("errorMessage", "L'identifiant doit être renseigné.");
-		} else if (motDePasse == null || "".equals(motDePasse)) {
-			request.setAttribute("errorMessage", "Le mot de passe doit être renseigné.");
-		} else {
+		try {
 			if (UtilisateurManager.getInstance().validerMotDePasse(identifiant, motDePasse)) {
 				request.getSession().setAttribute("utilisateur", UtilisateurManager.getInstance().getUtilisateur(identifiant));
 			} else {
 				request.setAttribute("errorMessage", "Le mot de passe renseigné est faux.");
 			}
+		} catch (IllegalArgumentException e) {
+			request.setAttribute("errorMessage", e.getMessage());
 		}
+
 		this.doGet(request, response);
 	}
 
