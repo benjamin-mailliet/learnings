@@ -8,7 +8,9 @@
 		<c:param name="titrePage" value="Fichiers utiles"/>
 	</c:import>
 	<body>
-		<c:import url="../includes/menuprincipal.jsp" />		
+		<c:import url="../includes/menuprincipal.jsp">
+			<c:param name="pageSelectionnee" value="fichiers"/>
+		</c:import>		
 	
 		<div class="container">
 			fichier utile

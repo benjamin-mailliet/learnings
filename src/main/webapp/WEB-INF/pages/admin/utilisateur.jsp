@@ -8,7 +8,9 @@
 		<c:param name="titrePage" value="Gestion des utilisateurs"/>
 	</c:import>
 	<body>
-		<c:import url="../../includes/menuadmin.jsp" />		
+		<c:import url="../../includes/menuadmin.jsp">
+			<c:param name="pageSelectionnee" value="utilisateur"/>
+		</c:import>
 	
 		<div class="container">
 			Gestion des utilisateurs

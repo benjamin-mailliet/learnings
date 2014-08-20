@@ -6,7 +6,7 @@
 				<a class="navbar-brand" href="./">Gestionnaire</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li><a href="fichiers">Fichiers</a></li>
+				<li class="${param.pageSelectionnee == 'fichiers' ? 'active' : ''}"><a href="fichiers">Fichiers</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<c:if test="${sessionScope.utilisateur.admin}">
