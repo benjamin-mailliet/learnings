@@ -1,4 +1,4 @@
-package gestionnairecours.filters;
+package learnings.filters;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ public class AuthentificationFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		if (httpRequest.getSession().getAttribute("utilisateur") == null) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
-			httpResponse.sendRedirect("../accueil");
+			httpResponse.sendRedirect("../connexion");
 			return;
 		}
 		chain.doFilter(request, response);
