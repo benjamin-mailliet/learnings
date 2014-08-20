@@ -1,4 +1,4 @@
-package learnings.servlets;
+package learnings.servlets.admin;
 
 import java.io.IOException;
 
@@ -9,15 +9,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = { "/eleve/", "/eleve/fichiers" })
-public class FichiersUtilesServlet extends HttpServlet {
+@WebServlet(urlPatterns = { "/admin/", "/admin/utilisateur" })
+public class GestionUtilisateurServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -5862878402579733845L;
+	private static final long serialVersionUID = -5832886661094788806L;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/fichiersutiles.jsp");
+		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/utilisateur.jsp");
 		view.forward(request, response);
-
 	}
+
 }

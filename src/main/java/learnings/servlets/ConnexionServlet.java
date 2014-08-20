@@ -21,7 +21,7 @@ public class ConnexionServlet extends HttpServlet {
 			RequestDispatcher view = request.getRequestDispatcher("WEB-INF/pages/accueil.jsp");
 			view.forward(request, response);
 		} else {
-			response.sendRedirect("eleve/fichiers");
+			response.sendRedirect("eleve/");
 		}
 	}
 
