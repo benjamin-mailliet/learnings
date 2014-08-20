@@ -11,7 +11,9 @@
 		<script src="../js/fichiers-utiles.js"></script>
 	</head>
 	<body>
-		<c:import url="../includes/menuprincipal.jsp" />
+		<c:import url="../includes/menuprincipal.jsp">
+			<c:param name="pageSelectionnee" value="fichiers"/>
+		</c:import>		
 		<div class="container">
 			<header class="page-header"><h1>Cours et TPs</h1></header>
 			<section class="panel-group">

@@ -7,7 +7,13 @@ public class MotDePasseUtilsTestCase {
 
 	@Test
 	public void testGenererMotDePasse() throws Exception {
-		System.out.println(MotDePasseUtils.genererMotDePasse("test"));
+		String motDePasse = MotDePasseUtils.genererMotDePasse("test");
+		Assert.assertTrue(97 == motDePasse.length());
+		Assert.assertTrue(motDePasse.contains(":"));
+		Assert.assertTrue(motDePasse.indexOf(":") == 48);
+
+		String motDePasse2 = MotDePasseUtils.genererMotDePasse("test");
+		Assert.assertNotEquals(motDePasse, motDePasse2);
 	}
 
 	@Test
