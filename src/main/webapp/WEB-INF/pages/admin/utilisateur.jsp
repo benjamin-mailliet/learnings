@@ -38,6 +38,17 @@
 						</td>
 					</tr>
 				</c:forEach>
+				<tr id="nouvelUtilisateurRow">
+					<td></td>
+					<td>
+						<div class="input-group">
+			   	 			<div class="input-group-addon">@</div>
+							<input type="email" class="form-control input-sm" id="emailNouvelUtilisateur" name="emailNouvelUtilisateur" placeholder="Email">
+						</div>
+					</td>
+					<td><input type="checkbox" id="adminNouvelUtilisateur" name="adminNouvelUtilisateur" ></td>
+					<td><button type="button" class="btn btn-info btn-xs" id="nouvelUtilisateurAction"><span class="glyphicon glyphicon-plus"></span></button></td>				
+				</tr>
 			</table>
 		</div>
 	</body>

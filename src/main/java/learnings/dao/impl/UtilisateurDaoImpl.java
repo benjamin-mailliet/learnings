@@ -140,4 +140,29 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 		}
 	}
 
+	@Override
+	public Utilisateur ajouterUtilisateur(String email, String motDePasse, boolean admin) {
+		Utilisateur utilisateur = null;
+		try {
+			Connection connection = dataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement("INSERT INTO utilisateur(email, motdepasse, admin) VALUES(?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, email);
+			stmt.setString(2, motDePasse);
+			stmt.setBoolean(3, admin);
+			stmt.executeUpdate();
+
+			ResultSet ids = stmt.getGeneratedKeys();
+			if (ids.next()) {
+				utilisateur = new Utilisateur(ids.getLong(1), email, admin);
+			}
+
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return utilisateur;
+	}
+
 }

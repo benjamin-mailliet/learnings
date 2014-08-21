@@ -27,24 +27,46 @@ var reinitMdpUtilisateur = function(id) {
 	});
 };
 
+var ajouterUtilisateur = function() {
+	var email = $("#emailNouvelUtilisateur").val();
+	if(email == null || email == undefined || email == "") {
+		$("#emailNouvelUtilisateur").parent().addClass("has-error");
+	} else {
+		var admin = $("#adminNouvelUtilisateur").is(":checked");
+		$.post("ajouterutilisateur",{email:email, admin:admin}).done(function(data) {
+			$("#emailNouvelUtilisateur").parent().removeClass("has-error");
+			$("#emailNouvelUtilisateur").val("");
+			$("#adminNouvelUtilisateur").attr('checked', false);
+			$("#nouvelUtilisateurRow").before(data);
+			$("#nouvelUtilisateurRow").prev().show("slow");
+		}).fail(function() {
+			$("#emailNouvelUtilisateur").parent().addClass("has-error");
+		});
+	}
+}
+
 $(document).ready(function(){
-	$("#listeUtilisateurs .supprimerUtilisateurAction").on("click", function() {
+	$("#listeUtilisateurs").on("click", ".supprimerUtilisateurAction", function() {
 		var idUtilisateur = $(this).parents("tr").attr("id").substr("utilisateur".length);
 		supprimerUtilisateur(idUtilisateur);
 	});
 
-	$("#listeUtilisateurs .donnerAdminUtilisateurAction").on("click", function() {
+	$("#listeUtilisateurs").on("click", ".donnerAdminUtilisateurAction", function() {
 		var idUtilisateur = $(this).parents("tr").attr("id").substr("utilisateur".length);
 		donnerAdminUtilisateur(idUtilisateur);
 	});
 
-	$("#listeUtilisateurs .enleverAdminUtilisateurAction").on("click", function() {
+	$("#listeUtilisateurs").on("click", ".enleverAdminUtilisateurAction", function() {
 		var idUtilisateur = $(this).parents("tr").attr("id").substr("utilisateur".length);
 		enleverAdminUtilisateur(idUtilisateur);
 	});
 
-	$("#listeUtilisateurs .reinitMdpUtilisateurAction").on("click", function() {
+	$("#listeUtilisateurs").on("click", ".reinitMdpUtilisateurAction", function() {
 		var idUtilisateur = $(this).parents("tr").attr("id").substr("utilisateur".length);
 		reinitMdpUtilisateur(idUtilisateur);
 	});
+	
+	$("#nouvelUtilisateurAction").on("click", function() {
+		ajouterUtilisateur();
+	})
 });

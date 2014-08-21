@@ -19,4 +19,6 @@ public interface UtilisateurDao {
 	public void modifierRoleAdmin(Long id, boolean admin);
 
 	public void modifierMotDePasse(Long id, String motDePasse);
+
+	public Utilisateur ajouterUtilisateur(String email, String motDePasse, boolean admin);
 }

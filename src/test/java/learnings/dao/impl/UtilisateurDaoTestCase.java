@@ -102,4 +102,15 @@ public class UtilisateurDaoTestCase {
 		Assert.assertEquals("NOUVEAU_MOT_DE_PASSE", utilisateurDao.getMotDePasseUtilisateurHashe("eleve@learnings-devwebhei.fr"));
 	}
 
+	@Test
+	public void testAjouterUtilisateur() {
+		Utilisateur utilisateur = utilisateurDao.ajouterUtilisateur("email", "motDePasse", true);
+		Assert.assertNotNull(utilisateur.getId());
+		Assert.assertEquals("email", utilisateur.getEmail());
+		Assert.assertTrue(utilisateur.isAdmin());
+
+		Utilisateur utilisateurVerif = utilisateurDao.getUtilisateur("email");
+		Assert.assertEquals(utilisateur.getId(), utilisateurVerif.getId());
+	}
+
 }

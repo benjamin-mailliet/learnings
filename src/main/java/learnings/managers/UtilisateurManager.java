@@ -92,4 +92,22 @@ public class UtilisateurManager {
 			e.printStackTrace();
 		}
 	}
+
+	public Utilisateur ajouterUtilisateur(String email, boolean admin) {
+		if (email == null || "".equals(email)) {
+			throw new IllegalArgumentException("L'identifiant doit être renseigné.");
+		}
+		Utilisateur utilisateurExistant = this.getUtilisateur(email);
+		if (utilisateurExistant != null) {
+			throw new IllegalArgumentException("L'identifiant est déjà utilisé.");
+		}
+
+		String motDePasse = null;
+		try {
+			motDePasse = MotDePasseUtils.genererMotDePasse(email);
+		} catch (GeneralSecurityException e) {
+			throw new RuntimeException("Problème technique.");
+		}
+		return utilisateurDao.ajouterUtilisateur(email, motDePasse, admin);
+	}
 }
