@@ -4,9 +4,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
-	<c:import url="../../includes/htmlheader.jsp">
-		<c:param name="titrePage" value="Gestion des utilisateurs"/>
-	</c:import>
+	<head>
+		<title>Gestion des utilisateurs</title>
+		<c:import url="../../includes/htmlheader.jsp" />
+		<script src="../js/utilisateur.js"></script>
+	</head>
 	<body>
 		<c:import url="../../includes/menuadmin.jsp">
 			<c:param name="pageSelectionnee" value="utilisateur"/>
@@ -14,29 +16,27 @@
 	
 		<div class="container">
 			<h2>Gestion des utilisateurs</h2>
-			<table class="table table-striped">
+			<table id="listeUtilisateurs" class="table table-striped">
 				<tr>
 					<th>#</th>
 					<th>Email</th>
 					<th>Admin</th>
-					<th>Actions</th>
+					<th style="width:20%">Actions</th>
 				</tr>
 				<c:forEach var="utilisateur" items="${utilisateurs}">
-				<tr>
-					<td>${utilisateur.id}</td>
-					<td>${utilisateur.email}</td>
-					<td>${utilisateur.admin ? 'Oui' : 'Non'}</td>
-					<td>
-						<button type="button" class="btn btn-primary btn-xs" title="Réinitialiser le mot de passe"><span class="glyphicon glyphicon-repeat"></span></button>
-						<c:if test="${!utilisateur.admin}">
-							<button type="button" class="btn btn-success btn-xs" title="Donner l'admin"><span class="glyphicon glyphicon-chevron-up"></span></button>
-						</c:if>
-						<c:if test="${utilisateur.admin}">
-							<button type="button" class="btn btn-warning btn-xs" title="Enlever l'admin"><span class="glyphicon glyphicon-chevron-down"></span></button>
-						</c:if>
-						<button type="button" class="btn btn-danger btn-xs" title="Supprimer l'utilisateur"><span class="glyphicon glyphicon-trash"></span></button>
-					</td>
-				</tr>
+					<tr id="utilisateur${utilisateur.id}">
+						<td>${utilisateur.id}</td>
+						<td>${utilisateur.email}</td>
+						<td>${utilisateur.admin ? 'Oui' : 'Non'}</td>
+						<td>
+							<c:if test="${utilisateur.id != sessionScope.utilisateur.id}">
+								<button type="button" class="btn btn-primary btn-xs reinitMdpUtilisateurAction" title="Réinitialiser le mot de passe"><span class="glyphicon glyphicon-repeat"></span></button>
+								<button type="button" class="btn btn-danger btn-xs supprimerUtilisateurAction" title="Supprimer l'utilisateur"><span class="glyphicon glyphicon-trash"></span></button>
+								<button style="${utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-success btn-xs donnerAdminUtilisateurAction" title="Donner l'admin"><span class="glyphicon glyphicon-chevron-up"></span></button>
+								<button style="${!utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-warning btn-xs enleverAdminUtilisateurAction" title="Enlever l'admin"><span class="glyphicon glyphicon-chevron-down"></span></button>
+							</c:if>
+						</td>
+					</tr>
 				</c:forEach>
 			</table>
 		</div>

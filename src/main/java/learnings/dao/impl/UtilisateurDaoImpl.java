@@ -39,6 +39,25 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 		return utilisateurs;
 	}
 
+	@Override
+	public Utilisateur getUtilisateur(Long id) {
+		Utilisateur utilisateur = null;
+		try {
+			Connection connection = dataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE id=?");
+			stmt.setLong(1, id);
+			ResultSet results = stmt.executeQuery();
+			if (results.next()) {
+				utilisateur = new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin"));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return utilisateur;
+	}
+
 	public Utilisateur getUtilisateur(String identifiant) {
 		Utilisateur utilisateur = null;
 		try {
@@ -75,6 +94,50 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 		}
 
 		return motDePasse;
+	}
+
+	@Override
+	public void modifierMotDePasse(Long id, String motDePasse) {
+		try {
+			Connection connection = dataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement("UPDATE utilisateur SET motdepasse=? WHERE id=?");
+			stmt.setString(1, motDePasse);
+			stmt.setLong(2, id);
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void supprimerUtilisateur(Long id) {
+		try {
+			Connection connection = dataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement("DELETE FROM  utilisateur WHERE id=?");
+			stmt.setLong(1, id);
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void modifierRoleAdmin(Long id, boolean admin) {
+		try {
+			Connection connection = dataSource.getConnection();
+			PreparedStatement stmt = connection.prepareStatement("UPDATE utilisateur SET admin=? WHERE id=?");
+			stmt.setBoolean(1, admin);
+			stmt.setLong(2, id);
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

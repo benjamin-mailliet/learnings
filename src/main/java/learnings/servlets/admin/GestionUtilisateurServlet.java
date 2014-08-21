@@ -26,4 +26,33 @@ public class GestionUtilisateurServlet extends HttpServlet {
 		view.forward(request, response);
 	}
 
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			Long idUtilisateur = Long.parseLong(request.getParameter("id"));
+			String action = request.getParameter("action");
+			switch (action) {
+			case "supprimer":
+				UtilisateurManager.getInstance().supprimerUtilisateur(idUtilisateur);
+				break;
+			case "donnerAdmin":
+				UtilisateurManager.getInstance().donnerDroitsAdmin(idUtilisateur);
+				break;
+			case "enleverAdmin":
+				UtilisateurManager.getInstance().enleverDroitsAdmin(idUtilisateur);
+				break;
+			case "reinitialiserMotDePasse":
+				UtilisateurManager.getInstance().reinitialiserMotDePasse(idUtilisateur);
+				break;
+			default:
+				response.sendError(400);
+				break;
+			}
+		} catch (IllegalArgumentException e) {
+			response.sendError(400);
+			e.printStackTrace();
+		}
+
+	}
+
 }

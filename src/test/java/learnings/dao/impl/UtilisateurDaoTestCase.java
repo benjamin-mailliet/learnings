@@ -39,7 +39,21 @@ public class UtilisateurDaoTestCase {
 	}
 
 	@Test
-	public void testGetUtilisateurOK() {
+	public void testGetUtilisateurParIdOK() {
+		Utilisateur utilisateur = utilisateurDao.getUtilisateur(1L);
+		Assert.assertEquals(1L, utilisateur.getId().longValue());
+		Assert.assertEquals("eleve@learnings-devwebhei.fr", utilisateur.getEmail());
+		Assert.assertFalse(utilisateur.isAdmin());
+	}
+
+	@Test
+	public void testGetUtilisateurParIdNonTrouve() {
+		Utilisateur utilisateur = utilisateurDao.getUtilisateur(3L);
+		Assert.assertNull(utilisateur);
+	}
+
+	@Test
+	public void testGetUtilisateurParEmailOK() {
 		Utilisateur utilisateur = utilisateurDao.getUtilisateur("eleve@learnings-devwebhei.fr");
 		Assert.assertEquals(1L, utilisateur.getId().longValue());
 		Assert.assertEquals("eleve@learnings-devwebhei.fr", utilisateur.getEmail());
@@ -47,7 +61,7 @@ public class UtilisateurDaoTestCase {
 	}
 
 	@Test
-	public void testGetUtilisateurNonTrouve() {
+	public void testGetUtilisateurParEmailNonTrouve() {
 		Utilisateur utilisateur = utilisateurDao.getUtilisateur("nonexistant@learnings-devwebhei.fr");
 		Assert.assertNull(utilisateur);
 	}
@@ -62,6 +76,30 @@ public class UtilisateurDaoTestCase {
 	public void testGetMotDePasseNonTrouve() {
 		String motDePasse = utilisateurDao.getMotDePasseUtilisateurHashe("nonexistant@learnings-devwebhei.fr");
 		Assert.assertNull(motDePasse);
+	}
+
+	@Test
+	public void testSupprimerUtilisateur() {
+		Assert.assertNotNull(utilisateurDao.getUtilisateur(1L));
+		utilisateurDao.supprimerUtilisateur(1L);
+		Assert.assertNull(utilisateurDao.getUtilisateur(1L));
+	}
+
+	@Test
+	public void testChangerRoleAdmin() {
+		Assert.assertFalse(utilisateurDao.getUtilisateur(1L).isAdmin());
+		utilisateurDao.modifierRoleAdmin(1L, true);
+		Assert.assertTrue(utilisateurDao.getUtilisateur(1L).isAdmin());
+		utilisateurDao.modifierRoleAdmin(1L, true);
+		Assert.assertTrue(utilisateurDao.getUtilisateur(1L).isAdmin());
+	}
+
+	@Test
+	public void testChangerMotDePasse() {
+		Assert.assertEquals("6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81",
+				utilisateurDao.getMotDePasseUtilisateurHashe("eleve@learnings-devwebhei.fr"));
+		utilisateurDao.modifierMotDePasse(1L, "NOUVEAU_MOT_DE_PASSE");
+		Assert.assertEquals("NOUVEAU_MOT_DE_PASSE", utilisateurDao.getMotDePasseUtilisateurHashe("eleve@learnings-devwebhei.fr"));
 	}
 
 }

@@ -25,21 +25,21 @@ public class UtilisateurManager {
 		return utilisateurDao.listerUtilisateurs();
 	}
 
-	public Utilisateur getUtilisateur(String identifiant) {
-		if (identifiant == null || "".equals(identifiant)) {
-			throw new IllegalArgumentException("L'identifiant doit être renseigné.");
+	public Utilisateur getUtilisateur(String email) {
+		if (email == null || "".equals(email)) {
+			throw new IllegalArgumentException("L'identifiant doit Ãªtre renseignÃ©.");
 		}
-		return utilisateurDao.getUtilisateur(identifiant);
+		return utilisateurDao.getUtilisateur(email);
 	}
 
-	public boolean validerMotDePasse(String identifiant, String motDePasseAVerifier) {
-		if (identifiant == null || "".equals(identifiant)) {
-			throw new IllegalArgumentException("L'identifiant doit être renseigné.");
+	public boolean validerMotDePasse(String email, String motDePasseAVerifier) {
+		if (email == null || "".equals(email)) {
+			throw new IllegalArgumentException("L'identifiant doit Ãªtre renseignÃ©.");
 		}
 		if (motDePasseAVerifier == null || "".equals(motDePasseAVerifier)) {
-			throw new IllegalArgumentException("Le mot de passe doit être renseigné.");
+			throw new IllegalArgumentException("Le mot de passe doit Ãªtre renseignÃ©.");
 		}
-		String motDePasseHashe = utilisateurDao.getMotDePasseUtilisateurHashe(identifiant);
+		String motDePasseHashe = utilisateurDao.getMotDePasseUtilisateurHashe(email);
 		if (motDePasseHashe == null) {
 			throw new IllegalArgumentException("L'identifiant n'est pas connu.");
 		}
@@ -49,5 +49,47 @@ public class UtilisateurManager {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public void supprimerUtilisateur(Long id) {
+		if (id == null || "".equals(id)) {
+			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas Ãªtre null.");
+		}
+		utilisateurDao.supprimerUtilisateur(id);
+	}
+
+	public void enleverDroitsAdmin(Long id) {
+		if (id == null || "".equals(id)) {
+			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas Ãªtre null.");
+		}
+		utilisateurDao.modifierRoleAdmin(id, false);
+	}
+
+	public void donnerDroitsAdmin(Long id) {
+		if (id == null || "".equals(id)) {
+			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas Ãªtre null.");
+		}
+		utilisateurDao.modifierRoleAdmin(id, true);
+	}
+
+	/**
+	 * RÃ©initialise le mot de passe de l'utilisateur avec pour valeur son email
+	 * 
+	 * @param id
+	 */
+	public void reinitialiserMotDePasse(Long id) {
+		if (id == null || "".equals(id)) {
+			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas Ãªtre null.");
+		}
+		Utilisateur utilisateur = utilisateurDao.getUtilisateur(id);
+		if (utilisateur == null) {
+			throw new IllegalArgumentException("L'utilisateur n'est pas connu.");
+		}
+		try {
+			String nouveauMotDePasse = MotDePasseUtils.genererMotDePasse(utilisateur.getEmail());
+			utilisateurDao.modifierMotDePasse(id, nouveauMotDePasse);
+		} catch (GeneralSecurityException e) {
+			e.printStackTrace();
+		}
 	}
 }

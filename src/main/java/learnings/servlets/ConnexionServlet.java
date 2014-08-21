@@ -33,7 +33,7 @@ public class ConnexionServlet extends HttpServlet {
 			if (UtilisateurManager.getInstance().validerMotDePasse(identifiant, motDePasse)) {
 				request.getSession().setAttribute("utilisateur", UtilisateurManager.getInstance().getUtilisateur(identifiant));
 			} else {
-				request.setAttribute("errorMessage", "Le mot de passe renseigné est faux.");
+				request.setAttribute("errorMessage", "Le mot de passe renseignÃ© est faux.");
 			}
 		} catch (IllegalArgumentException e) {
 			request.setAttribute("errorMessage", e.getMessage());
