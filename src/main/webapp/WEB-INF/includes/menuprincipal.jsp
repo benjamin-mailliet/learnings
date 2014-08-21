@@ -13,7 +13,14 @@
 				<c:if test="${sessionScope.utilisateur.admin}">
 					<li><a href="../admin/">Administration</a></li>
 				</c:if>
-				<li><a href="../deconnexion">Déconnexion</a></li>
+				<li class="dropdown">
+          			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></a>
+		          	<ul class="dropdown-menu" role="menu">
+		            	<li><a href="compte">Mon compte</a></li>
+		            	<li class="divider"></li>
+						<li><a href="../deconnexion">Déconnexion</a></li>
+		          	</ul>
+       		 	</li>
 			</ul>
 		</div>
 	</nav>

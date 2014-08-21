@@ -110,4 +110,21 @@ public class UtilisateurManager {
 		}
 		return utilisateurDao.ajouterUtilisateur(email, motDePasse, admin);
 	}
+
+	public void modifierMotDePasse(Long id, String motDePasse, String confirmationMotDePasse) {
+		if (motDePasse == null || "".equals(motDePasse) || confirmationMotDePasse == null || "".equals(confirmationMotDePasse)) {
+			throw new IllegalArgumentException("Les mots de passe doivent être renseignés.");
+		}
+		if (!motDePasse.equals(confirmationMotDePasse)) {
+			throw new IllegalArgumentException("La confirmation du mot de passe ne correspond pas.");
+		}
+
+		try {
+			String motDePasseHashe = MotDePasseUtils.genererMotDePasse(motDePasse);
+			utilisateurDao.modifierMotDePasse(id, motDePasseHashe);
+		} catch (GeneralSecurityException e) {
+			e.printStackTrace();
+		}
+
+	}
 }
