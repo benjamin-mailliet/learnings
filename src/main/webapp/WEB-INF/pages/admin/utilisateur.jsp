@@ -15,6 +15,7 @@
 		</c:import>
 	
 		<div class="container">
+			<c:import url="../../includes/messages.jsp" />
 			<h2>Gestion des utilisateurs</h2>
 			<table id="listeUtilisateurs" class="table table-striped">
 				<tr>

@@ -6,15 +6,15 @@ import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
+import learnings.servlets.GenericServlet;
 
 @WebServlet(urlPatterns = { "/admin/", "/admin/utilisateur" })
-public class GestionUtilisateurServlet extends HttpServlet {
+public class GestionUtilisateurServlet extends GenericServlet {
 
 	private static final long serialVersionUID = -5832886661094788806L;
 

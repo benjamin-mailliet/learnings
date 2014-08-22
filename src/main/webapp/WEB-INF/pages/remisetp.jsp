@@ -13,6 +13,7 @@
 			<c:param name="pageSelectionnee" value="remisetp"/>
 		</c:import>		
 		<div class="container">
+			<c:import url="../includes/messages.jsp" />
 			Formulaire de remise d'un tp
 		</div>
 	</body>

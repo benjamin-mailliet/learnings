@@ -5,14 +5,13 @@ import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.UtilisateurManager;
 
 @WebServlet("/connexion")
-public class ConnexionServlet extends HttpServlet {
+public class ConnexionServlet extends GenericServlet {
 	private static final long serialVersionUID = 3038302649713866775L;
 
 	@Override
@@ -33,13 +32,13 @@ public class ConnexionServlet extends HttpServlet {
 			if (UtilisateurManager.getInstance().validerMotDePasse(identifiant, motDePasse)) {
 				request.getSession().setAttribute("utilisateur", UtilisateurManager.getInstance().getUtilisateur(identifiant));
 			} else {
-				request.setAttribute("errorMessage", "Le mot de passe renseigné est faux.");
+				this.ajouterMessageErreur(request, "Le mot de passe renseigné est faux.");
 			}
 		} catch (IllegalArgumentException e) {
-			request.setAttribute("errorMessage", e.getMessage());
+			this.ajouterMessageErreur(request, e.getMessage());
 		}
 
-		this.doGet(request, response);
+		response.sendRedirect("connexion");
 	}
 
 }

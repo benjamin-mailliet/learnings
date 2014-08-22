@@ -15,12 +15,10 @@
 			<c:param name="pageSelectionnee" value=""/>
 		</c:import>		
 		<div class="container">
+			<c:import url="../includes/messages.jsp" />
 			<header class="page-header"><h1>Mon compte</h1></header>
 			<section class="panel-group">
 				<h2>Changer le mot de passe</h2>
-				<c:if test="${errorMessage != null && errorMessage != ''}">
-					<div class="alert alert-danger" role="alert">${errorMessage}</div>
-				</c:if>
 				<form class="form-horizontal" role="form" method="post" action="compte">
   					<div class="form-group">
     					<label for="motDePasse" class="col-sm-4 control-label">Nouveau mot de passe</label>

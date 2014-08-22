@@ -15,6 +15,7 @@
 			<c:param name="pageSelectionnee" value="fichiers"/>
 		</c:import>		
 		<div class="container">
+			<c:import url="../includes/messages.jsp" />
 			<header class="page-header"><h1>Cours et TPs</h1></header>
 			<section class="panel-group">
 				<article class="cours-article panel panel-default">
