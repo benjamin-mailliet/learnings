@@ -15,7 +15,7 @@ Cette application est également un exemple de développement proposé aux élè
 * CSS 3 avec [Bootstrap](http://getbootstrap.com)
 * Javascript avec [JQuery](http://jquery.com)
 * JavaEE 7 :
-** Servlets
-** JSTL
-** JDBC
-** JUnit
+    * Servlets
+    * JSTL
+    * JDBC
+    * JUnit
