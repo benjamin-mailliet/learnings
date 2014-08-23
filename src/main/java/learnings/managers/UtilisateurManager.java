@@ -3,7 +3,6 @@ package learnings.managers;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
-import learnings.dao.DataSourceProvider;
 import learnings.dao.UtilisateurDao;
 import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.model.Utilisateur;
@@ -12,7 +11,7 @@ import learnings.utils.MotDePasseUtils;
 public class UtilisateurManager {
 	public static UtilisateurManager instance;
 
-	public UtilisateurDao utilisateurDao = new UtilisateurDaoImpl(DataSourceProvider.getDataSource());
+	public UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 
 	public static UtilisateurManager getInstance() {
 		if (instance == null) {
