@@ -5,14 +5,13 @@ import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.UtilisateurManager;
 
 @WebServlet("/connexion")
-public class ConnexionServlet extends HttpServlet {
+public class ConnexionServlet extends GenericServlet {
 	private static final long serialVersionUID = 3038302649713866775L;
 
 	@Override
@@ -29,18 +28,17 @@ public class ConnexionServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String identifiant = request.getParameter("identifiant");
 		String motDePasse = request.getParameter("motDePasse");
-		if (identifiant == null || "".equals(identifiant)) {
-			request.setAttribute("errorMessage", "L'identifiant doit être renseigné.");
-		} else if (motDePasse == null || "".equals(motDePasse)) {
-			request.setAttribute("errorMessage", "Le mot de passe doit être renseigné.");
-		} else {
+		try {
 			if (UtilisateurManager.getInstance().validerMotDePasse(identifiant, motDePasse)) {
 				request.getSession().setAttribute("utilisateur", UtilisateurManager.getInstance().getUtilisateur(identifiant));
 			} else {
-				request.setAttribute("errorMessage", "Le mot de passe renseigné est faux.");
+				this.ajouterMessageErreur(request, "Le mot de passe renseignÃ© est faux.");
 			}
+		} catch (IllegalArgumentException e) {
+			this.ajouterMessageErreur(request, e.getMessage());
 		}
-		this.doGet(request, response);
+
+		response.sendRedirect("connexion");
 	}
 
 }

@@ -13,6 +13,7 @@
 			<c:param name="pageSelectionnee" value="remisetp"/>
 		</c:import>		
 		<div class="container">
+			<c:import url="../includes/messages.jsp" />
 			<header class="page-header"><h1>Rendre son TP</h1></header>
 			<form role="form" class="form-horizontal">
 				<div class="form-group">

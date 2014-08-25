@@ -4,25 +4,56 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.sql.DataSource;
-
+import learnings.dao.DataSourceProvider;
 import learnings.dao.UtilisateurDao;
 import learnings.model.Utilisateur;
 
 public class UtilisateurDaoImpl implements UtilisateurDao {
 
-	private DataSource dataSource;
+	public List<Utilisateur> listerUtilisateurs() {
+		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
+		try {
+			Connection connection = getConnection();
+			Statement stmt = connection.createStatement();
+			ResultSet results = stmt.executeQuery("SELECT id, email, admin FROM utilisateur ORDER BY email");
+			while (results.next()) {
+				utilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return utilisateurs;
+	}
 
-	public UtilisateurDaoImpl(DataSource dataSource) {
-		super();
-		this.dataSource = dataSource;
+	@Override
+	public Utilisateur getUtilisateur(Long id) {
+		Utilisateur utilisateur = null;
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE id=?");
+			stmt.setLong(1, id);
+			ResultSet results = stmt.executeQuery();
+			if (results.next()) {
+				utilisateur = new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin"));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return utilisateur;
 	}
 
 	public Utilisateur getUtilisateur(String identifiant) {
 		Utilisateur utilisateur = null;
 		try {
-			Connection connection = dataSource.getConnection();
+			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE email=?");
 			stmt.setString(1, identifiant);
 			ResultSet results = stmt.executeQuery();
@@ -41,7 +72,7 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 	public String getMotDePasseUtilisateurHashe(String identifiant) {
 		String motDePasse = null;
 		try {
-			Connection connection = dataSource.getConnection();
+			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement("SELECT motdepasse FROM utilisateur WHERE email=?");
 			stmt.setString(1, identifiant);
 			ResultSet results = stmt.executeQuery();
@@ -57,4 +88,76 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 		return motDePasse;
 	}
 
+	@Override
+	public void modifierMotDePasse(Long id, String motDePasse) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("UPDATE utilisateur SET motdepasse=? WHERE id=?");
+			stmt.setString(1, motDePasse);
+			stmt.setLong(2, id);
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void supprimerUtilisateur(Long id) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("DELETE FROM  utilisateur WHERE id=?");
+			stmt.setLong(1, id);
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void modifierRoleAdmin(Long id, boolean admin) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("UPDATE utilisateur SET admin=? WHERE id=?");
+			stmt.setBoolean(1, admin);
+			stmt.setLong(2, id);
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public Utilisateur ajouterUtilisateur(String email, String motDePasse, boolean admin) {
+		Utilisateur utilisateur = null;
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("INSERT INTO utilisateur(email, motdepasse, admin) VALUES(?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, email);
+			stmt.setString(2, motDePasse);
+			stmt.setBoolean(3, admin);
+			stmt.executeUpdate();
+
+			ResultSet ids = stmt.getGeneratedKeys();
+			if (ids.next()) {
+				utilisateur = new Utilisateur(ids.getLong(1), email, admin);
+			}
+
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return utilisateur;
+	}
+
+	private Connection getConnection() throws SQLException {
+		return DataSourceProvider.getInstance().getDataSource().getConnection();
+	}
 }

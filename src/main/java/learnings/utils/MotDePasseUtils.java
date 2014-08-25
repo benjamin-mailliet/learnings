@@ -18,7 +18,7 @@ public class MotDePasseUtils {
 	public static final int PBKDF2_ITERATIONS = 1000;
 
 	public static String genererMotDePasse(String motDePasse) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		// Création du sel
+		// CrÃ©ation du sel
 		SecureRandom random = new SecureRandom();
 		byte[] sel = new byte[SALT_BYTE_SIZE];
 		random.nextBytes(sel);
@@ -31,12 +31,12 @@ public class MotDePasseUtils {
 	}
 
 	public static boolean validerMotDePasse(String motDePasse, String hashCorrect) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		// Séparation du hash et du sel
+		// SÃ©paration du hash et du sel
 		String[] params = hashCorrect.split(":");
 		byte[] sel = fromHex(params[0]);
 		byte[] hash = fromHex(params[1]);
 
-		// Génération du hash du mot de passe testé avec le même sel
+		// GÃ©nÃ©ration du hash du mot de passe testÃ© avec le mÃªme sel
 		byte[] hashAValider = genererHash(motDePasse, sel);
 		// Comparaison des deux hash
 		return Arrays.equals(hash, hashAValider);
