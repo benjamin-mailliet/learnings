@@ -14,7 +14,7 @@ CREATE  TABLE `utilisateur` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `learnings`.`tp` (
+CREATE TABLE `tp` (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   `titre` VARCHAR(100) NOT NULL,
   `description` VARCHAR(5000),
@@ -24,7 +24,7 @@ CREATE TABLE `learnings`.`tp` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `learnings`.`projettransversal` (
+CREATE TABLE `projettransversal` (
   `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   `titre` VARCHAR(100) NOT NULL,
   `description` VARCHAR(5000) NOT NULL,
