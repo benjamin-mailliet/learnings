@@ -25,11 +25,29 @@ public class SeanceDaoImpl implements SeanceDao {
 			ResultSet results = stmt.executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance ORDER BY date DESC");
 			Date dateLimiteRendu = null;
 			while (results.next()) {
-				if (results.getDate("datelimiterendu") != null) {
-					dateLimiteRendu = results.getDate("datelimiterendu");
-				}
 				listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
 						.getBoolean("isnote"), dateLimiteRendu, TypeSeance.valueOf(results.getString("type"))));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listeCours;
+	}
+
+	@Override
+	public List<Seance> listerSeancesWhereDateBefore(Date date) {
+		List<Seance> listeCours = new ArrayList<Seance>();
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection
+					.prepareStatement("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance WHERE date <=? ORDER BY date DESC, type ASC");
+			stmt.setDate(1, new java.sql.Date(date.getTime()));
+			ResultSet results = stmt.executeQuery();
+			while (results.next()) {
+				listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
+						.getBoolean("isnote"), results.getDate("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
 			}
 			stmt.close();
 			connection.close();

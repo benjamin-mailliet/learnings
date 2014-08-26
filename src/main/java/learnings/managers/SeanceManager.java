@@ -30,6 +30,15 @@ public class SeanceManager {
 		return listeCours;
 	}
 
+	public List<Seance> listerSeancesRenduesAccessibles() {
+		Date aujourdhui = new Date();
+		List<Seance> listeCours = seanceDao.listerSeancesWhereDateBefore(aujourdhui);
+		for (Seance seanceCourante : listeCours) {
+			seanceCourante.setRessources(ressourceDao.getRessourcesBySeance(seanceCourante));
+		}
+		return listeCours;
+	}
+
 	public List<Seance> listerTPRenduAccessible() {
 		Date aujourdhui = new Date();
 		return seanceDao.listerTPNotesParDateRendu(aujourdhui);

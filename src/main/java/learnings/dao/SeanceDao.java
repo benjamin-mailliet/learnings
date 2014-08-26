@@ -9,4 +9,6 @@ public interface SeanceDao {
 	public List<Seance> listerSeances();
 
 	public List<Seance> listerTPNotesParDateRendu(Date date);
+
+	public List<Seance> listerSeancesWhereDateBefore(Date date);
 }
