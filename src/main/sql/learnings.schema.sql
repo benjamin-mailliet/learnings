@@ -6,21 +6,14 @@ CREATE  TABLE `utilisateur` (
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) );
   
-CREATE TABLE `cours` (
+CREATE TABLE `seance` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `titre` VARCHAR(100) NOT NULL,
   `description` VARCHAR(5000),
-  `date` DATE NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `tp` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `titre` VARCHAR(100) NOT NULL,
-  `description` VARCHAR(5000),
-  `isnote` BIT NOT NULL,
+  `isnote` BIT NOT NULL DEFAULT 0,
   `datelimiterendu` DATETIME,
   `date` DATE NOT NULL,
+  `type` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -37,12 +30,10 @@ CREATE TABLE `ressource` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `chemin` VARCHAR(1000) NOT NULL,
   `titre` VARCHAR(100) NOT NULL,
-  `cours_id` INT,
-  `tp_id` INT,
+  `seance_id` INT,
   `projettransversal_id` INT,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`cours_id`) REFERENCES cours(`id`),
-  FOREIGN KEY (`tp_id`) REFERENCES tp(`id`),
+  FOREIGN KEY (`seance_id`) REFERENCES seance(`id`),
   FOREIGN KEY (`projettransversal_id`) REFERENCES projettransversal(`id`)
 );
 
@@ -52,12 +43,12 @@ CREATE TABLE `travail` (
   `chemin` VARCHAR(1000) NOT NULL,
   `note` decimal(4,2) DEFAULT NULL,
   `dateRendu` DATETIME NOT NULL,
-  `tp_id` INT,
+  `seance_id` INT,
   `projettransversal_id` INT,
   `utilisateur_id1` INT NOT NULL,
   `utilisateur_id2` INT,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`tp_id`) REFERENCES tp(`id`),
+  FOREIGN KEY (`seance_id`) REFERENCES seance(`id`),
   FOREIGN KEY (`projettransversal_id`) REFERENCES projettransversal(`id`),
   FOREIGN KEY (`utilisateur_id1`) REFERENCES utilisateur(`id`),
   FOREIGN KEY (`utilisateur_id2`) REFERENCES utilisateur(`id`)
