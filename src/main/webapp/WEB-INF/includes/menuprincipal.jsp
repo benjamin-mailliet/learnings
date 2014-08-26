@@ -6,7 +6,7 @@
 				<a class="navbar-brand" href="./">Gestionnaire</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="${param.pageSelectionnee == 'fichiers' ? 'active' : ''}"><a href="fichiers">Fichiers</a></li>
+				<li class="${param.pageSelectionnee == 'seances' ? 'active' : ''}"><a href="seances">Séances</a></li>
 				<li class="${param.pageSelectionnee == 'remisetp' ? 'active' : ''}"><a href="remisetp">Rendre son TP</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
