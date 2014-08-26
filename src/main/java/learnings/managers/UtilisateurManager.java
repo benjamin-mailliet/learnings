@@ -24,6 +24,13 @@ public class UtilisateurManager {
 		return utilisateurDao.listerUtilisateurs();
 	}
 
+	public List<Utilisateur> listerAutresEleves(Utilisateur utilisateur) {
+		if (utilisateur == null || utilisateur.getId() == null) {
+			throw new IllegalArgumentException("L'utilisateur est incorrect.");
+		}
+		return utilisateurDao.listerAutresEleves(utilisateur.getId());
+	}
+
 	public Utilisateur getUtilisateur(String email) {
 		if (email == null || "".equals(email)) {
 			throw new IllegalArgumentException("L'identifiant doit être renseigné.");

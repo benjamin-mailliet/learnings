@@ -31,6 +31,26 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 	}
 
 	@Override
+	public List<Utilisateur> listerAutresEleves(Long id) {
+		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE admin = ? AND id != ? ORDER BY email");
+			stmt.setBoolean(1, false);
+			stmt.setLong(2, id);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()) {
+				utilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return utilisateurs;
+	}
+
+	@Override
 	public Utilisateur getUtilisateur(Long id) {
 		Utilisateur utilisateur = null;
 		try {

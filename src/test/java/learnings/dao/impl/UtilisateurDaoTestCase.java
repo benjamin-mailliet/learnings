@@ -22,6 +22,8 @@ public class UtilisateurDaoTestCase {
 		stmt.executeUpdate("DELETE FROM utilisateur");
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(1,'eleve@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(2,'admin@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',1)");
+		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(3,'eleve2@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
+		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(4,'eleve3@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
 		stmt.close();
 		connection.close();
 	}
@@ -30,11 +32,29 @@ public class UtilisateurDaoTestCase {
 	public void testListerUtilisateurs() {
 		List<Utilisateur> utilisateurs = utilisateurDao.listerUtilisateurs();
 
-		Assert.assertEquals(2, utilisateurs.size());
+		Assert.assertEquals(4, utilisateurs.size());
 
 		Assert.assertEquals(2L, utilisateurs.get(0).getId().longValue());
 		Assert.assertEquals("admin@learnings-devwebhei.fr", utilisateurs.get(0).getEmail());
 		Assert.assertTrue(utilisateurs.get(0).isAdmin());
+
+		Assert.assertEquals(3L, utilisateurs.get(1).getId().longValue());
+		Assert.assertEquals("eleve2@learnings-devwebhei.fr", utilisateurs.get(1).getEmail());
+		Assert.assertFalse(utilisateurs.get(1).isAdmin());
+
+		Assert.assertEquals(4L, utilisateurs.get(2).getId().longValue());
+		Assert.assertEquals(1L, utilisateurs.get(3).getId().longValue());
+	}
+
+	@Test
+	public void testListerAutresEleves() {
+		List<Utilisateur> utilisateurs = utilisateurDao.listerAutresEleves(3L);
+
+		Assert.assertEquals(2, utilisateurs.size());
+
+		Assert.assertEquals(4L, utilisateurs.get(0).getId().longValue());
+		Assert.assertEquals("eleve3@learnings-devwebhei.fr", utilisateurs.get(0).getEmail());
+		Assert.assertFalse(utilisateurs.get(0).isAdmin());
 
 		Assert.assertEquals(1L, utilisateurs.get(1).getId().longValue());
 		Assert.assertEquals("eleve@learnings-devwebhei.fr", utilisateurs.get(1).getEmail());
@@ -51,7 +71,7 @@ public class UtilisateurDaoTestCase {
 
 	@Test
 	public void testGetUtilisateurParIdNonTrouve() {
-		Utilisateur utilisateur = utilisateurDao.getUtilisateur(3L);
+		Utilisateur utilisateur = utilisateurDao.getUtilisateur(-1L);
 		Assert.assertNull(utilisateur);
 	}
 

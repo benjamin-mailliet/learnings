@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import learnings.dao.TPDao;
+import learnings.dao.impl.TPDaoImpl;
 import learnings.model.TP;
 
 public class EnseignementManager {
@@ -16,7 +17,7 @@ public class EnseignementManager {
 		return instance;
 	}
 
-	private TPDao tpDao;
+	private TPDao tpDao = new TPDaoImpl();
 
 	public List<TP> listerTPRenduAccessible() {
 		Date aujourdhui = new Date();
