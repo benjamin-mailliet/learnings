@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import learnings.context.MessageContainer;
 import learnings.context.MessageContainer.Niveau;
+import learnings.model.Utilisateur;
 
 public abstract class GenericServlet extends HttpServlet {
 
@@ -29,5 +30,9 @@ public abstract class GenericServlet extends HttpServlet {
 	private void ajouterMessage(HttpServletRequest request, Niveau niveau, String message) {
 		MessageContainer container = (MessageContainer) request.getSession().getAttribute("messages");
 		container.ajouterMessage(niveau, message);
+	}
+
+	protected Utilisateur getUtilisateurCourant(HttpServletRequest request) {
+		return (Utilisateur) request.getSession().getAttribute("utilisateur");
 	}
 }
