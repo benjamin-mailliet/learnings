@@ -3,10 +3,15 @@ package learnings.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Cours extends Enseignement implements Serializable  {
+public class Cours extends Enseignement implements Serializable {
 	private static final long serialVersionUID = 4961204598561923877L;
-	
+
 	private Date date;
+
+	public Cours(Long id, String titre, String description, java.util.Date date) {
+		super(id, titre, description);
+		this.date = date;
+	}
 
 	public Date getDate() {
 		return date;

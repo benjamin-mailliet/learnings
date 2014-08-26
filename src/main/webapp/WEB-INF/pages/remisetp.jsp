@@ -17,13 +17,19 @@
 			<header class="page-header"><h1>Rendre son TP</h1></header>
 			<form role="form" class="form-horizontal">
 				<div class="form-group">
-					<label for="nomEleve1">Noms des élèves du binôme :</label>
+					<label for="nomEleve1">Binômes :</label>
 					<div class="row">
-  						<div class="col-xs-5">
-							<input type="text" class="form-control" id="nomEleve1" placeholder="Premier élève du binôme">
+						<div class="col-xs-4">
+							<select class="form-control small-input" id="eleve1" readonly>
+								<option>Johnny Bigood</option>
+							</select>
 						</div>
-						<div class="col-xs-5">
-							<input type="text" class="form-control" id="nomEleve1" placeholder="Deuxième élève du binôme">
+						<div class="col-xs-4">
+							<select class="form-control small-input" id="eleve2">
+								<option>Sophie Lapixe</option>
+								<option>Jonathan Davis</option>
+								<option>Robert Chipoune</option>
+							</select>
 						</div>
 					</div>
 				</div>

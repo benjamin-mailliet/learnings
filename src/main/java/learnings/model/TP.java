@@ -10,6 +10,13 @@ public class TP extends Enseignement implements Serializable {
 	private Date dateLimiteRendu;
 	private Date date;
 
+	public TP(Long id, String titre, String description, Boolean isNote, Date dateLimiteRendu, Date date) {
+		super(id, titre, description);
+		this.isNote = isNote;
+		this.dateLimiteRendu = dateLimiteRendu;
+		this.date = date;
+	}
+
 	public Date getDate() {
 		return date;
 	}
