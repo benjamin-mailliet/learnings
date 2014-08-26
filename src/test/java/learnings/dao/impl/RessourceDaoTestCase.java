@@ -7,8 +7,8 @@ import java.util.List;
 
 import learnings.dao.DataSourceProvider;
 import learnings.dao.RessourceDao;
-import learnings.model.Cours;
 import learnings.model.Ressource;
+import learnings.model.Seance;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class RessourceDaoTestCase {
 
 	@Test
 	public void testListerCours() {
-		List<Ressource> listeRessources = ressourceDao.getRessourcesByCours(new Cours(1L, "titre", "desc", new Date()));
+		List<Ressource> listeRessources = ressourceDao.getRessourcesBySeance(new Seance(1L, "titre", "desc", new Date()));
 
 		Assert.assertEquals(2, listeRessources.size());
 

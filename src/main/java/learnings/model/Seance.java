@@ -3,17 +3,34 @@ package learnings.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TP extends Enseignement implements Serializable {
+import learnings.enums.TypeSeance;
+
+public class Seance extends Enseignement implements Serializable {
 	private static final long serialVersionUID = 4961204598561923877L;
 
 	private Boolean isNote;
 	private Date dateLimiteRendu;
 	private Date date;
+	private TypeSeance type;
 
-	public TP(Long id, String titre, String description, Boolean isNote, Date dateLimiteRendu, Date date) {
+	public Seance(Long id, String titre, String description, Date date, Boolean isNote, Date dateLimiteRendu, TypeSeance type) {
 		super(id, titre, description);
 		this.isNote = isNote;
 		this.dateLimiteRendu = dateLimiteRendu;
+		this.date = date;
+		this.type = type;
+	}
+
+	public TypeSeance getType() {
+		return type;
+	}
+
+	public void setType(TypeSeance type) {
+		this.type = type;
+	}
+
+	public Seance(Long id, String titre, String description, java.util.Date date) {
+		super(id, titre, description);
 		this.date = date;
 	}
 
@@ -40,5 +57,4 @@ public class TP extends Enseignement implements Serializable {
 	public void setDateLimiteRendu(Date dateLimiteRendu) {
 		this.dateLimiteRendu = dateLimiteRendu;
 	}
-
 }

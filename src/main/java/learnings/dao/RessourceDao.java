@@ -2,9 +2,9 @@ package learnings.dao;
 
 import java.util.List;
 
-import learnings.model.Cours;
 import learnings.model.Ressource;
+import learnings.model.Seance;
 
 public interface RessourceDao {
-	public List<Ressource> getRessourcesByCours(Cours cours);
+	public List<Ressource> getRessourcesBySeance(Seance seance);
 }
