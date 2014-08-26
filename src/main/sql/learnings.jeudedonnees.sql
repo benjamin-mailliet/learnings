@@ -21,8 +21,8 @@ INSERT INTO ressource
 (id, chemin, titre, seance_id)
 VALUES(3, 'http://dropbox.com', 'TP2 : Bootstrap', 3);
 INSERT INTO ressource
-(id, chemin, titre, seance_id, projettransversal_id)
+(id, chemin, titre, seance_id)
 VALUES(2, 'http://www.yahoo.fr', 'Cours 1 : HTML / CSS', 1);
 INSERT INTO ressource
-(id, chemin, titre, seance_id, projettransversal_id)
+(id, chemin, titre, seance_id)
 VALUES(1, 'http://www.google.fr', 'TP1 : les animaux laids', 2);
