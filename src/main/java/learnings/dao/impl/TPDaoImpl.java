@@ -38,12 +38,14 @@ public class TPDaoImpl extends GenericDaoImpl implements TPDao {
 		List<TP> tpNotes = new ArrayList<TP>();
 		try {
 			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM tp WHERE date <= ? AND datelimiterendu >= ?");
+			PreparedStatement stmt = connection
+					.prepareStatement("SELECT id, titre, description, isnote, datelimiterendu, date FROM tp WHERE date <= ? AND datelimiterendu >= ? ORDER BY date ASC");
 			stmt.setDate(1, new java.sql.Date(date.getTime()));
 			stmt.setDate(2, new java.sql.Date(date.getTime()));
 			ResultSet results = stmt.executeQuery();
 			while (results.next()) {
-				tpNotes.add(new TP());
+				tpNotes.add(new TP(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getBoolean("isnote"), results
+						.getDate("datelimiterendu"), results.getDate("date")));
 			}
 			stmt.close();
 			connection.close();

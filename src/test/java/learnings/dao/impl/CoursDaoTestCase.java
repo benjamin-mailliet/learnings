@@ -20,6 +20,7 @@ public class CoursDaoTestCase {
 	public void init() throws Exception {
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
 		Statement stmt = connection.createStatement();
+		stmt.executeUpdate("DELETE FROM ressource");
 		stmt.executeUpdate("DELETE FROM cours");
 		stmt.executeUpdate("INSERT INTO `cours`(`id`,`titre`,`description`,`date`) VALUES(1,'cours1','cours de debuggage','2014-08-26')");
 		stmt.executeUpdate("INSERT INTO `cours`(`id`,`titre`,`description`,`date`) VALUES(2,'cours2','cours de correction','2014-08-29')");

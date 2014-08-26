@@ -22,6 +22,8 @@ public class RessourceDaoTestCase {
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
 		Statement stmt = connection.createStatement();
 		stmt.executeUpdate("DELETE FROM ressource");
+		stmt.executeUpdate("DELETE FROM cours");
+		stmt.executeUpdate("INSERT INTO `cours`(`id`,`titre`,`description`,`date`) VALUES(1,'cours1','cours de debuggage','2014-08-26')");
 		stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`cours_id`) VALUES(1,'ressource1','chemin ressource de cours 1',1)");
 		stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`cours_id`) VALUES(2,'ressource2','chemin ressource de cours 2',1)");
 		stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`tp_id`) VALUES(3,'ressource3','ressource de tp',1)");
