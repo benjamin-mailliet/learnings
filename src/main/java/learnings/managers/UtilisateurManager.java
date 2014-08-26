@@ -9,9 +9,9 @@ import learnings.model.Utilisateur;
 import learnings.utils.MotDePasseUtils;
 
 public class UtilisateurManager {
-	public static UtilisateurManager instance;
+	private static UtilisateurManager instance;
 
-	public UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
+	private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 
 	public static UtilisateurManager getInstance() {
 		if (instance == null) {

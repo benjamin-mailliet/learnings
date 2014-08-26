@@ -8,11 +8,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import learnings.dao.DataSourceProvider;
 import learnings.dao.UtilisateurDao;
 import learnings.model.Utilisateur;
 
-public class UtilisateurDaoImpl implements UtilisateurDao {
+public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao {
 
 	public List<Utilisateur> listerUtilisateurs() {
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
@@ -155,9 +154,5 @@ public class UtilisateurDaoImpl implements UtilisateurDao {
 			e.printStackTrace();
 		}
 		return utilisateur;
-	}
-
-	private Connection getConnection() throws SQLException {
-		return DataSourceProvider.getInstance().getDataSource().getConnection();
 	}
 }

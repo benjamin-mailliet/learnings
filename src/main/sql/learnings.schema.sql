@@ -6,8 +6,8 @@ CREATE  TABLE `utilisateur` (
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) );
   
-  CREATE TABLE `cours` (
-  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `cours` (
+  `id` INT NOT NULL AUTO_INCREMENT,
   `titre` VARCHAR(100) NOT NULL,
   `description` VARCHAR(5000),
   `date` DATE NOT NULL,
@@ -15,7 +15,7 @@ CREATE  TABLE `utilisateur` (
 );
 
 CREATE TABLE `tp` (
-  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `titre` VARCHAR(100) NOT NULL,
   `description` VARCHAR(5000),
   `isnote` BIT NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE `tp` (
 );
 
 CREATE TABLE `projettransversal` (
-  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `titre` VARCHAR(100) NOT NULL,
   `description` VARCHAR(5000) NOT NULL,
   `datelimiterendulot1` DATETIME NOT NULL,
@@ -34,12 +34,12 @@ CREATE TABLE `projettransversal` (
 );
 
 CREATE TABLE `ressource` (
-  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `chemin` VARCHAR(1000) NOT NULL,
   `titre` VARCHAR(100) NOT NULL,
-  `cours_id` INTEGER,
-  `tp_id` INTEGER,
-  `projettransversal_id` INTEGER,
+  `cours_id` INT,
+  `tp_id` INT,
+  `projettransversal_id` INT,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`cours_id`) REFERENCES cours(`id`),
   FOREIGN KEY (`tp_id`) REFERENCES tp(`id`),
@@ -48,14 +48,14 @@ CREATE TABLE `ressource` (
 
 
 CREATE TABLE `travail` (
-  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `chemin` VARCHAR(1000) NOT NULL,
-  `note` INTEGER,
+  `note` decimal(4,2) DEFAULT NULL,
   `dateRendu` DATETIME NOT NULL,
-  `tp_id` INTEGER,
-  `projettransversal_id` INTEGER,
-  `utilisateur_id1` INTEGER NOT NULL,
-  `utilisateur_id2` INTEGER,
+  `tp_id` INT,
+  `projettransversal_id` INT,
+  `utilisateur_id1` INT NOT NULL,
+  `utilisateur_id2` INT,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`tp_id`) REFERENCES tp(`id`),
   FOREIGN KEY (`projettransversal_id`) REFERENCES projettransversal(`id`),
