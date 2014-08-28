@@ -45,11 +45,20 @@ CREATE TABLE `travail` (
   `dateRendu` DATETIME NOT NULL,
   `seance_id` INT,
   `projettransversal_id` INT,
-  `utilisateur_id1` INT NOT NULL,
-  `utilisateur_id2` INT,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`seance_id`) REFERENCES seance(`id`),
-  FOREIGN KEY (`projettransversal_id`) REFERENCES projettransversal(`id`),
-  FOREIGN KEY (`utilisateur_id1`) REFERENCES utilisateur(`id`),
-  FOREIGN KEY (`utilisateur_id2`) REFERENCES utilisateur(`id`)
+  FOREIGN KEY (`projettransversal_id`) REFERENCES projettransversal(`id`)
 );
+
+
+CREATE TABLE `travailutilisateur` (
+  `idtravail` int(11) NOT NULL,
+  `idutilisateur` int(11) NOT NULL,
+  PRIMARY KEY (`idtravail`,`idutilisateur`),
+  KEY `idutilisateur_fk` (`idutilisateur`),
+  KEY `idtravail_fk` (`idtravail`),
+  CONSTRAINT `idutilisateur_fk` FOREIGN KEY (`idutilisateur`) REFERENCES `utilisateur` (`id`),
+  CONSTRAINT `idtravail_fk` FOREIGN KEY (`idtravail`) REFERENCES `travail` (`id`)
+);
+
+

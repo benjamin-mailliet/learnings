@@ -9,28 +9,10 @@ public class Travail implements Serializable {
 
 	private Long id;
 
-	private Utilisateur eleve1;
-	private Utilisateur eleve2;
 	private Enseignement enseignement;
 	private BigDecimal note;
 	private Date dateRendu;
 	private String chemin;
-
-	public Utilisateur getEleve1() {
-		return eleve1;
-	}
-
-	public void setEleve1(Utilisateur eleve1) {
-		this.eleve1 = eleve1;
-	}
-
-	public Utilisateur getEleve2() {
-		return eleve2;
-	}
-
-	public void setEleve2(Utilisateur eleve2) {
-		this.eleve2 = eleve2;
-	}
 
 	public Enseignement getEnseignement() {
 		return enseignement;
@@ -58,6 +40,10 @@ public class Travail implements Serializable {
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getChemin() {

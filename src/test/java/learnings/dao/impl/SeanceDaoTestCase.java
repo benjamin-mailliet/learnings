@@ -8,6 +8,7 @@ import java.util.List;
 
 import learnings.dao.DataSourceProvider;
 import learnings.dao.SeanceDao;
+import learnings.enums.TypeSeance;
 import learnings.model.Seance;
 
 import org.junit.Assert;
@@ -56,5 +57,18 @@ public class SeanceDaoTestCase {
 		Assert.assertEquals("tp de correction", listeTps.get(0).getDescription());
 		Assert.assertEquals(new GregorianCalendar(2014, Calendar.AUGUST, 29).getTime(), listeTps.get(0).getDate());
 		Assert.assertTrue(listeTps.get(0).getIsNote());
+	}
+
+	@Test
+	public void testGetSeance() {
+		Seance seance = seanceDao.getSeance(3L);
+
+		Assert.assertNotNull(seance);
+		Assert.assertEquals(3L, seance.getId().longValue());
+		Assert.assertEquals("tp1", seance.getTitre());
+		Assert.assertEquals("tp de debuggage", seance.getDescription());
+		Assert.assertEquals(TypeSeance.TP, seance.getType());
+		Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 29).getTime(), seance.getDate());
+		Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 29, 18, 0, 0).getTime(), seance.getDateLimiteRendu());
 	}
 }

@@ -11,4 +11,6 @@ public interface SeanceDao {
 	public List<Seance> listerTPNotesParDateRendu(Date date);
 
 	public List<Seance> listerSeancesWhereDateBefore(Date date);
+
+	public Seance getSeance(Long idSeance);
 }

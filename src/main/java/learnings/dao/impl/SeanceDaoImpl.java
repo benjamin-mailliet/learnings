@@ -9,12 +9,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import learnings.dao.DataSourceProvider;
 import learnings.dao.SeanceDao;
 import learnings.enums.TypeSeance;
 import learnings.model.Seance;
 
-public class SeanceDaoImpl implements SeanceDao {
+public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 
 	@Override
 	public List<Seance> listerSeances() {
@@ -47,7 +46,7 @@ public class SeanceDaoImpl implements SeanceDao {
 			ResultSet results = stmt.executeQuery();
 			while (results.next()) {
 				listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
-						.getBoolean("isnote"), results.getDate("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
+						.getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
 			}
 			stmt.close();
 			connection.close();
@@ -55,10 +54,6 @@ public class SeanceDaoImpl implements SeanceDao {
 			e.printStackTrace();
 		}
 		return listeCours;
-	}
-
-	private Connection getConnection() throws SQLException {
-		return DataSourceProvider.getInstance().getDataSource().getConnection();
 	}
 
 	@Override
@@ -73,7 +68,7 @@ public class SeanceDaoImpl implements SeanceDao {
 			ResultSet results = stmt.executeQuery();
 			while (results.next()) {
 				tpNotes.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
-						.getBoolean("isnote"), results.getDate("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
+						.getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
 			}
 			stmt.close();
 			connection.close();
@@ -81,5 +76,25 @@ public class SeanceDaoImpl implements SeanceDao {
 			e.printStackTrace();
 		}
 		return tpNotes;
+	}
+
+	@Override
+	public Seance getSeance(Long idSeance) {
+		Seance seance = null;
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM seance WHERE id=?");
+			stmt.setLong(1, idSeance);
+			ResultSet results = stmt.executeQuery();
+			if (results.next()) {
+				seance = new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"),
+						results.getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return seance;
 	}
 }
