@@ -2,6 +2,7 @@ package learnings.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import learnings.enums.TypeSeance;
 
@@ -12,6 +13,7 @@ public class Seance extends Enseignement implements Serializable {
 	private Date dateLimiteRendu;
 	private Date date;
 	private TypeSeance type;
+	private List<Travail> travauxRendus;
 
 	public Seance(Long id, String titre, String description, Date date, Boolean isNote, Date dateLimiteRendu, TypeSeance type) {
 		super(id, titre, description);
@@ -57,4 +59,13 @@ public class Seance extends Enseignement implements Serializable {
 	public void setDateLimiteRendu(Date dateLimiteRendu) {
 		this.dateLimiteRendu = dateLimiteRendu;
 	}
+
+	public List<Travail> getTravauxRendus() {
+		return travauxRendus;
+	}
+
+	public void setTravauxRendus(List<Travail> travauxRendus) {
+		this.travauxRendus = travauxRendus;
+	}
+
 }

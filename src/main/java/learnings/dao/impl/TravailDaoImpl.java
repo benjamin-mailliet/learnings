@@ -12,6 +12,7 @@ import java.util.List;
 import learnings.dao.TravailDao;
 import learnings.model.Seance;
 import learnings.model.Travail;
+import learnings.model.Utilisateur;
 
 public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 
@@ -88,4 +89,43 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 		return listeTravaux;
 	}
 
+	@Override
+	public List<Travail> listerTravauxParSeance(Long idSeance) {
+		List<Travail> listeTravaux = new ArrayList<Travail>();
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM travail t  WHERE t.seance_id = ?");
+			stmt.setLong(1, idSeance);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()) {
+				listeTravaux.add(new Travail(results.getLong("id"), new Seance(idSeance, null, null, null), results.getBigDecimal("note"), results
+						.getTimestamp("dateRendu"), results.getString("chemin")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listeTravaux;
+	}
+
+	@Override
+	public List<Utilisateur> listerUtilisateurs(Long idTravail) {
+		List<Utilisateur> listeUtilisateurs = new ArrayList<Utilisateur>();
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection
+					.prepareStatement("SELECT * FROM utilisateur u JOIN travailutilisateur tu ON u.id = tu.idutilisateur  WHERE tu.idtravail = ?");
+			stmt.setLong(1, idTravail);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()) {
+				listeUtilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listeUtilisateurs;
+	}
 }

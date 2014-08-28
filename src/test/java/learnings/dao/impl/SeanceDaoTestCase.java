@@ -46,6 +46,23 @@ public class SeanceDaoTestCase {
 	}
 
 	@Test
+	public void testListerSeancesNotees() {
+		List<Seance> listeCours = seanceDao.listerSeancesNotees();
+
+		Assert.assertEquals(2, listeCours.size());
+
+		Assert.assertEquals(3L, listeCours.get(0).getId().longValue());
+		Assert.assertEquals("tp1", listeCours.get(0).getTitre());
+		Assert.assertEquals("tp de debuggage", listeCours.get(0).getDescription());
+		Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 29).getTime().getTime(), listeCours.get(0).getDate().getTime());
+		Assert.assertEquals(4L, listeCours.get(1).getId().longValue());
+		Assert.assertEquals("tp2", listeCours.get(1).getTitre());
+		Assert.assertEquals("tp de correction", listeCours.get(1).getDescription());
+		Assert.assertEquals(new GregorianCalendar(2014, Calendar.AUGUST, 29).getTime().getTime(), listeCours.get(1).getDate().getTime());
+
+	}
+
+	@Test
 	public void testListerTPNotesParDateRendu() {
 		Calendar cal = new GregorianCalendar(2014, Calendar.AUGUST, 29, 15, 27, 0);
 

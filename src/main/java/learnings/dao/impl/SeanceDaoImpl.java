@@ -36,6 +36,27 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 	}
 
 	@Override
+	public List<Seance> listerSeancesNotees() {
+		List<Seance> listeCours = new ArrayList<Seance>();
+		try {
+			Connection connection = getConnection();
+			Statement stmt = connection.createStatement();
+			ResultSet results = stmt
+					.executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance WHERE isnote is true ORDER BY date ASC");
+			Date dateLimiteRendu = null;
+			while (results.next()) {
+				listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
+						.getBoolean("isnote"), dateLimiteRendu, TypeSeance.valueOf(results.getString("type"))));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listeCours;
+	}
+
+	@Override
 	public List<Seance> listerSeancesWhereDateBefore(Date date) {
 		List<Seance> listeCours = new ArrayList<Seance>();
 		try {

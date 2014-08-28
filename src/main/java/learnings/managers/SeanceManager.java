@@ -48,6 +48,10 @@ public class SeanceManager {
 		return listeCours;
 	}
 
+	public List<Seance> listerSeancesNotees() {
+		return seanceDao.listerSeancesNotees();
+	}
+
 	public List<Seance> listerSeancesRenduesAccessibles() {
 		Date aujourdhui = new Date();
 		List<Seance> listeCours = seanceDao.listerSeancesWhereDateBefore(aujourdhui);
@@ -58,6 +62,9 @@ public class SeanceManager {
 	}
 
 	public List<TpAvecTravaux> listerTPRenduAccessible(Long idUtilisateur) {
+		if (idUtilisateur == null) {
+			throw new IllegalArgumentException("L'utlisateur ne peut pas être null.");
+		}
 		Date aujourdhui = new Date();
 		List<Seance> listeTps = seanceDao.listerTPNotesParDateRendu(aujourdhui);
 		List<TpAvecTravaux> listeTpsAvecTravaux = new ArrayList<TpAvecTravaux>();
@@ -68,6 +75,22 @@ public class SeanceManager {
 			listeTpsAvecTravaux.add(tpAvecTravaux);
 		}
 		return listeTpsAvecTravaux;
+	}
+
+	public Seance getSeanceAvecTravaux(Long idSeance) {
+		if (idSeance == null) {
+			throw new IllegalArgumentException("L'identifiant de la séance est incorrect.");
+		}
+		Seance seance = seanceDao.getSeance(idSeance);
+		if (seance == null) {
+			throw new IllegalArgumentException("L'identifiant de la séance est inconnu.");
+		}
+		seance.setTravauxRendus(travailDao.listerTravauxParSeance(idSeance));
+		for (Travail travailRendu : seance.getTravauxRendus()) {
+			travailRendu.setUtilisateurs(travailDao.listerUtilisateurs(travailRendu.getId()));
+		}
+
+		return seance;
 	}
 
 	public void rendreTP(Long idSeance, Long idUtilisateur1, Long idUtilisateur2, String nomFichier, InputStream fichier, Long tailleFichier)

@@ -3,6 +3,7 @@ package learnings.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class Travail implements Serializable {
 	private static final long serialVersionUID = 5229784210182658252L;
@@ -13,6 +14,7 @@ public class Travail implements Serializable {
 	private BigDecimal note;
 	private Date dateRendu;
 	private String chemin;
+	private List<Utilisateur> utilisateurs;
 
 	public Travail() {
 	}
@@ -68,6 +70,14 @@ public class Travail implements Serializable {
 
 	public void setChemin(String chemin) {
 		this.chemin = chemin;
+	}
+
+	public List<Utilisateur> getUtilisateurs() {
+		return utilisateurs;
+	}
+
+	public void setUtilisateurs(List<Utilisateur> utilisateurs) {
+		this.utilisateurs = utilisateurs;
 	}
 
 }
