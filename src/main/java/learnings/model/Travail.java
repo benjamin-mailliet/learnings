@@ -14,6 +14,18 @@ public class Travail implements Serializable {
 	private Date dateRendu;
 	private String chemin;
 
+	public Travail() {
+	}
+
+	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin) {
+		super();
+		this.id = id;
+		this.enseignement = enseignement;
+		this.note = note;
+		this.dateRendu = dateRendu;
+		this.chemin = chemin;
+	}
+
 	public Enseignement getEnseignement() {
 		return enseignement;
 	}
@@ -48,6 +60,10 @@ public class Travail implements Serializable {
 
 	public String getChemin() {
 		return chemin;
+	}
+
+	public String getNomFichier() {
+		return chemin.substring(chemin.lastIndexOf("/") + 1).substring(9);
 	}
 
 	public void setChemin(String chemin) {

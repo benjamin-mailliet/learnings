@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import learnings.exceptions.LearningsException;
 import learnings.managers.SeanceManager;
 import learnings.managers.UtilisateurManager;
-import learnings.model.Seance;
 import learnings.model.Utilisateur;
+import learnings.utils.TpAvecTravaux;
 
 @WebServlet(urlPatterns = { "/eleve/remisetp" })
 @MultipartConfig
@@ -28,7 +29,7 @@ public class RemiseTPServlet extends GenericServlet {
 		List<Utilisateur> binomes = UtilisateurManager.getInstance().listerAutresEleves(this.getUtilisateurCourant(request));
 		request.setAttribute("listeBinomes", binomes);
 
-		List<Seance> listeTp = SeanceManager.getInstance().listerTPRenduAccessible();
+		List<TpAvecTravaux> listeTp = SeanceManager.getInstance().listerTPRenduAccessible(this.getUtilisateurCourant(request).getId());
 		request.setAttribute("listeTp", listeTp);
 
 		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/remisetp.jsp");
@@ -41,12 +42,18 @@ public class RemiseTPServlet extends GenericServlet {
 		try {
 			Long tpId = Long.parseLong(request.getParameter("idtp"));
 			Long utilisateur1Id = this.getUtilisateurCourant(request).getId();
-			Long utilisateur2Id = Long.parseLong(request.getParameter("eleve2"));
+			Long utilisateur2Id = null;
+			if (request.getParameter("eleve2") != null && !"".equals(request.getParameter("eleve2"))) {
+				utilisateur2Id = Long.parseLong(request.getParameter("eleve2"));
+			}
 			Part fichier = request.getPart("fichiertp");
-			SeanceManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, fichier.getInputStream());
+			SeanceManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, fichier.getSubmittedFileName(), fichier.getInputStream(),
+					fichier.getSize());
 			this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
 		} catch (IllegalArgumentException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
+		} catch (LearningsException e) {
+			this.ajouterMessageErreur(request, "Problème technique à l'enregistrement du fichier.");
 		}
 
 		response.sendRedirect("remisetp");

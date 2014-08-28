@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import learnings.dao.TravailDao;
 import learnings.model.Seance;
@@ -25,7 +27,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			} else {
 				stmt.setBigDecimal(1, travail.getNote());
 			}
-			stmt.setDate(2, new java.sql.Date(travail.getDateRendu().getTime()));
+			stmt.setTimestamp(2, new java.sql.Timestamp(travail.getDateRendu().getTime()));
 			if (travail.getEnseignement() instanceof Seance) {
 				stmt.setLong(3, travail.getEnseignement().getId());
 				stmt.setNull(4, Types.INTEGER);
@@ -62,6 +64,28 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<Travail> listerTravauxUtilisateurParSeance(Long idSeance, Long idUtilisateur) {
+		List<Travail> listeTravaux = new ArrayList<Travail>();
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection
+					.prepareStatement("SELECT t.* FROM travail t JOIN travailutilisateur tu ON t.id = tu.idtravail WHERE t.seance_id = ? AND tu.idutilisateur = ?");
+			stmt.setLong(1, idSeance);
+			stmt.setLong(2, idUtilisateur);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()) {
+				listeTravaux.add(new Travail(results.getLong("id"), new Seance(idSeance, null, null, null), results.getBigDecimal("note"), results
+						.getTimestamp("dateRendu"), results.getString("chemin")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listeTravaux;
 	}
 
 }
