@@ -19,7 +19,7 @@ import learnings.utils.TpAvecTravaux;
 
 @WebServlet(urlPatterns = { "/eleve/remisetp" })
 @MultipartConfig
-public class RemiseTPServlet extends GenericServlet {
+public class RemiseTPServlet extends GenericLearningsServlet {
 
 	private static final long serialVersionUID = -5862878402579733845L;
 

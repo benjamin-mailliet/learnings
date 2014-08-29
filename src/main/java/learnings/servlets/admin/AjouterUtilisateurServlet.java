@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.UtilisateurManager;
-import learnings.servlets.GenericServlet;
+import learnings.servlets.GenericLearningsServlet;
 
 @WebServlet("/admin/ajouterutilisateur")
-public class AjouterUtilisateurServlet extends GenericServlet {
+public class AjouterUtilisateurServlet extends GenericLearningsServlet {
 
 	private static final long serialVersionUID = 8988657856940495904L;
 

@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
-import learnings.servlets.GenericServlet;
+import learnings.servlets.GenericLearningsServlet;
 
 @WebServlet(urlPatterns = { "/admin/", "/admin/utilisateur" })
-public class GestionUtilisateurServlet extends GenericServlet {
+public class GestionUtilisateurServlet extends GenericLearningsServlet {
 
 	private static final long serialVersionUID = -5832886661094788806L;
 

@@ -12,7 +12,7 @@ import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
 
 @WebServlet("/eleve/compte")
-public class CompteServlet extends GenericServlet {
+public class CompteServlet extends GenericLearningsServlet {
 
 	private static final long serialVersionUID = 8760587785170356120L;
 

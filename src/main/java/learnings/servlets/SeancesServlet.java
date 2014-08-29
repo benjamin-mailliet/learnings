@@ -13,7 +13,7 @@ import learnings.managers.SeanceManager;
 import learnings.model.Seance;
 
 @WebServlet(urlPatterns = { "/eleve/", "/eleve/seances" })
-public class SeancesServlet extends GenericServlet {
+public class SeancesServlet extends GenericLearningsServlet {
 
 	private static final long serialVersionUID = -5862878402579733845L;
 

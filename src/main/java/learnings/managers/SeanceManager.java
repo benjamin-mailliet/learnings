@@ -19,6 +19,7 @@ import learnings.exceptions.LearningsException;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
+import learnings.utils.FichierComplet;
 import learnings.utils.TpAvecTravaux;
 
 public class SeanceManager {
@@ -125,6 +126,14 @@ public class SeanceManager {
 				travailDao.ajouterUtilisateur(travail.getId(), utilisateur2.getId());
 			}
 		}
+	}
+
+	public FichierComplet getTravail(Long idTravail) throws LearningsException {
+		Travail travail = travailDao.getTravail(idTravail);
+		FichierComplet fichier = new FichierComplet();
+		fichier.setNom(travail.getNomFichier());
+		fichier.setDonnees(fichierManager.getFichier(travail.getChemin()));
+		return fichier;
 	}
 
 	private String genererCheminTravail(Long idSeance, String nomFichier) {

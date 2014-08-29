@@ -128,4 +128,24 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 		}
 		return listeUtilisateurs;
 	}
+
+	@Override
+	public Travail getTravail(Long idTravail) {
+		Travail travail = null;
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM travail t  WHERE t.id = ?");
+			stmt.setLong(1, idTravail);
+			ResultSet results = stmt.executeQuery();
+			if (results.next()) {
+				travail = new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
+						results.getTimestamp("dateRendu"), results.getString("chemin"));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return travail;
+	}
 }

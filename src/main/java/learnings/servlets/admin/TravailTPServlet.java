@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.SeanceManager;
 import learnings.model.Seance;
-import learnings.servlets.GenericServlet;
+import learnings.servlets.GenericLearningsServlet;
 
 @WebServlet("/admin/travailtp")
-public class TravailTPServlet extends GenericServlet {
+public class TravailTPServlet extends GenericLearningsServlet {
 
 	private static final long serialVersionUID = 9181054821006337181L;
 

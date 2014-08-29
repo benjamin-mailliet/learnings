@@ -8,7 +8,7 @@ public interface FichierManager {
 
 	public void ajouterFichier(String path, InputStream fichier) throws LearningsException;
 
-	public InputStream getFichier(String path);
+	public InputStream getFichier(String path) throws LearningsException;
 
 	public void supprimerFichier(String path);
 }

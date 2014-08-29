@@ -14,6 +14,7 @@ import learnings.dao.TravailDao;
 import learnings.model.ProjetTransversal;
 import learnings.model.Seance;
 import learnings.model.Travail;
+import learnings.model.Utilisateur;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,9 +36,14 @@ public class TravailDaoTestCase {
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(1,'eleve1@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(2,'eleve2@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
 		stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`,`datelimiterendu`,`isnote`) VALUES(1,'tp1','tp de debuggage','2014-07-29','TP','2014-07-29 18:00:00',true)");
+		stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`,`datelimiterendu`,`isnote`) VALUES(2,'tp2','tp de debuggage','2014-07-30','TP','2014-09-29 18:00:00',true)");
 		stmt.executeUpdate("INSERT INTO `learnings_test`.`projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(1,'projet','Projet individuel','2014-11-15','2015-01-15')");
 		stmt.executeUpdate("INSERT INTO travail(id, dateRendu, seance_id, chemin) VALUES(1,'2014-08-27 17:27', 1, '/chemin/fichier.zip')");
+		stmt.executeUpdate("INSERT INTO travail(id, dateRendu, seance_id, chemin) VALUES(2,'2014-08-27 17:28', 1, '/chemin/fichier2.zip')");
+		stmt.executeUpdate("INSERT INTO travail(id, dateRendu, seance_id, chemin) VALUES(3,'2014-08-27 17:29', 2, '/chemin/fichier3.zip')");
 		stmt.executeUpdate("INSERT INTO travailutilisateur(idtravail, idutilisateur) VALUES(1, 1)");
+		stmt.executeUpdate("INSERT INTO travailutilisateur(idtravail, idutilisateur) VALUES(2, 1)");
+		stmt.executeUpdate("INSERT INTO travailutilisateur(idtravail, idutilisateur) VALUES(2, 2)");
 		stmt.close();
 		connection.close();
 	}
@@ -100,15 +106,15 @@ public class TravailDaoTestCase {
 
 	@Test
 	public void testListerTravauxUtilisateurParSeance() {
-		List<Travail> travaux = travailDao.listerTravauxUtilisateurParSeance(1L, 1L);
+		List<Travail> travaux = travailDao.listerTravauxUtilisateurParSeance(1L, 2L);
 
 		Assert.assertEquals(1, travaux.size());
-		Assert.assertEquals(1L, travaux.get(0).getId().longValue());
+		Assert.assertEquals(2L, travaux.get(0).getId().longValue());
 	}
 
 	@Test
 	public void testListerTravauxUtilisateurParSeanceAucunResultat() {
-		List<Travail> travaux = travailDao.listerTravauxUtilisateurParSeance(1L, 2L);
+		List<Travail> travaux = travailDao.listerTravauxUtilisateurParSeance(2L, 2L);
 
 		Assert.assertEquals(0, travaux.size());
 	}
@@ -128,6 +134,40 @@ public class TravailDaoTestCase {
 		}
 		stmt.close();
 		connection.close();
+	}
+
+	@Test
+	public void testListerTravauxParSeance() {
+		List<Travail> travaux = travailDao.listerTravauxParSeance(1L);
+
+		Assert.assertEquals(2, travaux.size());
+		Assert.assertEquals(1L, travaux.get(0).getId().longValue());
+		Assert.assertEquals(2L, travaux.get(1).getId().longValue());
+	}
+
+	@Test
+	public void testListerUtilisateurs() {
+		List<Utilisateur> utilisateurs = travailDao.listerUtilisateurs(2L);
+
+		Assert.assertEquals(2, utilisateurs.size());
+		Assert.assertEquals(1L, utilisateurs.get(0).getId().longValue());
+		Assert.assertEquals(2L, utilisateurs.get(1).getId().longValue());
+	}
+
+	@Test
+	public void testGetTravail() {
+		Travail travail = travailDao.getTravail(2L);
+
+		Assert.assertNotNull(travail);
+		Assert.assertEquals(2L, travail.getId().longValue());
+		Assert.assertEquals("/chemin/fichier2.zip", travail.getChemin());
+	}
+
+	@Test
+	public void testGetTravailNull() {
+		Travail travail = travailDao.getTravail(-1L);
+
+		Assert.assertNull(travail);
 	}
 
 }

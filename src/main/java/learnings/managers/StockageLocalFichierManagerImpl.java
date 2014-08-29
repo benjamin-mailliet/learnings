@@ -1,6 +1,7 @@
 package learnings.managers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,8 +47,18 @@ public class StockageLocalFichierManagerImpl implements FichierManager {
 	}
 
 	@Override
-	public InputStream getFichier(String path) {
-		throw new UnsupportedOperationException("Pas implémenté");
+	public InputStream getFichier(String path) throws LearningsException {
+		try {
+			File fichier = new File(repertoirePrincipal + path);
+			if (fichier.exists()) {
+				return new FileInputStream(fichier);
+			} else {
+				throw new LearningsException("Le fichier demandé n'existe pas.");
+			}
+
+		} catch (IOException e) {
+			throw new LearningsException("Problème avec la création d'un fichier.", e);
+		}
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import learnings.context.MessageContainer;
 import learnings.context.MessageContainer.Niveau;
 import learnings.model.Utilisateur;
 
-public abstract class GenericServlet extends HttpServlet {
+public abstract class GenericLearningsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 8250982756065318974L;
 

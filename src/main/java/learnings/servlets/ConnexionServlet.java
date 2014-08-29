@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import learnings.managers.UtilisateurManager;
 
 @WebServlet("/connexion")
-public class ConnexionServlet extends GenericServlet {
+public class ConnexionServlet extends GenericLearningsServlet {
 	private static final long serialVersionUID = 3038302649713866775L;
 
 	@Override
