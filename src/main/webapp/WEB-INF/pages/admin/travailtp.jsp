@@ -16,7 +16,9 @@
 
 	<div class="container">
 		<c:import url="../../includes/messages.jsp" />
-		<h2>Travaux rendus</h2>
+		<header class="page-header">
+			<h1>Travaux rendus</h1>
+		</header>
 		<div class="row">
 			<div class="col-md-4 col-md-offset-4">
 				<form method="get" class="form-inline text-center well">
@@ -24,7 +26,7 @@
 						<label class="sr-only" for="idSeance">Sélectionner une séance :</label>
 						<select class="form-control" id="idSeance" name="idSeance">
 							<c:forEach var="seance" items="${seances}">
-								<option value="${seance.id}">${seance.titre}</option>
+								<option value="${seance.id}" ${seance.id == seanceSelectionnee.id ? 'selected' : ''}>${seance.titre}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -33,29 +35,35 @@
 			</div>
 		</div>
 		<c:if test="${seanceSelectionnee != null}">
-			<table class="table table-bordered">
-				<tr>
-					<th>Fichier</th>
-					<th>Élèves</th>
-				</tr>
-				<c:forEach var="travail" items="${seanceSelectionnee.travauxRendus}">
+			<c:if test="${fn:length(seanceSelectionnee.travauxRendus) > 0}">
+				<p>Travaux rendu pour la séance « ${seanceSelectionnee.titre} » :</p>
+				<table class="table table-bordered">
 					<tr>
-						<td>
-							<p>
-								<a href="telechargerTravail?id=${travail.id}">${travail.nomFichier}</a><br>
-								<small>Rendu à <fmt:formatDate value="${travail.dateRendu}" pattern="HH:mm"/> le <fmt:formatDate value="${travail.dateRendu}" pattern="dd/MM/yyyy"/></small>
-							</p>
-						</td>
-						<td>
-							<ul>
-								<c:forEach var="utilisateur" items="${travail.utilisateurs}">
-									<li>${utilisateur.email}</li>
-								</c:forEach>
-							</ul>
-						</td>
+						<th>Fichier</th>
+						<th>Élèves</th>
 					</tr>
-				</c:forEach>
-			</table>
+					<c:forEach var="travail" items="${seanceSelectionnee.travauxRendus}">
+						<tr>
+							<td>
+								<p>
+									<a href="telechargerTravail?id=${travail.id}">${travail.nomFichier}</a><br>
+									<small>Rendu à <fmt:formatDate value="${travail.dateRendu}" pattern="HH:mm"/> le <fmt:formatDate value="${travail.dateRendu}" pattern="dd/MM/yyyy"/></small>
+								</p>
+							</td>
+							<td>
+								<ul>
+									<c:forEach var="utilisateur" items="${travail.utilisateurs}">
+										<li>${utilisateur.email}</li>
+									</c:forEach>
+								</ul>
+							</td>
+						</tr>
+					</c:forEach>
+				</table>
+			</c:if>
+			<c:if test="${fn:length(seanceSelectionnee.travauxRendus) == 0}">
+				<p>Aucun travail n'a encore été rendu pour la séance « ${seanceSelectionnee.titre} ».
+			</c:if>
 		</c:if>
 	</div>
 </body>
