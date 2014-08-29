@@ -45,11 +45,21 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 			Long utilisateur2Id = null;
 			if (request.getParameter("eleve2") != null && !"".equals(request.getParameter("eleve2"))) {
 				utilisateur2Id = Long.parseLong(request.getParameter("eleve2"));
+				// Si pas de binôme, utilisateur2Id = 0
+				if (utilisateur2Id == 0L) {
+					utilisateur2Id = null;
+				}
+				Part fichier = request.getPart("fichiertp");
+				if (fichier.getSize() == 0L) {
+					this.ajouterMessageErreur(request, "Veuillez ajouter un fichier.");
+				} else {
+					SeanceManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, fichier.getSubmittedFileName(), fichier.getInputStream(),
+							fichier.getSize());
+					this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
+				}
+			} else {
+				this.ajouterMessageErreur(request, "Veuillez sélectionner un binôme.");
 			}
-			Part fichier = request.getPart("fichiertp");
-			SeanceManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, fichier.getSubmittedFileName(), fichier.getInputStream(),
-					fichier.getSize());
-			this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
 		} catch (IllegalArgumentException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
 		} catch (LearningsException e) {

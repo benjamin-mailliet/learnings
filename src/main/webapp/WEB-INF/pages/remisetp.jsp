@@ -45,6 +45,7 @@
 									<div class="col-xs-4">
 										<select class="form-control small-input" id="eleve2" name="eleve2">
 											<option value="" disabled selected>Choisir son binôme</option>
+											<option value="0">Pas de binôme</option>
 											<c:forEach var="binome" items="${listeBinomes}">
 												<option value="${binome.id}">${binome.email}</option>
 											</c:forEach>

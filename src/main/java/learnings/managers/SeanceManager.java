@@ -148,12 +148,15 @@ public class SeanceManager {
 
 	private Utilisateur verifierUtilisateurAvantRendu(Long idUtilisateur, boolean obligatoire) {
 		if (obligatoire && idUtilisateur == null) {
-			throw new IllegalArgumentException("Un utilisateur obligatoire est null");
+			throw new IllegalArgumentException("Un utilisateur obligatoire n'est pas renseigné.");
 		}
 		if (idUtilisateur != null) {
 			Utilisateur utilisateur = utilisateurDao.getUtilisateur(idUtilisateur);
-			if (utilisateur == null || utilisateur.isAdmin()) {
-				throw new IllegalArgumentException("Un utilisateur est incorrect");
+			if (utilisateur == null) {
+				throw new IllegalArgumentException("Un utilisateur est inconnu.");
+			}
+			if (utilisateur.isAdmin()) {
+				throw new IllegalArgumentException("Un administrateur ne peut pas rendre de TP.");
 			}
 			return utilisateur;
 		}
