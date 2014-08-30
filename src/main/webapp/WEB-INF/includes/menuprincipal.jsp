@@ -7,14 +7,15 @@
 			</div>
 			<ul class="nav navbar-nav">
 				<li class="${param.pageSelectionnee == 'seances' ? 'active' : ''}"><a href="seances">Séances</a></li>
+				<li class="${param.pageSelectionnee == 'liensutiles' ? 'active' : ''}"><a href="liensutiles">Liens utiles</a></li>
 				<li class="${param.pageSelectionnee == 'remisetp' ? 'active' : ''}"><a href="remisetp">Rendre un TP</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right ">
 				<c:if test="${sessionScope.utilisateur.admin}">
 					<li><a href="../admin/">Administration</a></li>
 				</c:if>
-				<li class="dropdown">
-          			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></a>
+				<li class="dropdown active">
+          			<a href="#" class="dropdown-toggle" data-toggle="dropdown">${sessionScope.utilisateur.email} <span class="caret"></span></a>
 		          	<ul class="dropdown-menu" role="menu">
 		            	<li><a href="compte">Mon compte</a></li>
 		            	<li class="divider"></li>

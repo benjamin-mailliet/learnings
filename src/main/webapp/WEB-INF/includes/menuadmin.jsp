@@ -10,8 +10,8 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="../eleve/">Site principal</a></li>
-				<li class="dropdown">
-          			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></a>
+				<li class="dropdown active">
+          			<a href="#" class="dropdown-toggle" data-toggle="dropdown">${sessionScope.utilisateur.email} <span class="caret"></span></a>
 		          	<ul class="dropdown-menu" role="menu">
 		            	<li><a href="../eleve/compte">Mon compte</a></li>
 		            	<li class="divider"></li>
