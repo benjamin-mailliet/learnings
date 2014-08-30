@@ -11,7 +11,7 @@
 					</ul>
 					</c:if>
 					<c:if test="${fn:length(messagesErreur) == 1}">
-						<p>${messagesErreur.get(0)}</p>
+						<p>${messagesErreur[0]}</p>
 					</c:if>
 				</div>
 			</c:if>
@@ -25,7 +25,7 @@
 					</ul>
 					</c:if>
 					<c:if test="${fn:length(messagesWarn) == 1}">
-						<p>${messagesWarn.get(0)}</p>
+						<p>${messagesWarn[0]}</p>
 					</c:if>
 				</div>
 			</c:if>
@@ -39,7 +39,7 @@
 					</ul>
 					</c:if>
 					<c:if test="${fn:length(messagesInfo) == 1}">
-						<p>${messagesInfo.get(0)}</p>
+						<p>${messagesInfo[0]}</p>
 					</c:if>
 				</div>
 			</c:if>
@@ -53,7 +53,7 @@
 					</ul>
 					</c:if>
 					<c:if test="${fn:length(messagesSucces) == 1}">
-						<p>${messagesSucces.get(0)}</p>
+						<p>${messagesSucces[0]}</p>
 					</c:if>
 				</div>
 			</c:if>
