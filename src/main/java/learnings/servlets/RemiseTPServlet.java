@@ -53,8 +53,8 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 				if (fichier.getSize() == 0L) {
 					this.ajouterMessageErreur(request, "Veuillez ajouter un fichier.");
 				} else {
-					SeanceManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, fichier.getSubmittedFileName(), fichier.getInputStream(),
-							fichier.getSize());
+					String nomFichier = this.getNomDuFichier(fichier);
+					SeanceManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, nomFichier, fichier.getInputStream(), fichier.getSize());
 					this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
 				}
 			} else {
@@ -67,6 +67,16 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 		}
 
 		response.sendRedirect("remisetp");
+	}
+
+	private String getNomDuFichier(Part fichier) {
+		String contentDisposition = fichier.getHeader("content-disposition");
+		for (String headerPropertie : contentDisposition.split(";")) {
+			if (headerPropertie.trim().startsWith("filename=")) {
+				return headerPropertie.substring(headerPropertie.indexOf("\"") + 1, headerPropertie.lastIndexOf("\""));
+			}
+		}
+		return null;
 	}
 
 }
