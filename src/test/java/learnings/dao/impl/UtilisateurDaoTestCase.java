@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
 
-import learnings.dao.DataSourceProvider;
 import learnings.dao.UtilisateurDao;
 import learnings.model.Utilisateur;
 

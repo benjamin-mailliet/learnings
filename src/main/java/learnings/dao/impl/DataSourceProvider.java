@@ -1,4 +1,4 @@
-package learnings.dao;
+package learnings.dao.impl;
 
 import java.io.IOException;
 import java.io.InputStream;

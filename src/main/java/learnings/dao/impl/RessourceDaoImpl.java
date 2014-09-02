@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import learnings.dao.DataSourceProvider;
 import learnings.dao.RessourceDao;
 import learnings.model.Ressource;
 import learnings.model.Seance;

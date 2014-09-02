@@ -1,4 +1,4 @@
-package learnings.servlets.admin;
+package learnings.web.servlets.admin;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
-import learnings.servlets.GenericLearningsServlet;
+import learnings.web.servlets.GenericLearningsServlet;
 
 @WebServlet(urlPatterns = { "/admin/", "/admin/utilisateur" })
 public class GestionUtilisateurServlet extends GenericLearningsServlet {

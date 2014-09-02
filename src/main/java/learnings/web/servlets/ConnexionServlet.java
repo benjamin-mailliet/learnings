@@ -1,4 +1,4 @@
-package learnings.servlets;
+package learnings.web.servlets;
 
 import java.io.IOException;
 

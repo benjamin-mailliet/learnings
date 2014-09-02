@@ -5,7 +5,6 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 
-import learnings.dao.DataSourceProvider;
 import learnings.dao.RessourceDao;
 import learnings.model.Ressource;
 import learnings.model.Seance;

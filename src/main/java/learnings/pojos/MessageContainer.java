@@ -1,4 +1,4 @@
-package learnings.context;
+package learnings.pojos;
 
 import java.io.Serializable;
 import java.util.ArrayList;

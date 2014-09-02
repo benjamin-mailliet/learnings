@@ -1,4 +1,4 @@
-package learnings.filters;
+package learnings.web.filters;
 
 import java.io.IOException;
 
@@ -10,8 +10,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import learnings.context.MessageContainer;
-import learnings.context.MessageContainer.Niveau;
+import learnings.pojos.MessageContainer;
+import learnings.pojos.MessageContainer.Niveau;
 
 public class MessageFilter implements Filter {
 

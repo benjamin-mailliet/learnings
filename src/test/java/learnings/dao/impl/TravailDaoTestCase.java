@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import learnings.dao.DataSourceProvider;
 import learnings.dao.TravailDao;
 import learnings.model.ProjetTransversal;
 import learnings.model.Seance;

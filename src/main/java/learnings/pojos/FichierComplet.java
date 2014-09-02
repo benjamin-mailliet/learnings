@@ -1,4 +1,4 @@
-package learnings.utils;
+package learnings.pojos;
 
 import java.io.InputStream;
 

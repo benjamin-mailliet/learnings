@@ -1,4 +1,4 @@
-package learnings.servlets.admin;
+package learnings.web.servlets.admin;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import learnings.exceptions.LearningsException;
 import learnings.managers.SeanceManager;
-import learnings.servlets.GenericLearningsServlet;
-import learnings.utils.FichierComplet;
+import learnings.pojos.FichierComplet;
+import learnings.web.servlets.GenericLearningsServlet;
 
 @WebServlet("/admin/telechargerTravail")
 public class TelechargerTravail extends GenericLearningsServlet {

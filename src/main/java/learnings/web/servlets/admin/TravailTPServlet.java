@@ -1,4 +1,4 @@
-package learnings.servlets.admin;
+package learnings.web.servlets.admin;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.SeanceManager;
 import learnings.model.Seance;
-import learnings.servlets.GenericLearningsServlet;
+import learnings.web.servlets.GenericLearningsServlet;
 
 @WebServlet("/admin/travailtp")
 public class TravailTPServlet extends GenericLearningsServlet {

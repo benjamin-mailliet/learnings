@@ -1,11 +1,11 @@
-package learnings.servlets;
+package learnings.web.servlets;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
-import learnings.context.MessageContainer;
-import learnings.context.MessageContainer.Niveau;
 import learnings.model.Utilisateur;
+import learnings.pojos.MessageContainer;
+import learnings.pojos.MessageContainer.Niveau;
 
 public abstract class GenericLearningsServlet extends HttpServlet {
 

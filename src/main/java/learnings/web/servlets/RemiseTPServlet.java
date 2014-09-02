@@ -1,4 +1,4 @@
-package learnings.servlets;
+package learnings.web.servlets;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +15,7 @@ import learnings.exceptions.LearningsException;
 import learnings.managers.SeanceManager;
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
-import learnings.utils.TpAvecTravail;
+import learnings.pojos.TpAvecTravail;
 
 @WebServlet(urlPatterns = { "/eleve/remisetp" })
 @MultipartConfig

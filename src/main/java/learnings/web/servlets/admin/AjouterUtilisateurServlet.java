@@ -1,4 +1,4 @@
-package learnings.servlets.admin;
+package learnings.web.servlets.admin;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import learnings.managers.UtilisateurManager;
-import learnings.servlets.GenericLearningsServlet;
+import learnings.web.servlets.GenericLearningsServlet;
 
 @WebServlet("/admin/ajouterutilisateur")
 public class AjouterUtilisateurServlet extends GenericLearningsServlet {
