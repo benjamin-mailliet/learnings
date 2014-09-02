@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import learnings.dao.RessourceDao;
+import learnings.exceptions.LearningsSQLException;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 
@@ -27,7 +28,7 @@ public class RessourceDaoImpl implements RessourceDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return listeRessources;
 	}

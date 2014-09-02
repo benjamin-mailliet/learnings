@@ -165,6 +165,15 @@ public class TravailDaoTestCase {
 	}
 
 	@Test
+	public void testListerTravauxParUtilisateur() {
+		List<Travail> travaux = travailDao.listerTravauxParUtilisateur(1L);
+
+		Assert.assertEquals(2, travaux.size());
+		Assert.assertEquals(1L, travaux.get(0).getId().longValue());
+		Assert.assertEquals(3L, travaux.get(1).getId().longValue());
+	}
+
+	@Test
 	public void testListerUtilisateurs() {
 		List<Utilisateur> utilisateurs = travailDao.listerUtilisateurs(3L);
 

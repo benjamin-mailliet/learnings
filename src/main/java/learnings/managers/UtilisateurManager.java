@@ -2,16 +2,25 @@ package learnings.managers;
 
 import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.logging.Logger;
 
+import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
+import learnings.dao.impl.TravailDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
+import learnings.exceptions.LearningsException;
+import learnings.exceptions.LearningsSecuriteException;
+import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.utils.MotDePasseUtils;
 
 public class UtilisateurManager {
 	private static UtilisateurManager instance;
 
+	private static Logger LOGGER = Logger.getLogger(UtilisateurManager.class.getName());
+
 	private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
+	private TravailDao travailDao = new TravailDaoImpl();
 
 	public static UtilisateurManager getInstance() {
 		if (instance == null) {
@@ -24,11 +33,11 @@ public class UtilisateurManager {
 		return utilisateurDao.listerUtilisateurs();
 	}
 
-	public List<Utilisateur> listerAutresEleves(Utilisateur utilisateur) {
-		if (utilisateur == null || utilisateur.getId() == null) {
+	public List<Utilisateur> listerAutresEleves(Long idUtilisateur) {
+		if (idUtilisateur == null) {
 			throw new IllegalArgumentException("L'utilisateur est incorrect.");
 		}
-		return utilisateurDao.listerAutresEleves(utilisateur.getId());
+		return utilisateurDao.listerAutresEleves(idUtilisateur);
 	}
 
 	public Utilisateur getUtilisateur(String email) {
@@ -38,7 +47,7 @@ public class UtilisateurManager {
 		return utilisateurDao.getUtilisateur(email);
 	}
 
-	public boolean validerMotDePasse(String email, String motDePasseAVerifier) {
+	public boolean validerMotDePasse(String email, String motDePasseAVerifier) throws LearningsSecuriteException {
 		if (email == null || "".equals(email)) {
 			throw new IllegalArgumentException("L'identifiant doit être renseigné.");
 		}
@@ -52,39 +61,46 @@ public class UtilisateurManager {
 		try {
 			return MotDePasseUtils.validerMotDePasse(motDePasseAVerifier, motDePasseHashe);
 		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
+			throw new LearningsSecuriteException("Problème dans la vérification du mot de passe.", e);
 		}
-		return false;
 	}
 
 	public void supprimerUtilisateur(Long id) {
-		if (id == null || "".equals(id)) {
+		if (id == null) {
 			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas être null.");
 		}
+		List<Travail> travaux = travailDao.listerTravauxParUtilisateur(id);
+		if (travaux.size() > 0) {
+			throw new IllegalArgumentException("Impossible de supprimer un utilisateur avec des travaux rendus.");
+		}
 		utilisateurDao.supprimerUtilisateur(id);
+		LOGGER.info(String.format("Utilisateur|supprimer|id=%d", id));
 	}
 
 	public void enleverDroitsAdmin(Long id) {
-		if (id == null || "".equals(id)) {
+		if (id == null) {
 			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas être null.");
 		}
 		utilisateurDao.modifierRoleAdmin(id, false);
+		LOGGER.info(String.format("Utilisateur|enleverDroitsAdmin|id=%d", id));
 	}
 
 	public void donnerDroitsAdmin(Long id) {
-		if (id == null || "".equals(id)) {
+		if (id == null) {
 			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas être null.");
 		}
 		utilisateurDao.modifierRoleAdmin(id, true);
+		LOGGER.info(String.format("Utilisateur|donnerDroitsAdmin|id=%d", id));
 	}
 
 	/**
 	 * Réinitialise le mot de passe de l'utilisateur avec pour valeur son email
 	 * 
 	 * @param id
+	 * @throws LearningsException
 	 */
-	public void reinitialiserMotDePasse(Long id) {
-		if (id == null || "".equals(id)) {
+	public void reinitialiserMotDePasse(Long id) throws LearningsSecuriteException {
+		if (id == null) {
 			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas être null.");
 		}
 		Utilisateur utilisateur = utilisateurDao.getUtilisateur(id);
@@ -96,7 +112,9 @@ public class UtilisateurManager {
 			utilisateurDao.modifierMotDePasse(id, nouveauMotDePasse);
 		} catch (GeneralSecurityException e) {
 			e.printStackTrace();
+			throw new LearningsSecuriteException("Problème dans la génération du mot de passe.", e);
 		}
+		LOGGER.info(String.format("Utilisateur|reinitialiserMotDePasse|id=%d", id));
 	}
 
 	public Utilisateur ajouterUtilisateur(String email, boolean admin) {
@@ -114,10 +132,13 @@ public class UtilisateurManager {
 		} catch (GeneralSecurityException e) {
 			throw new RuntimeException("Problème technique.");
 		}
-		return utilisateurDao.ajouterUtilisateur(email, motDePasse, admin);
+		Utilisateur nouvelUtilisateur = utilisateurDao.ajouterUtilisateur(email, motDePasse, admin);
+
+		LOGGER.info(String.format("Utilisateur|reinitialiserMotDePasse|id=%d;email=%s", nouvelUtilisateur.getId(), email));
+		return nouvelUtilisateur;
 	}
 
-	public void modifierMotDePasse(Long id, String motDePasse, String confirmationMotDePasse) {
+	public void modifierMotDePasse(Long id, String motDePasse, String confirmationMotDePasse) throws LearningsSecuriteException {
 		if (motDePasse == null || "".equals(motDePasse) || confirmationMotDePasse == null || "".equals(confirmationMotDePasse)) {
 			throw new IllegalArgumentException("Les mots de passe doivent être renseignés.");
 		}
@@ -130,7 +151,8 @@ public class UtilisateurManager {
 			utilisateurDao.modifierMotDePasse(id, motDePasseHashe);
 		} catch (GeneralSecurityException e) {
 			e.printStackTrace();
+			throw new LearningsSecuriteException("Problème dans la génération du mot de passe.", e);
 		}
-
+		LOGGER.info(String.format("Utilisateur|modifierMotDePasse|id=%d", id));
 	}
 }

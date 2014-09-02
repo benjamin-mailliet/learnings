@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import learnings.exceptions.LearningsSecuriteException;
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
 import learnings.web.servlets.GenericLearningsServlet;
@@ -51,6 +52,8 @@ public class GestionUtilisateurServlet extends GenericLearningsServlet {
 		} catch (IllegalArgumentException e) {
 			response.sendError(400);
 			e.printStackTrace();
+		} catch (LearningsSecuriteException e) {
+			response.sendError(500);
 		}
 
 	}

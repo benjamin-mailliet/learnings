@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import learnings.exceptions.LearningsSecuriteException;
 import learnings.managers.UtilisateurManager;
 
 @WebServlet("/connexion")
@@ -36,6 +37,8 @@ public class ConnexionServlet extends GenericLearningsServlet {
 			}
 		} catch (IllegalArgumentException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
+		} catch (LearningsSecuriteException e) {
+			this.ajouterMessageErreur(request, "Problème à la vérification du mot de passe.");
 		}
 
 		response.sendRedirect("connexion");

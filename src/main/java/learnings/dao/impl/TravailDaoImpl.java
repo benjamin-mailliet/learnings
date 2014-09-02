@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import learnings.dao.TravailDao;
+import learnings.exceptions.LearningsSQLException;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
@@ -48,7 +49,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return travail;
 	}
@@ -65,7 +66,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 	}
 
@@ -80,7 +81,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 	}
 
@@ -101,7 +102,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return travail;
 	}
@@ -121,7 +122,28 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
+		}
+		return listeTravaux;
+	}
+
+	@Override
+	public List<Travail> listerTravauxParUtilisateur(Long idUtilisateur) {
+		List<Travail> listeTravaux = new ArrayList<Travail>();
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection
+					.prepareStatement("SELECT t.* FROM travail t JOIN travailutilisateur tu ON t.id = tu.idtravail WHERE tu.idutilisateur = ?");
+			stmt.setLong(1, idUtilisateur);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()) {
+				listeTravaux.add(new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
+						results.getTimestamp("dateRendu"), results.getString("chemin")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
 		}
 		return listeTravaux;
 	}
@@ -141,7 +163,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return listeUtilisateurs;
 	}
@@ -161,7 +183,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return travail;
 	}

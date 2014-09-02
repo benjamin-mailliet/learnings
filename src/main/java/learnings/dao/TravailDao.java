@@ -15,6 +15,8 @@ public interface TravailDao {
 
 	public List<Travail> listerTravauxParSeance(Long idSeance);
 
+	public List<Travail> listerTravauxParUtilisateur(Long idUtilisateur);
+
 	public List<Utilisateur> listerUtilisateurs(Long idTravail);
 
 	public Travail getTravail(Long idTravail);

@@ -11,6 +11,7 @@ import java.util.List;
 
 import learnings.dao.SeanceDao;
 import learnings.enums.TypeSeance;
+import learnings.exceptions.LearningsSQLException;
 import learnings.model.Seance;
 
 public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
@@ -30,7 +31,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return listeCours;
 	}
@@ -51,7 +52,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return listeCours;
 	}
@@ -72,7 +73,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return listeCours;
 	}
@@ -94,7 +95,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return tpNotes;
 	}
@@ -114,7 +115,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return seance;
 	}
