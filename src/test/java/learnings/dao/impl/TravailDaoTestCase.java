@@ -42,8 +42,8 @@ public class TravailDaoTestCase {
 		stmt.executeUpdate("INSERT INTO travail(id, dateRendu, seance_id, chemin) VALUES(2,'2014-08-27 17:28', 1, '/chemin/fichier2.zip')");
 		stmt.executeUpdate("INSERT INTO travail(id, dateRendu, seance_id, chemin) VALUES(3,'2014-08-27 17:29', 2, '/chemin/fichier3.zip')");
 		stmt.executeUpdate("INSERT INTO travailutilisateur(idtravail, idutilisateur) VALUES(1, 1)");
-		stmt.executeUpdate("INSERT INTO travailutilisateur(idtravail, idutilisateur) VALUES(2, 1)");
-		stmt.executeUpdate("INSERT INTO travailutilisateur(idtravail, idutilisateur) VALUES(2, 2)");
+		stmt.executeUpdate("INSERT INTO travailutilisateur(idtravail, idutilisateur) VALUES(3, 1)");
+		stmt.executeUpdate("INSERT INTO travailutilisateur(idtravail, idutilisateur) VALUES(3, 2)");
 		stmt.close();
 		connection.close();
 	}
@@ -105,18 +105,38 @@ public class TravailDaoTestCase {
 	}
 
 	@Test
-	public void testListerTravauxUtilisateurParSeance() {
-		List<Travail> travaux = travailDao.listerTravauxUtilisateurParSeance(1L, 2L);
+	public void testMettreAJourTravail() throws Exception {
+		travailDao.mettreAJourTravail(1L, new GregorianCalendar(2014, Calendar.SEPTEMBER, 1, 13, 36, 25).getTime(), "/nouveau/chemin/fichier.zip");
 
-		Assert.assertEquals(1, travaux.size());
-		Assert.assertEquals(2L, travaux.get(0).getId().longValue());
+		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
+		Statement stmt = connection.createStatement();
+		ResultSet results = stmt.executeQuery("SELECT * FROM travail WHERE id=1");
+		if (results.next()) {
+			Assert.assertEquals(1L, results.getLong("id"));
+			Assert.assertEquals("/nouveau/chemin/fichier.zip", results.getString("chemin"));
+			Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 1, 13, 36, 25).getTime(), results.getTimestamp("dateRendu"));
+			Assert.assertEquals(1L, results.getLong("seance_id"));
+			Assert.assertEquals(0L, results.getLong("projettransversal_id"));
+		} else {
+			Assert.fail();
+		}
+		stmt.close();
+		connection.close();
+	}
+
+	@Test
+	public void testListerTravauxUtilisateurParSeance() {
+		Travail travail = travailDao.getTravailUtilisateurParSeance(2L, 2L);
+
+		Assert.assertNotNull(travail);
+		Assert.assertEquals(3L, travail.getId().longValue());
 	}
 
 	@Test
 	public void testListerTravauxUtilisateurParSeanceAucunResultat() {
-		List<Travail> travaux = travailDao.listerTravauxUtilisateurParSeance(2L, 2L);
+		Travail travail = travailDao.getTravailUtilisateurParSeance(1L, 2L);
 
-		Assert.assertEquals(0, travaux.size());
+		Assert.assertNull(travail);
 	}
 
 	@Test
@@ -147,7 +167,7 @@ public class TravailDaoTestCase {
 
 	@Test
 	public void testListerUtilisateurs() {
-		List<Utilisateur> utilisateurs = travailDao.listerUtilisateurs(2L);
+		List<Utilisateur> utilisateurs = travailDao.listerUtilisateurs(3L);
 
 		Assert.assertEquals(2, utilisateurs.size());
 		Assert.assertEquals(1L, utilisateurs.get(0).getId().longValue());

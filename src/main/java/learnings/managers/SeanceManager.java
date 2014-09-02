@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
@@ -20,12 +21,14 @@ import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.utils.FichierComplet;
-import learnings.utils.TpAvecTravaux;
+import learnings.utils.TpAvecTravail;
 
 public class SeanceManager {
 	private static SeanceManager instance;
 
 	private static int NOMBRE_OCTETS_IN_MO = 1024 * 1024;
+
+	private static Logger LOGGER = Logger.getLogger(SeanceManager.class.getName());
 
 	private SeanceDao seanceDao = new SeanceDaoImpl();
 	private RessourceDao ressourceDao = new RessourceDaoImpl();
@@ -62,17 +65,17 @@ public class SeanceManager {
 		return listeCours;
 	}
 
-	public List<TpAvecTravaux> listerTPRenduAccessible(Long idUtilisateur) {
+	public List<TpAvecTravail> listerTPRenduAccessible(Long idUtilisateur) {
 		if (idUtilisateur == null) {
 			throw new IllegalArgumentException("L'utlisateur ne peut pas être null.");
 		}
 		Date aujourdhui = new Date();
 		List<Seance> listeTps = seanceDao.listerTPNotesParDateRendu(aujourdhui);
-		List<TpAvecTravaux> listeTpsAvecTravaux = new ArrayList<TpAvecTravaux>();
+		List<TpAvecTravail> listeTpsAvecTravaux = new ArrayList<TpAvecTravail>();
 		for (Seance tp : listeTps) {
-			TpAvecTravaux tpAvecTravaux = new TpAvecTravaux();
+			TpAvecTravail tpAvecTravaux = new TpAvecTravail();
 			tpAvecTravaux.setTp(tp);
-			tpAvecTravaux.setTravaux(travailDao.listerTravauxUtilisateurParSeance(tp.getId(), idUtilisateur));
+			tpAvecTravaux.setTravail(travailDao.getTravailUtilisateurParSeance(tp.getId(), idUtilisateur));
 			listeTpsAvecTravaux.add(tpAvecTravaux);
 		}
 		return listeTpsAvecTravaux;
@@ -102,30 +105,72 @@ public class SeanceManager {
 		if (idUtilisateur1 == idUtilisateur2) {
 			throw new IllegalArgumentException("Les deux utilisateurs doivent être différents.");
 		}
+		Travail travailExistant = this.verifierExistanceTravail(idSeance, idUtilisateur1, idUtilisateur2);
 		if (tailleFichier / NOMBRE_OCTETS_IN_MO > 10) {
 			throw new IllegalArgumentException("Le fichier est trop gros.");
 		}
 
 		String chemin = genererCheminTravail(idSeance, nomFichier);
-		try {
-			fichierManager.ajouterFichier(chemin, fichier);
-		} catch (LearningsException e) {
-			throw new LearningsException("Problème à l'enregistrement fichier.", e);
-		}
 
 		Travail travail = new Travail();
 		travail.setEnseignement(tp);
 		travail.setDateRendu(new Date());
 		travail.setChemin(chemin);
 
-		travailDao.ajouterTravail(travail);
-
-		if (travail.getId() != null) {
-			travailDao.ajouterUtilisateur(travail.getId(), utilisateur1.getId());
-			if (utilisateur2 != null) {
-				travailDao.ajouterUtilisateur(travail.getId(), utilisateur2.getId());
+		if (travailExistant == null) {
+			try {
+				fichierManager.ajouterFichier(travail.getChemin(), fichier);
+			} catch (LearningsException e) {
+				throw new LearningsException("Problème à l'enregistrement du travail.", e);
 			}
+
+			travailDao.ajouterTravail(travail);
+
+			if (travail.getId() != null) {
+				travailDao.ajouterUtilisateur(travail.getId(), utilisateur1.getId());
+				if (utilisateur2 != null) {
+					travailDao.ajouterUtilisateur(travail.getId(), utilisateur2.getId());
+				}
+			}
+		} else {
+			try {
+				fichierManager.supprimerFichier(travailExistant.getChemin());
+				fichierManager.ajouterFichier(travail.getChemin(), fichier);
+			} catch (LearningsException e) {
+				e.printStackTrace();
+				throw new LearningsException("Problème à l'enregistrement du travail.", e);
+			}
+
+			travailDao.mettreAJourTravail(travailExistant.getId(), new Date(), travail.getChemin());
 		}
+
+		LOGGER.info(String.format("rendreTP|utilisateur1=%d|utilisateur2=%d|fichier=%d;%s", idUtilisateur1, idUtilisateur2, travail.getId(), nomFichier));
+	}
+
+	private Travail verifierExistanceTravail(Long idSeance, Long idUtilisateur1, Long idUtilisateur2) throws LearningsException {
+		Travail travailUtilisateur1 = travailDao.getTravailUtilisateurParSeance(idSeance, idUtilisateur1);
+		// Pas de binôme
+		if (idUtilisateur2 == null) {
+			if (travailUtilisateur1 == null) {
+				return null;
+			}
+			if (travailDao.listerUtilisateurs(travailUtilisateur1.getId()).size() == 1) {
+				return travailUtilisateur1;
+			}
+			throw new LearningsException("L'utilisateur a déjà rendu un travail avec un binôme différent.");
+		}
+		// Avec un binôme
+		Travail travailUtilisateur2 = travailDao.getTravailUtilisateurParSeance(idSeance, idUtilisateur2);
+		if (travailUtilisateur1 == null || travailUtilisateur2 == null) {
+			if (travailUtilisateur1 == null && travailUtilisateur2 == null) {
+				return null;
+			}
+			throw new LearningsException("Un des deux utilisateurs a déjà rendu un travail avec un binôme différent.");
+		}
+		if (travailUtilisateur1.getId().equals(travailUtilisateur2.getId())) {
+			return travailUtilisateur1;
+		}
+		throw new LearningsException("Les deux utilisateur ont déjà rendu un travail dans des binômes différents.");
 	}
 
 	public FichierComplet getTravail(Long idTravail) throws LearningsException {

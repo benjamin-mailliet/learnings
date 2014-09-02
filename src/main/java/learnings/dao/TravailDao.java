@@ -1,5 +1,6 @@
 package learnings.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import learnings.model.Travail;
@@ -10,11 +11,13 @@ public interface TravailDao {
 
 	public void ajouterUtilisateur(Long idTravail, Long idUtilisateur);
 
-	public List<Travail> listerTravauxUtilisateurParSeance(Long idSeance, Long idUtilisateur);
+	public Travail getTravailUtilisateurParSeance(Long idSeance, Long idUtilisateur);
 
 	public List<Travail> listerTravauxParSeance(Long idSeance);
 
 	public List<Utilisateur> listerUtilisateurs(Long idTravail);
 
 	public Travail getTravail(Long idTravail);
+
+	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin);
 }

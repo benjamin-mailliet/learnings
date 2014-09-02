@@ -62,8 +62,10 @@ public class StockageLocalFichierManagerImpl implements FichierManager {
 	}
 
 	@Override
-	public void supprimerFichier(String path) {
-		throw new UnsupportedOperationException("Pas implémenté");
+	public void supprimerFichier(String path) throws LearningsException {
+		File fichier = new File(repertoirePrincipal + path);
+		if (!fichier.exists() || !fichier.delete()) {
+			throw new LearningsException("Le fichier demandé n'a pas pu être supprimé.");
+		}
 	}
-
 }

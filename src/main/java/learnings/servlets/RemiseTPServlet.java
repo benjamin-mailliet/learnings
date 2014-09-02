@@ -15,7 +15,7 @@ import learnings.exceptions.LearningsException;
 import learnings.managers.SeanceManager;
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
-import learnings.utils.TpAvecTravaux;
+import learnings.utils.TpAvecTravail;
 
 @WebServlet(urlPatterns = { "/eleve/remisetp" })
 @MultipartConfig
@@ -29,7 +29,7 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 		List<Utilisateur> binomes = UtilisateurManager.getInstance().listerAutresEleves(this.getUtilisateurCourant(request));
 		request.setAttribute("listeBinomes", binomes);
 
-		List<TpAvecTravaux> listeTp = SeanceManager.getInstance().listerTPRenduAccessible(this.getUtilisateurCourant(request).getId());
+		List<TpAvecTravail> listeTp = SeanceManager.getInstance().listerTPRenduAccessible(this.getUtilisateurCourant(request).getId());
 		request.setAttribute("listeTp", listeTp);
 
 		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/remisetp.jsp");
@@ -63,7 +63,7 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 		} catch (IllegalArgumentException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
 		} catch (LearningsException e) {
-			this.ajouterMessageErreur(request, "Problème technique à l'enregistrement du fichier.");
+			this.ajouterMessageErreur(request, e.getMessage());
 		}
 
 		response.sendRedirect("remisetp");

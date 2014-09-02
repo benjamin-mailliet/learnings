@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import learnings.dao.TravailDao;
@@ -53,6 +54,22 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 	}
 
 	@Override
+	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("UPDATE travail SET dateRendu = ?, chemin = ? WHERE id = ?");
+			stmt.setTimestamp(1, new java.sql.Timestamp(dateRendu.getTime()));
+			stmt.setString(2, chemin);
+			stmt.setLong(3, idTravail);
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	public void ajouterUtilisateur(Long idTravail, Long idUtilisateur) {
 		try {
 			Connection connection = getConnection();
@@ -68,8 +85,8 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 	}
 
 	@Override
-	public List<Travail> listerTravauxUtilisateurParSeance(Long idSeance, Long idUtilisateur) {
-		List<Travail> listeTravaux = new ArrayList<Travail>();
+	public Travail getTravailUtilisateurParSeance(Long idSeance, Long idUtilisateur) {
+		Travail travail = null;
 		try {
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection
@@ -77,16 +94,16 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.setLong(1, idSeance);
 			stmt.setLong(2, idUtilisateur);
 			ResultSet results = stmt.executeQuery();
-			while (results.next()) {
-				listeTravaux.add(new Travail(results.getLong("id"), new Seance(idSeance, null, null, null), results.getBigDecimal("note"), results
-						.getTimestamp("dateRendu"), results.getString("chemin")));
+			if (results.next()) {
+				travail = new Travail(results.getLong("id"), new Seance(idSeance, null, null, null), results.getBigDecimal("note"),
+						results.getTimestamp("dateRendu"), results.getString("chemin"));
 			}
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return listeTravaux;
+		return travail;
 	}
 
 	@Override

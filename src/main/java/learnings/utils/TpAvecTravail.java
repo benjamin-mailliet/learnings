@@ -1,15 +1,13 @@
 package learnings.utils;
 
-import java.util.List;
-
 import learnings.model.Seance;
 import learnings.model.Travail;
 
-public class TpAvecTravaux {
+public class TpAvecTravail {
 
 	private Seance tp;
 
-	private List<Travail> travaux;
+	private Travail travail;
 
 	public Seance getTp() {
 		return tp;
@@ -19,12 +17,12 @@ public class TpAvecTravaux {
 		this.tp = tp;
 	}
 
-	public List<Travail> getTravaux() {
-		return travaux;
+	public Travail getTravail() {
+		return travail;
 	}
 
-	public void setTravaux(List<Travail> travaux) {
-		this.travaux = travaux;
+	public void setTravail(Travail travail) {
+		this.travail = travail;
 	}
 
 }

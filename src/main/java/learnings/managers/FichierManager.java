@@ -10,5 +10,5 @@ public interface FichierManager {
 
 	public InputStream getFichier(String path) throws LearningsException;
 
-	public void supprimerFichier(String path);
+	public void supprimerFichier(String path) throws LearningsException;
 }

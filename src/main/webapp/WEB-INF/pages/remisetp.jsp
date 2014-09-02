@@ -22,14 +22,12 @@
 					</header>
 					<section class="panel-body">
 						<h4>Déjà rendu :</h4>
-						<c:if test="${fn:length(tpAvecTravaux.travaux) == 0}">
+						<c:if test="${tpAvecTravaux.travail == null}">
 							<p>Vous n'avez encore rien rendu pour ce TP.</p>
 						</c:if>
-						<c:if test="${fn:length(tpAvecTravaux.travaux) > 0}">
+						<c:if test="${tpAvecTravaux.travail != null}">
 							<ul>
-								<c:forEach var="travail" items="${tpAvecTravaux.travaux}">
-									<li>${travail.nomFichier} <small><em><fmt:formatDate value="${travail.dateRendu}" pattern="dd/MM/yyyy HH:mm"/></em></small></li>
-								</c:forEach>
+								<li>${tpAvecTravaux.travail.nomFichier} <small><em><fmt:formatDate value="${tpAvecTravaux.travail.dateRendu}" pattern="dd/MM/yyyy HH:mm"/></em></small></li>
 							</ul>
 						</c:if>
 						<h4>Envoyer un fichier :</h4>
