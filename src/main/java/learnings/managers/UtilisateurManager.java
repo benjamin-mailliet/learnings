@@ -12,7 +12,6 @@ import learnings.exceptions.LearningsException;
 import learnings.exceptions.LearningsSecuriteException;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
-import learnings.utils.MotDePasseUtils;
 
 public class UtilisateurManager {
 	private static UtilisateurManager instance;
@@ -21,6 +20,7 @@ public class UtilisateurManager {
 
 	private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 	private TravailDao travailDao = new TravailDaoImpl();
+	private MotDePasseManager motDePasseManager = new MotDePasseManager();
 
 	public static UtilisateurManager getInstance() {
 		if (instance == null) {
@@ -59,7 +59,7 @@ public class UtilisateurManager {
 			throw new IllegalArgumentException("L'identifiant n'est pas connu.");
 		}
 		try {
-			return MotDePasseUtils.validerMotDePasse(motDePasseAVerifier, motDePasseHashe);
+			return motDePasseManager.validerMotDePasse(motDePasseAVerifier, motDePasseHashe);
 		} catch (GeneralSecurityException e) {
 			throw new LearningsSecuriteException("Problème dans la vérification du mot de passe.", e);
 		}
@@ -101,14 +101,14 @@ public class UtilisateurManager {
 	 */
 	public void reinitialiserMotDePasse(Long id) throws LearningsSecuriteException {
 		if (id == null) {
-			throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas être null.");
+			throw new IllegalArgumentException("L'identifiant de l'utilisateur ne peut pas être null.");
 		}
 		Utilisateur utilisateur = utilisateurDao.getUtilisateur(id);
 		if (utilisateur == null) {
 			throw new IllegalArgumentException("L'utilisateur n'est pas connu.");
 		}
 		try {
-			String nouveauMotDePasse = MotDePasseUtils.genererMotDePasse(utilisateur.getEmail());
+			String nouveauMotDePasse = motDePasseManager.genererMotDePasse(utilisateur.getEmail());
 			utilisateurDao.modifierMotDePasse(id, nouveauMotDePasse);
 		} catch (GeneralSecurityException e) {
 			e.printStackTrace();
@@ -117,7 +117,7 @@ public class UtilisateurManager {
 		LOGGER.info(String.format("Utilisateur|reinitialiserMotDePasse|id=%d", id));
 	}
 
-	public Utilisateur ajouterUtilisateur(String email, boolean admin) {
+	public Utilisateur ajouterUtilisateur(String email, boolean admin) throws LearningsSecuriteException {
 		if (email == null || "".equals(email)) {
 			throw new IllegalArgumentException("L'identifiant doit être renseigné.");
 		}
@@ -128,9 +128,9 @@ public class UtilisateurManager {
 
 		String motDePasse = null;
 		try {
-			motDePasse = MotDePasseUtils.genererMotDePasse(email);
+			motDePasse = motDePasseManager.genererMotDePasse(email);
 		} catch (GeneralSecurityException e) {
-			throw new RuntimeException("Problème technique.");
+			throw new LearningsSecuriteException("Problème dans la génération du mot de passe.");
 		}
 		Utilisateur nouvelUtilisateur = utilisateurDao.ajouterUtilisateur(email, motDePasse, admin);
 
@@ -147,10 +147,9 @@ public class UtilisateurManager {
 		}
 
 		try {
-			String motDePasseHashe = MotDePasseUtils.genererMotDePasse(motDePasse);
+			String motDePasseHashe = motDePasseManager.genererMotDePasse(motDePasse);
 			utilisateurDao.modifierMotDePasse(id, motDePasseHashe);
 		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
 			throw new LearningsSecuriteException("Problème dans la génération du mot de passe.", e);
 		}
 		LOGGER.info(String.format("Utilisateur|modifierMotDePasse|id=%d", id));

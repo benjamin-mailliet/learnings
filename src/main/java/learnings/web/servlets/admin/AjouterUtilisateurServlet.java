@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import learnings.exceptions.LearningsSecuriteException;
 import learnings.managers.UtilisateurManager;
 import learnings.web.servlets.GenericLearningsServlet;
 
@@ -26,7 +27,7 @@ public class AjouterUtilisateurServlet extends GenericLearningsServlet {
 			view.forward(request, response);
 		} catch (IllegalArgumentException e) {
 			response.sendError(400);
-		} catch (RuntimeException e) {
+		} catch (LearningsSecuriteException e) {
 			response.sendError(500);
 		}
 	}
