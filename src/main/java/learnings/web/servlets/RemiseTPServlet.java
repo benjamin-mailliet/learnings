@@ -13,6 +13,7 @@ import javax.servlet.http.Part;
 
 import learnings.exceptions.LearningsException;
 import learnings.managers.SeanceManager;
+import learnings.managers.TravailManager;
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
 import learnings.pojos.TpAvecTravail;
@@ -54,7 +55,7 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 					this.ajouterMessageErreur(request, "Veuillez ajouter un fichier.");
 				} else {
 					String nomFichier = this.getNomDuFichier(fichier);
-					SeanceManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, nomFichier, fichier.getInputStream(), fichier.getSize());
+					TravailManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, nomFichier, fichier.getInputStream(), fichier.getSize());
 					this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
 				}
 			} else {

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import learnings.exceptions.LearningsException;
-import learnings.managers.SeanceManager;
+import learnings.managers.TravailManager;
 import learnings.pojos.FichierComplet;
 import learnings.web.servlets.GenericLearningsServlet;
 
@@ -25,7 +25,7 @@ public class TelechargerTravail extends GenericLearningsServlet {
 			response.sendRedirect("travailtp");
 		} else {
 			try {
-				FichierComplet fichier = SeanceManager.getInstance().getTravail(Long.parseLong(request.getParameter("id")));
+				FichierComplet fichier = TravailManager.getInstance().getTravail(Long.parseLong(request.getParameter("id")));
 
 				response.setHeader("Content-disposition", "attachment; filename=" + fichier.getNom());
 

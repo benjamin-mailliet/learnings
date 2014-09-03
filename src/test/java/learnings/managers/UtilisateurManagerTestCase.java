@@ -327,10 +327,17 @@ public class UtilisateurManagerTestCase {
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.assertEquals("L'identifiant doit être renseigné.", e.getMessage());
-			Mockito.verify(utilisateurDao, Mockito.never()).getUtilisateur(Mockito.anyString());
-			Mockito.verify(motDePasseManager, Mockito.never()).genererMotDePasse(Mockito.anyString());
-			Mockito.verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
 		}
+		try {
+			utilisateurManager.ajouterUtilisateur("", true);
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("L'identifiant doit être renseigné.", e.getMessage());
+		}
+		Mockito.verify(utilisateurDao, Mockito.never()).getUtilisateur(Mockito.anyString());
+		Mockito.verify(motDePasseManager, Mockito.never()).genererMotDePasse(Mockito.anyString());
+		Mockito.verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
+
 	}
 
 	@Test
