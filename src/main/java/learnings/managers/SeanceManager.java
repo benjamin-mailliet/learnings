@@ -3,16 +3,13 @@ package learnings.managers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
-import learnings.dao.UtilisateurDao;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.dao.impl.TravailDaoImpl;
-import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.pojos.TpAvecTravail;
@@ -20,16 +17,9 @@ import learnings.pojos.TpAvecTravail;
 public class SeanceManager {
 	private static SeanceManager instance;
 
-	private static int NOMBRE_OCTETS_IN_MO = 1024 * 1024;
-
-	private static Logger LOGGER = Logger.getLogger(SeanceManager.class.getName());
-
 	private SeanceDao seanceDao = new SeanceDaoImpl();
 	private RessourceDao ressourceDao = new RessourceDaoImpl();
-	private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 	private TravailDao travailDao = new TravailDaoImpl();
-
-	private FichierManager fichierManager = new StockageLocalFichierManagerImpl();
 
 	public static SeanceManager getInstance() {
 		if (instance == null) {
@@ -50,7 +40,7 @@ public class SeanceManager {
 		return seanceDao.listerSeancesNotees();
 	}
 
-	public List<Seance> listerSeancesRenduesAccessibles() {
+	public List<Seance> listerSeancesAccessibles() {
 		Date aujourdhui = new Date();
 		List<Seance> listeCours = seanceDao.listerSeancesWhereDateBefore(aujourdhui);
 		for (Seance seanceCourante : listeCours) {

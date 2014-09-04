@@ -19,7 +19,7 @@ public class SeancesServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Seance> listeCours = SeanceManager.getInstance().listerSeancesRenduesAccessibles();
+		List<Seance> listeCours = SeanceManager.getInstance().listerSeancesAccessibles();
 
 		request.setAttribute("seances", listeCours);
 		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/seances.jsp");

@@ -5,11 +5,9 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
-import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
@@ -28,7 +26,6 @@ public class TravailManager {
 	private static Logger LOGGER = Logger.getLogger(TravailManager.class.getName());
 
 	private SeanceDao seanceDao = new SeanceDaoImpl();
-	private RessourceDao ressourceDao = new RessourceDaoImpl();
 	private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 	private TravailDao travailDao = new TravailDaoImpl();
 
