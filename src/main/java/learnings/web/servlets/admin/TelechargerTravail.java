@@ -25,7 +25,7 @@ public class TelechargerTravail extends GenericLearningsServlet {
 			response.sendRedirect("travailtp");
 		} else {
 			try {
-				FichierComplet fichier = TravailManager.getInstance().getTravail(Long.parseLong(request.getParameter("id")));
+				FichierComplet fichier = TravailManager.getInstance().getFichierTravail(Long.parseLong(request.getParameter("id")));
 
 				response.setHeader("Content-disposition", "attachment; filename=" + fichier.getNom());
 

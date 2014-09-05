@@ -67,7 +67,7 @@ public class TravailManager {
 		LOGGER.info(String.format("rendreTP|utilisateur1=%d|utilisateur2=%d|fichier=%d;%s", idUtilisateur1, idUtilisateur2, travail.getId(), nomFichier));
 	}
 
-	public FichierComplet getTravail(Long idTravail) throws LearningsException {
+	public FichierComplet getFichierTravail(Long idTravail) throws LearningsException {
 		Travail travail = travailDao.getTravail(idTravail);
 		FichierComplet fichier = new FichierComplet();
 		fichier.setNom(travail.getNomFichier());
@@ -75,26 +75,24 @@ public class TravailManager {
 		return fichier;
 	}
 
-	private void modifierTravail(InputStream fichier, Travail travailExistant, Travail travail) throws LearningsException {
+	protected void modifierTravail(InputStream fichier, Travail travailExistant, Travail travail) throws LearningsException {
 		try {
 			fichierManager.supprimerFichier(travailExistant.getChemin());
 			fichierManager.ajouterFichier(travail.getChemin(), fichier);
+			travailDao.mettreAJourTravail(travailExistant.getId(), new Date(), travail.getChemin());
 		} catch (LearningsException e) {
-			e.printStackTrace();
 			throw new LearningsException("Problème à l'enregistrement du travail.", e);
 		}
-
-		travailDao.mettreAJourTravail(travailExistant.getId(), new Date(), travail.getChemin());
 	}
 
-	private void ajouterTravail(InputStream fichier, Utilisateur utilisateur1, Utilisateur utilisateur2, Travail travail) throws LearningsException {
+	protected void ajouterTravail(InputStream fichier, Utilisateur utilisateur1, Utilisateur utilisateur2, Travail travail) throws LearningsException {
 		try {
 			fichierManager.ajouterFichier(travail.getChemin(), fichier);
 		} catch (LearningsException e) {
 			throw new LearningsException("Problème à l'enregistrement du travail.", e);
 		}
 
-		travailDao.ajouterTravail(travail);
+		travail = travailDao.ajouterTravail(travail);
 
 		if (travail.getId() != null) {
 			travailDao.ajouterUtilisateur(travail.getId(), utilisateur1.getId());
@@ -104,7 +102,7 @@ public class TravailManager {
 		}
 	}
 
-	private Travail verifierExistanceTravail(Long idSeance, Long idUtilisateur1, Long idUtilisateur2) throws LearningsException {
+	protected Travail verifierExistanceTravail(Long idSeance, Long idUtilisateur1, Long idUtilisateur2) throws LearningsException {
 		Travail travailUtilisateur1 = travailDao.getTravailUtilisateurParSeance(idSeance, idUtilisateur1);
 		// Pas de binôme
 		if (idUtilisateur2 == null) {
@@ -130,7 +128,7 @@ public class TravailManager {
 		throw new LearningsException("Les deux utilisateur ont déjà rendu un travail dans des binômes différents.");
 	}
 
-	private String genererCheminTravail(Long idSeance, String nomFichier) {
+	protected String genererCheminTravail(Long idSeance, String nomFichier) {
 		StringBuilder chemin = new StringBuilder();
 		chemin.append("travaux/tp/");
 		chemin.append(idSeance);
@@ -140,7 +138,7 @@ public class TravailManager {
 		return chemin.toString();
 	}
 
-	private Utilisateur verifierUtilisateurAvantRendu(Long idUtilisateur, boolean obligatoire) {
+	protected Utilisateur verifierUtilisateurAvantRendu(Long idUtilisateur, boolean obligatoire) {
 		if (obligatoire && idUtilisateur == null) {
 			throw new IllegalArgumentException("Un utilisateur obligatoire n'est pas renseigné.");
 		}
@@ -157,7 +155,7 @@ public class TravailManager {
 		return null;
 	}
 
-	private Seance verifierTpAvantRendu(Long idSeance) {
+	protected Seance verifierTpAvantRendu(Long idSeance) {
 		if (idSeance == null) {
 			throw new IllegalArgumentException("L'identifiant du tp est incorrect");
 		}
