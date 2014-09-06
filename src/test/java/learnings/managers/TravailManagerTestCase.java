@@ -61,8 +61,6 @@ public class TravailManagerTestCase {
 			"/chemin/12346578-fichier1.zip");
 	private Travail travail2 = new Travail(2L, seance1, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 13, 51).getTime(),
 			"/chemin/12346578-fichier2.zip");
-	private Travail travail3 = new Travail(3L, seance1, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 13, 51).getTime(),
-			"/chemin/12346578-fichier3.zip");
 
 	private InputStream inputStream1 = new ByteArrayInputStream(new byte[] {});
 	private InputStream inputStream2 = new ByteArrayInputStream(new byte[] {});
@@ -224,7 +222,7 @@ public class TravailManagerTestCase {
 	@Test
 	public void testVerifierExistanceTravailKOBinomeEtNull() throws Exception {
 		try {
-			Travail travail = travailManager.verifierExistanceTravail(10L, 1L, 3L);
+			travailManager.verifierExistanceTravail(10L, 1L, 3L);
 			Assert.fail();
 		} catch (LearningsException e) {
 			Assert.assertEquals("Un des deux utilisateurs a déjà rendu un travail avec un binôme différent.", e.getMessage());
@@ -237,7 +235,7 @@ public class TravailManagerTestCase {
 	@Test
 	public void testVerifierExistanceTravailKOBinomeDifferent() throws Exception {
 		try {
-			Travail travail = travailManager.verifierExistanceTravail(11L, 1L, 2L);
+			travailManager.verifierExistanceTravail(11L, 1L, 2L);
 			Assert.fail();
 		} catch (LearningsException e) {
 			Assert.assertEquals("Les deux utilisateur ont déjà rendu un travail dans des binômes différents.", e.getMessage());

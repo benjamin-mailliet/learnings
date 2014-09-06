@@ -22,7 +22,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 		try {
 			Connection connection = getConnection();
 			Statement stmt = connection.createStatement();
-			ResultSet results = stmt.executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance ORDER BY date DESC");
+			ResultSet results = stmt.executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance ORDER BY date ASC");
 			Date dateLimiteRendu = null;
 			while (results.next()) {
 				listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results

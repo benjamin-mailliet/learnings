@@ -37,12 +37,14 @@ public class SeanceDaoTestCase {
 	public void testListerSeances() {
 		List<Seance> listeCours = seanceDao.listerSeances();
 
-		Assert.assertEquals(4L, listeCours.get(0).getId().longValue());
+		Assert.assertEquals(4, listeCours.size());
 
-		Assert.assertEquals(2L, listeCours.get(1).getId().longValue());
-		Assert.assertEquals("cours2", listeCours.get(1).getTitre());
-		Assert.assertEquals("cours de correction", listeCours.get(1).getDescription());
-		Assert.assertEquals(new GregorianCalendar(2014, 7, 26).getTime().getTime(), listeCours.get(1).getDate().getTime());
+		Assert.assertEquals(1L, listeCours.get(0).getId().longValue());
+		Assert.assertEquals("cours1", listeCours.get(0).getTitre());
+		Assert.assertEquals("cours de debuggage", listeCours.get(0).getDescription());
+		Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 26).getTime().getTime(), listeCours.get(0).getDate().getTime());
+
+		Assert.assertEquals(3L, listeCours.get(1).getId().longValue());
 
 	}
 

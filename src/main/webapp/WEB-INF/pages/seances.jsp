@@ -21,39 +21,32 @@
 			<section class="panel-group">
 				<c:forEach var="seance" items="${seances}">
 					<c:if test="${seance.type=='COURS'}">
-						<article class="cours-article panel panel-default">
-							<header class="panel-heading" data-toggle="collapse" data-toggle="collapse" data-target="#cours${seance.id}">
-								<h4><span  class="glyphicon glyphicon-folder-close"></span> ${seance.titre}<small>(cliquez pour ouvrir)</small></h4>
-								<time>${seance.date}</time>
-							</header>
-							<section class="details panel-body collapse" id="cours${seance.id}">
-								<p>${seance.description}</p>
-								Ressources :
-								<ul>
-								<c:forEach var="ressource" items="${seance.ressources}">
-									<li><a href="${ressource.chemin}">${ressource.titre}</a></li>	
-								</c:forEach>
-								</ul>
-							</section>
-						</article>
-					</c:if> 
-					<c:if test="${seance.type=='TP'}">
-						<article class="tp-article panel panel-default">
-							<header class="panel-heading" data-toggle="collapse" data-toggle="collapse" data-target="#tp${seance.id}">
-								<h4><span  class="glyphicon glyphicon-cog"></span> ${seance.titre}<small>(cliquez pour ouvrir)</small></h4>
-								<time>${seance.date}</time>
-							</header>
-							<section class="details panel-body collapse" id="tp${seance.id}">
-								<p>${seance.description}</p>
-								Ressources :
-								<ul>
-								<c:forEach var="ressource" items="${seance.ressources}">
-									<li><a href="${ressource.chemin}">${ressource.titre}</a></li>	
-								</c:forEach>
-								</ul>
-							</section>
-						</article>
+						<c:set var="typeSeance" value="cours" scope="request"/>
 					</c:if>
+					<c:if test="${seance.type=='TP'}">
+						<c:set var="typeSeance" value="tp" scope="request"/>
+					</c:if>
+					<article class="${typeSeance}-article panel ${seance.datePassee ? 'panel-info' : 'panel-default'}">
+						<header class="panel-heading" data-toggle="collapse" data-toggle="collapse" data-target="#${typeSeance}${seance.id}">
+							<h4>
+								<span  class="glyphicon ${seance.type=='TP' ? 'glyphicon-cog' : 'glyphicon-folder-close'}"></span>
+								${seance.titre}
+								<c:if test="${seance.datePassee}"><small>(cliquez pour ouvrir)</small></c:if>
+							</h4>
+							<time><fmt:formatDate value="${seance.date}" pattern="dd/MM/yyyy" /></time>
+						</header>
+						<c:if test="${seance.datePassee}">
+							<section class="details panel-body collapse" id="${typeSeance}${seance.id}">
+								<p>${seance.description}</p>
+								Ressources :
+								<ul>
+								<c:forEach var="ressource" items="${seance.ressources}">
+									<li><a href="${ressource.chemin}">${ressource.titre}</a></li>	
+								</c:forEach>
+								</ul>
+							</section>
+						</c:if>
+					</article>
 				</c:forEach>			
 			</section>
 		</div>

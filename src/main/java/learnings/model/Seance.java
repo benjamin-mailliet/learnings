@@ -44,6 +44,10 @@ public class Seance extends Enseignement implements Serializable {
 		this.date = date;
 	}
 
+	public boolean isDatePassee() {
+		return this.date.before(new Date());
+	}
+
 	public Boolean getIsNote() {
 		return isNote;
 	}
