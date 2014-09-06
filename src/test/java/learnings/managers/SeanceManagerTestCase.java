@@ -9,6 +9,7 @@ import java.util.List;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
+import learnings.enums.TypeSeance;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 import learnings.model.Travail;
@@ -59,10 +60,6 @@ public class SeanceManagerTestCase {
 		List<Seance> seancesNotees = new ArrayList<Seance>();
 		seancesNotees.add(seance2);
 		Mockito.when(seanceDao.listerSeancesNotees()).thenReturn(seancesNotees);
-
-		List<Seance> seancesAccessibles = new ArrayList<Seance>();
-		seancesAccessibles.add(seance1);
-		Mockito.when(seanceDao.listerSeancesWhereDateBefore(Mockito.any(Date.class))).thenReturn(seancesAccessibles);
 
 		List<Seance> seancesRendusAccessibles = new ArrayList<Seance>();
 		seancesRendusAccessibles.add(seance3);
@@ -117,18 +114,6 @@ public class SeanceManagerTestCase {
 		Assert.assertTrue(seancesNotees.contains(seance2));
 
 		Mockito.verify(seanceDao).listerSeancesNotees();
-	}
-
-	@Test
-	public void testListerSeancesAccessibles() {
-		List<Seance> seancesAccessibles = seanceManager.listerSeancesAccessibles();
-		Assert.assertEquals(1, seancesAccessibles.size());
-		Assert.assertTrue(seancesAccessibles.contains(seance1));
-		Assert.assertEquals(1, seance1.getRessources().size());
-		Assert.assertTrue(seance1.getRessources().contains(ressource1));
-
-		Mockito.verify(ressourceDao).getRessourcesBySeance(Mockito.eq(seance1));
-		Mockito.verify(ressourceDao).getRessourcesBySeance(Mockito.any(Seance.class));
 	}
 
 	@Test
@@ -203,4 +188,147 @@ public class SeanceManagerTestCase {
 		}
 	}
 
+	@Test
+	public void testGetSeanceAvecRessources() {
+		Seance seance = seanceManager.getSeanceAvecRessources(1L);
+
+		Assert.assertEquals(seance1, seance);
+		Assert.assertEquals(1, seance.getRessources().size());
+		Assert.assertTrue(seance.getRessources().contains(ressource1));
+
+		Mockito.verify(seanceDao).getSeance(Mockito.eq(1L));
+		Mockito.verify(seanceDao).getSeance(Mockito.anyLong());
+		Mockito.verify(ressourceDao).getRessourcesBySeance(Mockito.eq(seance1));
+		Mockito.verify(ressourceDao).getRessourcesBySeance(Mockito.any(Seance.class));
+	}
+
+	@Test
+	public void testGetSeanceAvecRessourcesKOIdNull() {
+		try {
+			seanceManager.getSeanceAvecRessources(null);
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("L'identifiant de la séance est incorrect.", e.getMessage());
+			Mockito.verify(seanceDao, Mockito.never()).getSeance(Mockito.anyLong());
+			Mockito.verify(travailDao, Mockito.never()).listerTravauxParSeance(Mockito.anyLong());
+			Mockito.verify(travailDao, Mockito.never()).listerUtilisateurs(Mockito.anyLong());
+		}
+	}
+
+	@Test
+	public void testGetSeanceAvecRessourcesKOSeanceNull() {
+		try {
+			seanceManager.getSeanceAvecRessources(-1L);
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("L'identifiant de la séance est inconnu.", e.getMessage());
+			Mockito.verify(seanceDao).getSeance(Mockito.eq(-1L));
+			Mockito.verify(seanceDao).getSeance(Mockito.anyLong());
+			Mockito.verify(travailDao, Mockito.never()).listerTravauxParSeance(Mockito.anyLong());
+			Mockito.verify(travailDao, Mockito.never()).listerUtilisateurs(Mockito.anyLong());
+		}
+	}
+
+	@Test
+	public void testAjouterSeanceOK() {
+		Seance seance = new Seance(null, "titre", "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null, TypeSeance.COURS);
+
+		seanceManager.ajouterSeance(seance);
+
+		Mockito.verify(seanceDao).ajouterSeance(Mockito.eq(seance));
+		Mockito.verify(seanceDao).ajouterSeance(Mockito.any(Seance.class));
+	}
+
+	@Test
+	public void testAjouterSeanceKO() {
+		try {
+			seanceManager.ajouterSeance(null);
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("La séance est null.", e.getMessage());
+		}
+		try {
+			seanceManager.ajouterSeance(new Seance(null, null, "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null,
+					TypeSeance.COURS));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("Le titre de la séance doit être renseigné.", e.getMessage());
+		}
+		try {
+			seanceManager.ajouterSeance(new Seance(null, "", "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null,
+					TypeSeance.COURS));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("Le titre de la séance doit être renseigné.", e.getMessage());
+		}
+		try {
+			seanceManager.ajouterSeance(new Seance(null, "titre", "description", null, false, null, TypeSeance.COURS));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("La date de la séance doit être renseignée.", e.getMessage());
+		}
+		try {
+			seanceManager.ajouterSeance(new Seance(null, "titre", "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null,
+					null));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("Le type de la séance doit être renseigné.", e.getMessage());
+		}
+
+		Mockito.verify(seanceDao, Mockito.never()).ajouterSeance(Mockito.any(Seance.class));
+	}
+
+	@Test
+	public void testModifierSeanceOK() {
+		Seance seance = new Seance(1L, "titre", "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null, TypeSeance.COURS);
+
+		seanceManager.modifierSeance(seance);
+
+		Mockito.verify(seanceDao).modifierSeance(Mockito.eq(seance));
+		Mockito.verify(seanceDao).modifierSeance(Mockito.any(Seance.class));
+	}
+
+	@Test
+	public void testModifierSeanceKO() {
+		try {
+			seanceManager.modifierSeance(null);
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("La séance est null.", e.getMessage());
+		}
+		try {
+			seanceManager.modifierSeance(new Seance(null, "titre", "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null,
+					TypeSeance.COURS));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("L'identifiant de la séance doit être renseigné.", e.getMessage());
+		}
+		try {
+			seanceManager.modifierSeance(new Seance(1L, null, "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null,
+					TypeSeance.COURS));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("Le titre de la séance doit être renseigné.", e.getMessage());
+		}
+		try {
+			seanceManager.modifierSeance(new Seance(1L, "", "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null,
+					TypeSeance.COURS));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("Le titre de la séance doit être renseigné.", e.getMessage());
+		}
+		try {
+			seanceManager.modifierSeance(new Seance(1L, "titre", "description", null, false, null, TypeSeance.COURS));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("La date de la séance doit être renseignée.", e.getMessage());
+		}
+		try {
+			seanceManager
+					.modifierSeance(new Seance(1L, "titre", "description", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null, null));
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertEquals("Le type de la séance doit être renseigné.", e.getMessage());
+		}
+
+		Mockito.verify(seanceDao, Mockito.never()).modifierSeance(Mockito.any(Seance.class));
+	}
 }

@@ -71,4 +71,55 @@ public class SeanceManager {
 
 		return seance;
 	}
+
+	public Seance getSeanceAvecRessources(Long idSeance) {
+		if (idSeance == null) {
+			throw new IllegalArgumentException("L'identifiant de la séance est incorrect.");
+		}
+		Seance seance = seanceDao.getSeance(idSeance);
+		if (seance == null) {
+			throw new IllegalArgumentException("L'identifiant de la séance est inconnu.");
+		}
+
+		seance.setRessources(ressourceDao.getRessourcesBySeance(seance));
+
+		return seance;
+	}
+
+	public void ajouterSeance(Seance seance) {
+		if (seance == null) {
+			throw new IllegalArgumentException("La séance est null.");
+		}
+		if (seance.getTitre() == null || "".equals(seance.getTitre())) {
+			throw new IllegalArgumentException("Le titre de la séance doit être renseigné.");
+		}
+		if (seance.getDate() == null) {
+			throw new IllegalArgumentException("La date de la séance doit être renseignée.");
+		}
+		if (seance.getType() == null) {
+			throw new IllegalArgumentException("Le type de la séance doit être renseigné.");
+		}
+
+		seanceDao.ajouterSeance(seance);
+	}
+
+	public void modifierSeance(Seance seance) {
+		if (seance == null) {
+			throw new IllegalArgumentException("La séance est null.");
+		}
+		if (seance.getId() == null) {
+			throw new IllegalArgumentException("L'identifiant de la séance doit être renseigné.");
+		}
+		if (seance.getTitre() == null || "".equals(seance.getTitre())) {
+			throw new IllegalArgumentException("Le titre de la séance doit être renseigné.");
+		}
+		if (seance.getDate() == null) {
+			throw new IllegalArgumentException("La date de la séance doit être renseignée.");
+		}
+		if (seance.getType() == null) {
+			throw new IllegalArgumentException("Le type de la séance doit être renseigné.");
+		}
+
+		seanceDao.modifierSeance(seance);
+	}
 }

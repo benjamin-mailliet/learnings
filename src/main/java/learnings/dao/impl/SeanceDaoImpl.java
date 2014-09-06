@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,10 +24,9 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 			Connection connection = getConnection();
 			Statement stmt = connection.createStatement();
 			ResultSet results = stmt.executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance ORDER BY date ASC");
-			Date dateLimiteRendu = null;
 			while (results.next()) {
 				listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
-						.getBoolean("isnote"), dateLimiteRendu, TypeSeance.valueOf(results.getString("type"))));
+						.getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
 			}
 			stmt.close();
 			connection.close();
@@ -97,5 +97,70 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
 			throw new LearningsSQLException(e);
 		}
 		return seance;
+	}
+
+	@Override
+	public Seance ajouterSeance(Seance seance) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement(
+					"INSERT INTO seance(titre, description, date, isnote, datelimiterendu, type) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt.setString(1, seance.getTitre());
+			if (seance.getDescription() == null) {
+				stmt.setString(2, "");
+			} else {
+				stmt.setString(2, seance.getDescription());
+			}
+			stmt.setDate(3, new java.sql.Date(seance.getDate().getTime()));
+			stmt.setBoolean(4, seance.getIsNote());
+			if (seance.getDateLimiteRendu() == null) {
+				stmt.setNull(5, Types.TIMESTAMP);
+			} else {
+				stmt.setTimestamp(5, new java.sql.Timestamp(seance.getDateLimiteRendu().getTime()));
+			}
+			stmt.setString(6, seance.getType().toString());
+			stmt.executeUpdate();
+
+			ResultSet ids = stmt.getGeneratedKeys();
+			if (ids.next()) {
+				seance = new Seance(ids.getLong(1), seance.getTitre(), seance.getDescription(), seance.getDate(), seance.getIsNote(),
+						seance.getDateLimiteRendu(), seance.getType());
+			}
+
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
+		}
+		return seance;
+	}
+
+	@Override
+	public void modifierSeance(Seance seance) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection
+					.prepareStatement("UPDATE seance SET titre=?, description=?, date=?, isnote=?, datelimiterendu=?, type=? WHERE id=?");
+			stmt.setString(1, seance.getTitre());
+			if (seance.getDescription() == null) {
+				stmt.setString(2, "");
+			} else {
+				stmt.setString(2, seance.getDescription());
+			}
+			stmt.setDate(3, new java.sql.Date(seance.getDate().getTime()));
+			stmt.setBoolean(4, seance.getIsNote());
+			if (seance.getDateLimiteRendu() == null) {
+				stmt.setNull(5, Types.TIMESTAMP);
+			} else {
+				stmt.setTimestamp(5, new java.sql.Timestamp(seance.getDateLimiteRendu().getTime()));
+			}
+			stmt.setString(6, seance.getType().toString());
+			stmt.setLong(7, seance.getId());
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
+		}
 	}
 }
