@@ -40,15 +40,6 @@ public class SeanceManager {
 		return seanceDao.listerSeancesNotees();
 	}
 
-	public List<Seance> listerSeancesAccessibles() {
-		Date aujourdhui = new Date();
-		List<Seance> listeCours = seanceDao.listerSeancesWhereDateBefore(aujourdhui);
-		for (Seance seanceCourante : listeCours) {
-			seanceCourante.setRessources(ressourceDao.getRessourcesBySeance(seanceCourante));
-		}
-		return listeCours;
-	}
-
 	public List<TpAvecTravail> listerTPRenduAccessible(Long idUtilisateur) {
 		if (idUtilisateur == null) {
 			throw new IllegalArgumentException("L'utlisateur ne peut pas être null.");
