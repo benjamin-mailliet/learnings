@@ -7,4 +7,8 @@ import learnings.model.Seance;
 
 public interface RessourceDao {
 	public List<Ressource> getRessourcesBySeance(Seance seance);
+
+	public Ressource ajouterRessource(Ressource ressource);
+
+	public Ressource getRessource(Long idRessource);
 }

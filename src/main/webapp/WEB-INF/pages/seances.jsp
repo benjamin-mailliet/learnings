@@ -41,7 +41,7 @@
 								Ressources :
 								<ul>
 								<c:forEach var="ressource" items="${seance.ressources}">
-									<li><a href="${ressource.chemin}">${ressource.titre}</a></li>	
+									<li><a href="telechargerRessource?id=${ressource.id}">${ressource.titre}</a></li>	
 								</c:forEach>
 								</ul>
 							</section>

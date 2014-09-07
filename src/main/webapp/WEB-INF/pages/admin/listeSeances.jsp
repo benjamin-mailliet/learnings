@@ -42,7 +42,8 @@
 						</td>
 						<td><fmt:formatDate value="${seance.dateLimiteRendu}" pattern="dd/MM/yyyy HH:mm"/></td>
 						<td>
-							<a class="btn btn-xs btn-info" href="seance?id=${seance.id}"><span class="glyphicon glyphicon-search"></span></a>
+							<a class="btn btn-xs btn-info" href="seance?id=${seance.id}" title="Modifier"><span class="glyphicon glyphicon-edit"></span></a>
+							<a class="btn btn-xs btn-warning" href="ressource?idSeance=${seance.id}" title="Gérer les ressources"><span class="glyphicon glyphicon-list-alt"></span></a>
 						</td>
 					</tr>
 				</c:forEach>

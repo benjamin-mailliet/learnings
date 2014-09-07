@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import learnings.utils.FichierUtils;
+
 public class Travail implements Serializable {
 	private static final long serialVersionUID = 5229784210182658252L;
 
@@ -64,12 +66,12 @@ public class Travail implements Serializable {
 		return chemin;
 	}
 
-	public String getNomFichier() {
-		return chemin.substring(chemin.lastIndexOf("/") + 1).substring(9);
-	}
-
 	public void setChemin(String chemin) {
 		this.chemin = chemin;
+	}
+
+	public String getNomFichier() {
+		return FichierUtils.extraireNomFichier(this.chemin);
 	}
 
 	public List<Utilisateur> getUtilisateurs() {

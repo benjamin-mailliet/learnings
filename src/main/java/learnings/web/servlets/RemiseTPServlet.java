@@ -69,15 +69,4 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 
 		response.sendRedirect("remisetp");
 	}
-
-	private String getNomDuFichier(Part fichier) {
-		String contentDisposition = fichier.getHeader("content-disposition");
-		for (String headerPropertie : contentDisposition.split(";")) {
-			if (headerPropertie.trim().startsWith("filename=")) {
-				return headerPropertie.substring(headerPropertie.indexOf("\"") + 1, headerPropertie.lastIndexOf("\""));
-			}
-		}
-		return null;
-	}
-
 }

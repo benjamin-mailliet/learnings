@@ -2,6 +2,7 @@ package learnings.web.servlets;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
 import learnings.model.Utilisateur;
 import learnings.pojos.MessageContainer;
@@ -34,5 +35,15 @@ public abstract class GenericLearningsServlet extends HttpServlet {
 
 	protected Utilisateur getUtilisateurCourant(HttpServletRequest request) {
 		return (Utilisateur) request.getSession().getAttribute("utilisateur");
+	}
+
+	protected String getNomDuFichier(Part fichier) {
+		String contentDisposition = fichier.getHeader("content-disposition");
+		for (String headerPropertie : contentDisposition.split(";")) {
+			if (headerPropertie.trim().startsWith("filename=")) {
+				return headerPropertie.substring(headerPropertie.indexOf("\"") + 1, headerPropertie.lastIndexOf("\""));
+			}
+		}
+		return null;
 	}
 }

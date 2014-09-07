@@ -2,7 +2,6 @@ package learnings.managers;
 
 import java.io.InputStream;
 import java.util.Date;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import learnings.dao.SeanceDao;
@@ -17,6 +16,7 @@ import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.FichierComplet;
+import learnings.utils.FichierUtils;
 
 public class TravailManager {
 	private static TravailManager instance;
@@ -70,7 +70,7 @@ public class TravailManager {
 	public FichierComplet getFichierTravail(Long idTravail) throws LearningsException {
 		Travail travail = travailDao.getTravail(idTravail);
 		FichierComplet fichier = new FichierComplet();
-		fichier.setNom(travail.getNomFichier());
+		fichier.setNom(FichierUtils.extraireNomFichier(travail.getChemin()));
 		fichier.setDonnees(fichierManager.getFichier(travail.getChemin()));
 		return fichier;
 	}
@@ -133,8 +133,7 @@ public class TravailManager {
 		chemin.append("travaux/tp/");
 		chemin.append(idSeance);
 		chemin.append("/");
-		chemin.append(UUID.randomUUID().toString().substring(0, 9));
-		chemin.append(nomFichier);
+		chemin.append(FichierUtils.rendreUniqueNomFichier(nomFichier));
 		return chemin.toString();
 	}
 

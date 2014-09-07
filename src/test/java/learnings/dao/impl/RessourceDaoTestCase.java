@@ -1,8 +1,12 @@
 package learnings.dao.impl;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import learnings.dao.RessourceDao;
@@ -44,5 +48,44 @@ public class RessourceDaoTestCase {
 		Assert.assertEquals("titre", listeRessources.get(0).getEnseignement().getTitre());
 
 		Assert.assertEquals(2L, listeRessources.get(1).getId().longValue());
+	}
+
+	@Test
+	public void testAjouterRessource() throws Exception {
+		Ressource ressource = new Ressource(null, "monTitre", "/chemin/monFichier.zip", new Seance(1L, null, null, null));
+
+		Ressource ressourceCreee = ressourceDao.ajouterRessource(ressource);
+
+		Assert.assertNotNull(ressourceCreee);
+		Assert.assertNotNull(ressourceCreee.getId());
+
+		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
+		PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ressource WHERE id=?");
+		stmt.setLong(1, ressourceCreee.getId());
+		ResultSet results = stmt.executeQuery();
+		if (results.next()) {
+			Assert.assertEquals(ressourceCreee.getId().longValue(), results.getLong("id"));
+			Assert.assertEquals("monTitre", results.getString("titre"));
+			Assert.assertEquals("/chemin/monFichier.zip", results.getString("chemin"));
+			Assert.assertEquals(1L, results.getLong("seance_id"));
+			Assert.assertNull(results.getString("projettransversal_id"));
+		} else {
+			Assert.fail();
+		}
+		stmt.close();
+		connection.close();
+	}
+
+	@Test
+	public void testGetRessource() {
+		Ressource ressource = ressourceDao.getRessource(1L);
+
+		Assert.assertEquals(1L, ressource.getId().longValue());
+		Assert.assertEquals("ressource1", ressource.getTitre());
+		Assert.assertEquals("chemin ressource de cours 1", ressource.getChemin());
+		Assert.assertEquals("cours1", ressource.getEnseignement().getTitre());
+		Assert.assertEquals(1L, ressource.getEnseignement().getId().longValue());
+		Assert.assertEquals("cours de debuggage", ressource.getEnseignement().getDescription());
+		Assert.assertEquals(new GregorianCalendar(2014, Calendar.AUGUST, 26).getTime(), ((Seance) ressource.getEnseignement()).getDate());
 	}
 }
