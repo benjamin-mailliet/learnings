@@ -16,18 +16,20 @@ public class Travail implements Serializable {
 	private BigDecimal note;
 	private Date dateRendu;
 	private String chemin;
+	private String commentaire;
 	private List<Utilisateur> utilisateurs;
 
 	public Travail() {
 	}
 
-	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin) {
+	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire) {
 		super();
 		this.id = id;
 		this.enseignement = enseignement;
 		this.note = note;
 		this.dateRendu = dateRendu;
 		this.chemin = chemin;
+		this.commentaire = commentaire;
 	}
 
 	public Enseignement getEnseignement() {
@@ -72,6 +74,14 @@ public class Travail implements Serializable {
 
 	public String getNomFichier() {
 		return FichierUtils.extraireNomFichier(this.chemin);
+	}
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
 	}
 
 	public List<Utilisateur> getUtilisateurs() {

@@ -21,5 +21,5 @@ public interface TravailDao {
 
 	public Travail getTravail(Long idTravail);
 
-	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin);
+	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin, String commentaire);
 }

@@ -24,7 +24,8 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 		try {
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement(
-					"INSERT INTO travail(note, dateRendu, seance_id, projettransversal_id, chemin) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+					"INSERT INTO travail(note, dateRendu, seance_id, projettransversal_id, chemin, commentaire) VALUES(?, ?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
 			if (travail.getNote() == null) {
 				stmt.setNull(1, Types.DECIMAL);
 			} else {
@@ -39,6 +40,11 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 				stmt.setLong(4, travail.getEnseignement().getId());
 			}
 			stmt.setString(5, travail.getChemin());
+			if (travail.getCommentaire() == null) {
+				travail.setCommentaire("");
+			}
+			stmt.setString(6, travail.getCommentaire());
+
 			stmt.executeUpdate();
 
 			ResultSet ids = stmt.getGeneratedKeys();
@@ -55,13 +61,18 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 	}
 
 	@Override
-	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin) {
+	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin, String commentaire) {
 		try {
 			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("UPDATE travail SET dateRendu = ?, chemin = ? WHERE id = ?");
+			PreparedStatement stmt = connection.prepareStatement("UPDATE travail SET dateRendu = ?, chemin = ?, commentaire = ? WHERE id = ?");
 			stmt.setTimestamp(1, new java.sql.Timestamp(dateRendu.getTime()));
 			stmt.setString(2, chemin);
-			stmt.setLong(3, idTravail);
+			if (commentaire == null) {
+				commentaire = "";
+			}
+			stmt.setString(3, commentaire);
+			stmt.setLong(4, idTravail);
+
 			stmt.executeUpdate();
 			stmt.close();
 			connection.close();
@@ -97,7 +108,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			ResultSet results = stmt.executeQuery();
 			if (results.next()) {
 				travail = new Travail(results.getLong("id"), new Seance(idSeance, null, null, null), results.getBigDecimal("note"),
-						results.getTimestamp("dateRendu"), results.getString("chemin"));
+						results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"));
 			}
 			stmt.close();
 			connection.close();
@@ -117,7 +128,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			ResultSet results = stmt.executeQuery();
 			while (results.next()) {
 				listeTravaux.add(new Travail(results.getLong("id"), new Seance(idSeance, null, null, null), results.getBigDecimal("note"), results
-						.getTimestamp("dateRendu"), results.getString("chemin")));
+						.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire")));
 			}
 			stmt.close();
 			connection.close();
@@ -138,7 +149,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			ResultSet results = stmt.executeQuery();
 			while (results.next()) {
 				listeTravaux.add(new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
-						results.getTimestamp("dateRendu"), results.getString("chemin")));
+						results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire")));
 			}
 			stmt.close();
 			connection.close();
@@ -178,7 +189,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			ResultSet results = stmt.executeQuery();
 			if (results.next()) {
 				travail = new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
-						results.getTimestamp("dateRendu"), results.getString("chemin"));
+						results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"));
 			}
 			stmt.close();
 			connection.close();

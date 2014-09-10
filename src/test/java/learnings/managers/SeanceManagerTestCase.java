@@ -44,8 +44,10 @@ public class SeanceManagerTestCase {
 	private Seance seance2 = new Seance(2L, "Titre2", "Description2", new GregorianCalendar(2014, Calendar.SEPTEMBER, 2).getTime());
 	private Seance seance3 = new Seance(3L, "Titre3", "Description3", new GregorianCalendar(2014, Calendar.SEPTEMBER, 3).getTime());
 	private Ressource ressource1 = new Ressource(1L, "ressource1", "/ressources/ressource1", seance1);
-	private Travail travail1 = new Travail(1L, seance3, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 3, 10, 37).getTime(), "/chemin/fichier.zip");
-	private Travail travail2 = new Travail(2L, seance3, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 3, 10, 38).getTime(), "/chemin/fichier.zip");
+	private Travail travail1 = new Travail(1L, seance3, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 3, 10, 37).getTime(), "/chemin/fichier.zip",
+			"commentaire1");
+	private Travail travail2 = new Travail(2L, seance3, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 3, 10, 38).getTime(), "/chemin/fichier.zip",
+			"commentaire2");
 	private Utilisateur utilisateur1 = new Utilisateur(1L, "email1", false);
 	private Utilisateur utilisateur2 = new Utilisateur(2L, "email2", false);
 	private Utilisateur utilisateur3 = new Utilisateur(3L, "email3", false);

@@ -84,6 +84,7 @@ public class TravailDaoTestCase {
 		travail.setNote(new BigDecimal("16.5"));
 		travail.setEnseignement(new ProjetTransversal(1L, "projet", "Projet individuel", new GregorianCalendar(2014, Calendar.NOVEMBER, 15).getTime(),
 				new GregorianCalendar(2015, Calendar.JANUARY, 15).getTime()));
+		travail.setCommentaire("monCommentaire");
 
 		travailDao.ajouterTravail(travail);
 
@@ -105,7 +106,8 @@ public class TravailDaoTestCase {
 
 	@Test
 	public void testMettreAJourTravail() throws Exception {
-		travailDao.mettreAJourTravail(1L, new GregorianCalendar(2014, Calendar.SEPTEMBER, 1, 13, 36, 25).getTime(), "/nouveau/chemin/fichier.zip");
+		travailDao.mettreAJourTravail(1L, new GregorianCalendar(2014, Calendar.SEPTEMBER, 1, 13, 36, 25).getTime(), "/nouveau/chemin/fichier.zip",
+				"nouveauCommentaire");
 
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
 		Statement stmt = connection.createStatement();
@@ -113,6 +115,7 @@ public class TravailDaoTestCase {
 		if (results.next()) {
 			Assert.assertEquals(1L, results.getLong("id"));
 			Assert.assertEquals("/nouveau/chemin/fichier.zip", results.getString("chemin"));
+			Assert.assertEquals("nouveauCommentaire", results.getString("commentaire"));
 			Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 1, 13, 36, 25).getTime(), results.getTimestamp("dateRendu"));
 			Assert.assertEquals(1L, results.getLong("seance_id"));
 			Assert.assertEquals(0L, results.getLong("projettransversal_id"));

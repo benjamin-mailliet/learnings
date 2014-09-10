@@ -41,6 +41,7 @@
 					<tr>
 						<th>Fichier</th>
 						<th>Élèves</th>
+						<th>Commentaire</th>
 					</tr>
 					<c:forEach var="travail" items="${seanceSelectionnee.travauxRendus}">
 						<tr>
@@ -57,6 +58,7 @@
 									</c:forEach>
 								</ul>
 							</td>
+							<td>${travail.commentaire}</td>
 						</tr>
 					</c:forEach>
 				</table>

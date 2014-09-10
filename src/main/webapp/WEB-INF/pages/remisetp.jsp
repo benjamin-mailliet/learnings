@@ -57,6 +57,10 @@
 								<p class="help-block">Attention à ne pas dépasser les 10 Mo.</p>
 							</div>
 							<div class="form-group">
+								<label for="commentaire">Commentaire éventuel :</label>
+								<textarea id="commentaire" name="commentaire" rows="5" class="form-control"></textarea>
+							</div>
+							<div class="form-group">
 								<input type="hidden" name="idtp" value="${tpAvecTravaux.tp.id}" />
 								<button type="submit" class="btn btn-default">Envoyer</button>
 							</div>

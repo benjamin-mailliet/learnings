@@ -44,6 +44,7 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 			Long tpId = Long.parseLong(request.getParameter("idtp"));
 			Long utilisateur1Id = this.getUtilisateurCourant(request).getId();
 			Long utilisateur2Id = null;
+			String commentaire = request.getParameter("commentaire");
 			if (request.getParameter("eleve2") != null && !"".equals(request.getParameter("eleve2"))) {
 				utilisateur2Id = Long.parseLong(request.getParameter("eleve2"));
 				// Si pas de binôme, utilisateur2Id = 0
@@ -55,7 +56,8 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 					this.ajouterMessageErreur(request, "Veuillez ajouter un fichier.");
 				} else {
 					String nomFichier = this.getNomDuFichier(fichier);
-					TravailManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, nomFichier, fichier.getInputStream(), fichier.getSize());
+					TravailManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, commentaire, nomFichier, fichier.getInputStream(),
+							fichier.getSize());
 					this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
 				}
 			} else {

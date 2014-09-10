@@ -37,7 +37,7 @@ public class UtilisateurManagerTestCase {
 	@Before
 	public void init() throws Exception {
 		List<Travail> travaux = new ArrayList<Travail>();
-		travaux.add(new Travail(1L, null, null, null, null));
+		travaux.add(new Travail(1L, null, null, null, null, null));
 
 		Mockito.when(travailDao.listerTravauxParUtilisateur(1L)).thenReturn(new ArrayList<Travail>());
 		Mockito.when(travailDao.listerTravauxParUtilisateur(2L)).thenReturn(travaux);

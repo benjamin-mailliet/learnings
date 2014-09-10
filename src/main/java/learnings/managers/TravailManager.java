@@ -38,7 +38,7 @@ public class TravailManager {
 		return instance;
 	}
 
-	public void rendreTP(Long idSeance, Long idUtilisateur1, Long idUtilisateur2, String nomFichier, InputStream fichier, Long tailleFichier)
+	public void rendreTP(Long idSeance, Long idUtilisateur1, Long idUtilisateur2, String commentaire, String nomFichier, InputStream fichier, Long tailleFichier)
 			throws LearningsException {
 		Seance tp = this.verifierTpAvantRendu(idSeance);
 		Utilisateur utilisateur1 = this.verifierUtilisateurAvantRendu(idUtilisateur1, true);
@@ -57,6 +57,7 @@ public class TravailManager {
 		travail.setEnseignement(tp);
 		travail.setDateRendu(new Date());
 		travail.setChemin(chemin);
+		travail.setCommentaire(commentaire);
 
 		if (travailExistant == null) {
 			ajouterTravail(fichier, utilisateur1, utilisateur2, travail);
@@ -79,7 +80,7 @@ public class TravailManager {
 		try {
 			fichierManager.supprimerFichier(travailExistant.getChemin());
 			fichierManager.ajouterFichier(travail.getChemin(), fichier);
-			travailDao.mettreAJourTravail(travailExistant.getId(), new Date(), travail.getChemin());
+			travailDao.mettreAJourTravail(travailExistant.getId(), new Date(), travail.getChemin(), travail.getCommentaire());
 		} catch (LearningsException e) {
 			throw new LearningsException("Problème à l'enregistrement du travail.", e);
 		}

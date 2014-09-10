@@ -45,6 +45,7 @@ CREATE TABLE `travail` (
   `dateRendu` DATETIME NOT NULL,
   `seance_id` INT,
   `projettransversal_id` INT,
+  `commentaire` VARCHAR(5000) NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`seance_id`) REFERENCES seance(`id`),
   FOREIGN KEY (`projettransversal_id`) REFERENCES projettransversal(`id`)
