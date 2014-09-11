@@ -29,6 +29,7 @@ public class GestionUtilisateurServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		try {
 			Long idUtilisateur = Long.parseLong(request.getParameter("id"));
 			String action = request.getParameter("action");

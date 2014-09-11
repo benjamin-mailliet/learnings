@@ -46,6 +46,7 @@ public class SeanceServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		Long idSeance = null;
 		try {
 			idSeance = Long.parseLong(request.getParameter("id"));

@@ -19,6 +19,7 @@ public class AjouterUtilisateurServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		String email = request.getParameter("email");
 		boolean admin = Boolean.parseBoolean(request.getParameter("admin"));
 		try {
