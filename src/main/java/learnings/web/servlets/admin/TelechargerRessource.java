@@ -27,7 +27,7 @@ public class TelechargerRessource extends GenericLearningsServlet {
 			try {
 				FichierComplet fichier = RessourceManager.getInstance().getFichierRessourceAdmin(Long.parseLong(request.getParameter("id")));
 
-				response.setHeader("Content-disposition", "attachment; filename=" + fichier.getNom());
+				response.setHeader("Content-disposition", "attachment; filename=\"" + fichier.getNom() + "\"");
 
 				OutputStream out = response.getOutputStream();
 				byte[] buffer = new byte[4096];
