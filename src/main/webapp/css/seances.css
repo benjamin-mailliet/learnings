@@ -1,9 +1,9 @@
-header.panel-heading{
+.panel-info header.panel-heading{
 	cursor:pointer;
 }
 
-header.panel-heading:hover{
-	background-color: #EDEDED;
+.panel-info header.panel-heading:hover{
+	background-color: #D3E6F0;
 }
 
 article.tp-article header.panel-heading span.glyphicon{
