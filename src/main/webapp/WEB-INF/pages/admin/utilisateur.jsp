@@ -16,7 +16,9 @@
 	
 		<div class="container">
 			<c:import url="../../includes/messages.jsp" />
-			<h2>Gestion des utilisateurs</h2>
+			<header class="page-header">
+				<h1>Gestion des utilisateurs</h1>
+			</header>
 			<table id="listeUtilisateurs" class="table table-striped">
 				<tr>
 					<th>#</th>

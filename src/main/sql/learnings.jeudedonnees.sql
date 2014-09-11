@@ -5,8 +5,8 @@ INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(3,'anne.onym
 INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(4,'charles.attan@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0);
 INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(5,'hubert.bere@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0);
 
-TRUNCATE ressource;
-TRUNCATE seance;
+DELETE FROM ressource;
+DELETE FROM seance;
 INSERT INTO seance
 (id, titre, description, isnote, datelimiterendu, date, type)
 VALUES(3, 'TP2 : Bootstrap', 'TP permettant de découvrir le framework CSS Bootstrap', true, '2014-09-21 23:59:59', '2014-09-19', 'TP');

@@ -3,33 +3,33 @@ package learnings.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
+import learnings.utils.FichierUtils;
 
 public class Travail implements Serializable {
 	private static final long serialVersionUID = 5229784210182658252L;
 
 	private Long id;
 
-	private Utilisateur eleve1;
-	private Utilisateur eleve2;
 	private Enseignement enseignement;
 	private BigDecimal note;
 	private Date dateRendu;
 	private String chemin;
+	private String commentaire;
+	private List<Utilisateur> utilisateurs;
 
-	public Utilisateur getEleve1() {
-		return eleve1;
+	public Travail() {
 	}
 
-	public void setEleve1(Utilisateur eleve1) {
-		this.eleve1 = eleve1;
-	}
-
-	public Utilisateur getEleve2() {
-		return eleve2;
-	}
-
-	public void setEleve2(Utilisateur eleve2) {
-		this.eleve2 = eleve2;
+	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire) {
+		super();
+		this.id = id;
+		this.enseignement = enseignement;
+		this.note = note;
+		this.dateRendu = dateRendu;
+		this.chemin = chemin;
+		this.commentaire = commentaire;
 	}
 
 	public Enseignement getEnseignement() {
@@ -60,12 +60,36 @@ public class Travail implements Serializable {
 		return id;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getChemin() {
 		return chemin;
 	}
 
 	public void setChemin(String chemin) {
 		this.chemin = chemin;
+	}
+
+	public String getNomFichier() {
+		return FichierUtils.extraireNomFichier(this.chemin);
+	}
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
+	}
+
+	public List<Utilisateur> getUtilisateurs() {
+		return utilisateurs;
+	}
+
+	public void setUtilisateurs(List<Utilisateur> utilisateurs) {
+		this.utilisateurs = utilisateurs;
 	}
 
 }

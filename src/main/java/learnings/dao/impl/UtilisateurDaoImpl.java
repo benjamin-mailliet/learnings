@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import learnings.dao.UtilisateurDao;
+import learnings.exceptions.LearningsSQLException;
 import learnings.model.Utilisateur;
 
 public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao {
@@ -25,7 +26,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return utilisateurs;
 	}
@@ -45,7 +46,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return utilisateurs;
 	}
@@ -64,7 +65,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return utilisateur;
 	}
@@ -82,7 +83,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 
 		return utilisateur;
@@ -101,7 +102,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 
 		return motDePasse;
@@ -118,7 +119,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 	}
 
@@ -132,7 +133,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 	}
 
@@ -147,7 +148,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 	}
 
@@ -171,7 +172,7 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 			stmt.close();
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new LearningsSQLException(e);
 		}
 		return utilisateur;
 	}

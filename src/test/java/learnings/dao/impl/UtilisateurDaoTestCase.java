@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
 
-import learnings.dao.DataSourceProvider;
 import learnings.dao.UtilisateurDao;
 import learnings.model.Utilisateur;
 
@@ -19,6 +18,8 @@ public class UtilisateurDaoTestCase {
 	public void init() throws Exception {
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
 		Statement stmt = connection.createStatement();
+		stmt.executeUpdate("DELETE FROM travailutilisateur");
+		stmt.executeUpdate("DELETE FROM travail");
 		stmt.executeUpdate("DELETE FROM utilisateur");
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(1,'eleve@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(2,'admin@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',1)");

@@ -1,0 +1,79 @@
+package learnings.managers;
+
+import java.io.InputStream;
+import java.util.Date;
+
+import learnings.dao.RessourceDao;
+import learnings.dao.SeanceDao;
+import learnings.dao.impl.RessourceDaoImpl;
+import learnings.dao.impl.SeanceDaoImpl;
+import learnings.exceptions.LearningAccessException;
+import learnings.exceptions.LearningsException;
+import learnings.model.Ressource;
+import learnings.model.Seance;
+import learnings.pojos.FichierComplet;
+import learnings.utils.FichierUtils;
+
+public class RessourceManager {
+
+	private static RessourceManager instance;
+
+	public static RessourceManager getInstance() {
+		if (instance == null) {
+			instance = new RessourceManager();
+		}
+		return instance;
+	}
+
+	private FichierManager fichierManager = new StockageLocalFichierManagerImpl();
+	private SeanceDao seanceDao = new SeanceDaoImpl();
+	private RessourceDao ressourceDao = new RessourceDaoImpl();
+
+	public void ajouterRessource(Long idSeance, String titre, String nomFichier, InputStream fichier) throws LearningsException {
+		if (idSeance == null) {
+			throw new IllegalArgumentException("L'idenfiant de la séance est null.");
+		}
+		Seance seance = seanceDao.getSeance(idSeance);
+		if (seance == null) {
+			throw new IllegalArgumentException("La séance est inconnue.");
+		}
+		String chemin = this.genererCheminRessource(idSeance, nomFichier);
+		try {
+			fichierManager.ajouterFichier(chemin, fichier);
+		} catch (LearningsException e) {
+			throw new LearningsException("Problème à l'enregistrement de la ressource.", e);
+		}
+
+		Ressource ressource = new Ressource(null, titre, chemin, seance);
+		ressourceDao.ajouterRessource(ressource);
+	}
+
+	public FichierComplet getFichierRessourceAdmin(Long idRessource) throws LearningsException {
+		Ressource ressource = ressourceDao.getRessource(idRessource);
+		FichierComplet fichier = new FichierComplet();
+		fichier.setNom(FichierUtils.extraireNomFichier(ressource.getChemin()));
+		fichier.setDonnees(fichierManager.getFichier(ressource.getChemin()));
+		return fichier;
+	}
+
+	public FichierComplet getFichierRessourceEleve(Long idRessource) throws LearningsException, LearningAccessException {
+		Ressource ressource = ressourceDao.getRessource(idRessource);
+		if (ressource.getEnseignement() instanceof Seance) {
+			Seance seance = (Seance) ressource.getEnseignement();
+			if (seance.getDate().after(new Date())) {
+				throw new LearningAccessException();
+			}
+		}
+		FichierComplet fichier = new FichierComplet();
+		fichier.setNom(FichierUtils.extraireNomFichier(ressource.getChemin()));
+		fichier.setDonnees(fichierManager.getFichier(ressource.getChemin()));
+		return fichier;
+	}
+
+	protected String genererCheminRessource(Long idSeance, String nomFichier) {
+		StringBuilder chemin = new StringBuilder();
+		chemin.append("ressources/seances/");
+		chemin.append(FichierUtils.rendreUniqueNomFichier(nomFichier));
+		return chemin.toString();
+	}
+}
