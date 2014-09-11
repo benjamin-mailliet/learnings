@@ -38,7 +38,8 @@
 			  	<div class="form-group">
 			    	<label for="date" class="col-sm-2 control-label">Date</label>
 			    	<div class="col-sm-2">
-			      		<input type="date" class="form-control" id="date" name="date" value="<fmt:formatDate pattern="dd/MM/yyyy" value="${seance.date}"/>" />
+			      		<input type="text" class="form-control" id="date" name="date" value="<fmt:formatDate pattern="dd/MM/yyyy" value="${seance.date}"/>" />
+						(dd/MM/yyyy)
 		    		</div>
 			  	</div>
 			  	<div class="form-group">
@@ -51,7 +52,8 @@
 			  	<div class="form-group">
 			    	<label for="dateLimiteRendu" class="col-sm-2 control-label">Date limite de rendu</label>
 			    	<div class="col-sm-2">
-			      		<input type="datetime" class="form-control" id="dateLimiteRendu" name="dateLimiteRendu" value="<fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${seance.dateLimiteRendu}" />" />
+			      		<input type="text" class="form-control" id="dateLimiteRendu" name="dateLimiteRendu" value="<fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${seance.dateLimiteRendu}" />" />
+			      		(dd/MM/yyyy HH:mm) 
 		    		</div>
 			  	</div>
 			  	<div class="form-group">
