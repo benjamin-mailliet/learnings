@@ -70,6 +70,21 @@ public class RessourceManager {
 		return fichier;
 	}
 
+	public void supprimerRessource(Long idRessource) throws LearningsException {
+		if (idRessource == null) {
+			throw new IllegalArgumentException("L'idenfiant de la ressource est null.");
+		}
+		Ressource ressource = ressourceDao.getRessource(idRessource);
+		if (ressource != null) {
+			try {
+				fichierManager.supprimerFichier(ressource.getChemin());
+				ressourceDao.supprimerRessource(idRessource);
+			} catch (LearningsException e) {
+				throw new LearningsException("Problème à la suppression de la ressource.", e);
+			}
+		}
+	}
+
 	protected String genererCheminRessource(Long idSeance, String nomFichier) {
 		StringBuilder chemin = new StringBuilder();
 		chemin.append("ressources/seances/");

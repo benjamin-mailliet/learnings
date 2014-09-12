@@ -11,4 +11,6 @@ public interface RessourceDao {
 	public Ressource ajouterRessource(Ressource ressource);
 
 	public Ressource getRessource(Long idRessource);
+
+	public void supprimerRessource(Long idRessource);
 }

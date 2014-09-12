@@ -89,4 +89,19 @@ public class RessourceDaoImpl implements RessourceDao {
 		}
 		return ressource;
 	}
+
+	@Override
+	public void supprimerRessource(Long idRessource) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("DELETE FROM ressource WHERE id=?");
+			stmt.setLong(1, idRessource);
+			stmt.executeUpdate();
+
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
+		}
+	}
 }

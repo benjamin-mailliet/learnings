@@ -88,4 +88,16 @@ public class RessourceDaoTestCase {
 		Assert.assertEquals("cours de debuggage", ressource.getEnseignement().getDescription());
 		Assert.assertEquals(new GregorianCalendar(2014, Calendar.AUGUST, 26).getTime(), ((Seance) ressource.getEnseignement()).getDate());
 	}
+
+	@Test
+	public void testSupprimerRessource() throws Exception {
+		ressourceDao.supprimerRessource(1L);
+
+		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
+		Statement stmt = connection.createStatement();
+		ResultSet results = stmt.executeQuery("SELECT * FROM ressource WHERE id=1");
+		if (results.next()) {
+			Assert.fail();
+		}
+	}
 }

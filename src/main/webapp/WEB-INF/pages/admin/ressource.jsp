@@ -34,7 +34,10 @@
 							<td>${ressource.id}</td>
 							<td>${ressource.titre}</td>
 							<td><a href="../admin/telechargerRessource?id=${ressource.id}">${ressource.chemin}</a></td>
-							<td></td>
+							<td>
+								<a href="supprimerressource?idSeance=${seance.id}&amp;idRessource=${ressource.id}" class="btn btn-danger btn-xs" title="Supprimer la ressource"><span class="glyphicon glyphicon-trash"></span></a>
+								
+							</td>
 						</tr>
 					</c:forEach>
 					<tr>
