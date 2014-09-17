@@ -70,8 +70,8 @@ public class SeanceManagerTestCase {
 
 		List<Ressource> ressources = new ArrayList<Ressource>();
 		ressources.add(ressource1);
-		Mockito.when(ressourceDao.getRessourcesBySeance(Mockito.eq(seance1))).thenReturn(ressources);
-		Mockito.when(ressourceDao.getRessourcesBySeance(Mockito.eq(seance2))).thenReturn(new ArrayList<Ressource>());
+		Mockito.when(ressourceDao.getRessources(Mockito.eq(seance1))).thenReturn(ressources);
+		Mockito.when(ressourceDao.getRessources(Mockito.eq(seance2))).thenReturn(new ArrayList<Ressource>());
 
 		Mockito.when(seanceDao.getSeance(Mockito.eq(1L))).thenReturn(seance1);
 		Mockito.when(seanceDao.getSeance(Mockito.eq(2L))).thenReturn(seance2);
@@ -104,9 +104,9 @@ public class SeanceManagerTestCase {
 		Assert.assertEquals(0, seance2.getRessources().size());
 
 		Mockito.verify(seanceDao).listerSeances();
-		Mockito.verify(ressourceDao).getRessourcesBySeance(Mockito.eq(seance1));
-		Mockito.verify(ressourceDao).getRessourcesBySeance(Mockito.eq(seance2));
-		Mockito.verify(ressourceDao, Mockito.times(2)).getRessourcesBySeance(Mockito.any(Seance.class));
+		Mockito.verify(ressourceDao).getRessources(Mockito.eq(seance1));
+		Mockito.verify(ressourceDao).getRessources(Mockito.eq(seance2));
+		Mockito.verify(ressourceDao, Mockito.times(2)).getRessources(Mockito.any(Seance.class));
 	}
 
 	@Test
@@ -200,8 +200,8 @@ public class SeanceManagerTestCase {
 
 		Mockito.verify(seanceDao).getSeance(Mockito.eq(1L));
 		Mockito.verify(seanceDao).getSeance(Mockito.anyLong());
-		Mockito.verify(ressourceDao).getRessourcesBySeance(Mockito.eq(seance1));
-		Mockito.verify(ressourceDao).getRessourcesBySeance(Mockito.any(Seance.class));
+		Mockito.verify(ressourceDao).getRessources(Mockito.eq(seance1));
+		Mockito.verify(ressourceDao).getRessources(Mockito.any(Seance.class));
 	}
 
 	@Test

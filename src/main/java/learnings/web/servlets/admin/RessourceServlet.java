@@ -11,9 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import learnings.exceptions.LearningsException;
+import learnings.managers.ProjetManager;
 import learnings.managers.RessourceManager;
 import learnings.managers.SeanceManager;
-import learnings.model.Seance;
+import learnings.model.Enseignement;
 import learnings.web.servlets.GenericLearningsServlet;
 
 @WebServlet(urlPatterns = { "/admin/ressource" })
@@ -25,34 +26,64 @@ public class RessourceServlet extends GenericLearningsServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Long idSeance = null;
+		Long idProjet = null;
+		String type = null;
 		try {
-			idSeance = Long.parseLong(request.getParameter("idSeance"));
+			idProjet = Long.parseLong(request.getParameter("idProjet"));
+			type = "projet";
 		} catch (NumberFormatException e) {
 		}
-		if (idSeance == null) {
-			this.ajouterMessageErreur(request, "Une séance doit être sélectionnée.");
+		try {
+			idSeance = Long.parseLong(request.getParameter("idSeance"));
+			type = "seance";
+		} catch (NumberFormatException e) {
+		}
+		Enseignement enseignement = null;
+		if (idSeance == null && idProjet == null) {
+			this.ajouterMessageErreur(request, "Une séance ou un projet doit être sélectionné.");
 			response.sendRedirect("listeseances");
 		} else {
-			Seance seance = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
-			request.setAttribute("seance", seance);
+			if (idSeance != null) {
+				enseignement = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
+			} else if (idProjet != null) {
+				enseignement = ProjetManager.getInstance().getProjetAvecRessources(idProjet);
+			}
+			request.setAttribute("enseignement", enseignement);
+			request.setAttribute("type", type);
 
 			RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/ressource.jsp");
 			view.forward(request, response);
 		}
+
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
+		Long idSeance = null;
+		Long idProjet = null;
 		try {
-			Long idSeance = Long.parseLong(request.getParameter("seance"));
+			idProjet = Long.parseLong(request.getParameter("idProjet"));
+		} catch (NumberFormatException e) {
+		}
+		try {
+			idSeance = Long.parseLong(request.getParameter("idSeance"));
+		} catch (NumberFormatException e) {
+		}
+		try {
 			Part fichier = request.getPart("fichier");
-			RessourceManager.getInstance().ajouterRessource(idSeance, request.getParameter("titre"), this.getNomDuFichier(fichier), fichier.getInputStream());
+			RessourceManager.getInstance().ajouterRessource(idSeance, idProjet, request.getParameter("titre"), this.getNomDuFichier(fichier),
+					fichier.getInputStream());
 		} catch (IllegalArgumentException | LearningsException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
 			e.printStackTrace();
 		}
-		response.sendRedirect("ressource?idSeance=" + request.getParameter("idSeance"));
+		if (idSeance != null) {
+			response.sendRedirect("ressource?idSeance=" + idSeance);
+		} else if (idProjet != null) {
+			response.sendRedirect("ressource?idProjet=" + idProjet);
+		} else {
+			response.sendRedirect("ressource");
+		}
 	}
-
 }

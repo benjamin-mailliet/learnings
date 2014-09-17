@@ -20,11 +20,26 @@ public class SupprimerRessourceServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Long idSeance = null;
+		Long idProjet = null;
+		try {
+			idProjet = Long.parseLong(request.getParameter("idProjet"));
+		} catch (NumberFormatException e) {
+		}
+		try {
+			idSeance = Long.parseLong(request.getParameter("idSeance"));
+		} catch (NumberFormatException e) {
+		}
 		try {
 			Long idRessource = Long.parseLong(request.getParameter("idRessource"));
-			Long idSeance = Long.parseLong(request.getParameter("idSeance"));
 			RessourceManager.getInstance().supprimerRessource(idRessource);
-			response.sendRedirect("ressource?idSeance=" + idSeance);
+			if (idSeance != null) {
+				response.sendRedirect("ressource?idSeance=" + idSeance);
+			} else if (idProjet != null) {
+				response.sendRedirect("ressource?idProjet=" + idProjet);
+			} else {
+				response.sendRedirect("ressource");
+			}
 		} catch (NumberFormatException e) {
 			this.ajouterMessageErreur(request, "L'identifiant de la ressource est manquant.");
 			response.sendRedirect("listeseances");

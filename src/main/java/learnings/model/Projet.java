@@ -3,7 +3,7 @@ package learnings.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class ProjetTransversal extends Enseignement implements Serializable {
+public class Projet extends Enseignement implements Serializable {
 
 	private static final long serialVersionUID = 3314226385866295755L;
 
@@ -22,7 +22,7 @@ public class ProjetTransversal extends Enseignement implements Serializable {
 		return dateLimiteRenduLot2;
 	}
 
-	public ProjetTransversal(Long id, String titre, String description, Date dateLimiteRenduLot1, Date dateLimiteRenduLot2) {
+	public Projet(Long id, String titre, String description, Date dateLimiteRenduLot1, Date dateLimiteRenduLot2) {
 		super(id, titre, description);
 		this.dateLimiteRenduLot1 = dateLimiteRenduLot1;
 		this.dateLimiteRenduLot2 = dateLimiteRenduLot2;

@@ -31,7 +31,7 @@ public class SeanceManager {
 	public List<Seance> listerSeances() {
 		List<Seance> listeCours = seanceDao.listerSeances();
 		for (Seance seanceCourante : listeCours) {
-			seanceCourante.setRessources(ressourceDao.getRessourcesBySeance(seanceCourante));
+			seanceCourante.setRessources(ressourceDao.getRessources(seanceCourante));
 		}
 		return listeCours;
 	}
@@ -81,7 +81,7 @@ public class SeanceManager {
 			throw new IllegalArgumentException("L'identifiant de la séance est inconnu.");
 		}
 
-		seance.setRessources(ressourceDao.getRessourcesBySeance(seance));
+		seance.setRessources(ressourceDao.getRessources(seance));
 
 		return seance;
 	}

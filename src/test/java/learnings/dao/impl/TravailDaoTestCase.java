@@ -10,7 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import learnings.dao.TravailDao;
-import learnings.model.ProjetTransversal;
+import learnings.model.Projet;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
@@ -82,7 +82,7 @@ public class TravailDaoTestCase {
 		travail.setChemin("/chemin");
 		travail.setDateRendu(new GregorianCalendar(2014, Calendar.AUGUST, 28, 8, 38).getTime());
 		travail.setNote(new BigDecimal("16.5"));
-		travail.setEnseignement(new ProjetTransversal(1L, "projet", "Projet individuel", new GregorianCalendar(2014, Calendar.NOVEMBER, 15).getTime(),
+		travail.setEnseignement(new Projet(1L, "projet", "Projet individuel", new GregorianCalendar(2014, Calendar.NOVEMBER, 15).getTime(),
 				new GregorianCalendar(2015, Calendar.JANUARY, 15).getTime()));
 		travail.setCommentaire("monCommentaire");
 

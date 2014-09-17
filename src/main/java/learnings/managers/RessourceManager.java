@@ -3,12 +3,15 @@ package learnings.managers;
 import java.io.InputStream;
 import java.util.Date;
 
+import learnings.dao.ProjetDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
+import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.exceptions.LearningAccessException;
 import learnings.exceptions.LearningsException;
+import learnings.model.Enseignement;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 import learnings.pojos.FichierComplet;
@@ -27,15 +30,22 @@ public class RessourceManager {
 
 	private FichierManager fichierManager = new StockageLocalFichierManagerImpl();
 	private SeanceDao seanceDao = new SeanceDaoImpl();
+	private ProjetDao projetDao = new ProjetDaoImpl();
 	private RessourceDao ressourceDao = new RessourceDaoImpl();
 
-	public void ajouterRessource(Long idSeance, String titre, String nomFichier, InputStream fichier) throws LearningsException {
-		if (idSeance == null) {
-			throw new IllegalArgumentException("L'idenfiant de la séance est null.");
+	public void ajouterRessource(Long idSeance, Long idProjet, String titre, String nomFichier, InputStream fichier) throws LearningsException {
+		if (idSeance == null && idProjet == null) {
+			throw new IllegalArgumentException("Les idenfiants d'enseignement sont null.");
 		}
-		Seance seance = seanceDao.getSeance(idSeance);
-		if (seance == null) {
-			throw new IllegalArgumentException("La séance est inconnue.");
+		Enseignement enseignement = null;
+		if (idSeance != null) {
+			enseignement = seanceDao.getSeance(idSeance);
+		}
+		if (idProjet != null) {
+			enseignement = projetDao.getProjet(idProjet);
+		}
+		if (enseignement == null) {
+			throw new IllegalArgumentException("L'enseignement est inconnu.");
 		}
 		String chemin = this.genererCheminRessource(idSeance, nomFichier);
 		try {
@@ -44,7 +54,7 @@ public class RessourceManager {
 			throw new LearningsException("Problème à l'enregistrement de la ressource.", e);
 		}
 
-		Ressource ressource = new Ressource(null, titre, chemin, seance);
+		Ressource ressource = new Ressource(null, titre, chemin, enseignement);
 		ressourceDao.ajouterRessource(ressource);
 	}
 

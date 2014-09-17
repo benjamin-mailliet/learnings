@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import learnings.dao.RessourceDao;
+import learnings.model.Projet;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 
@@ -28,17 +29,20 @@ public class RessourceDaoTestCase {
 		stmt.executeUpdate("DELETE FROM travailutilisateur");
 		stmt.executeUpdate("DELETE FROM travail");
 		stmt.executeUpdate("DELETE FROM seance");
+		stmt.executeUpdate("DELETE FROM projettransversal");
+		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`, `datelimiterendulot2`) VALUES(1,'Projet','Projet','2014-08-26 10:00', '2014-09-26 10:00')");
 		stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`, `type`) VALUES(1,'cours1','cours de debuggage','2014-08-26', 'COURS')");
 		stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(1,'ressource1','chemin ressource de cours 1',1)");
 		stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(2,'ressource2','chemin ressource de cours 2',1)");
 		stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(3,'ressource3','ressource de tp',1)");
+		stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`projettransversal_id`) VALUES(4,'ressourceProjet','ressource de projet',1)");
 		stmt.close();
 		connection.close();
 	}
 
 	@Test
-	public void testListerCours() {
-		List<Ressource> listeRessources = ressourceDao.getRessourcesBySeance(new Seance(1L, "titre", "desc", new Date()));
+	public void testListerRessourcesSeance() {
+		List<Ressource> listeRessources = ressourceDao.getRessources(new Seance(1L, "titre", "desc", new Date()));
 
 		Assert.assertEquals(3, listeRessources.size());
 
@@ -48,6 +52,18 @@ public class RessourceDaoTestCase {
 		Assert.assertEquals("titre", listeRessources.get(0).getEnseignement().getTitre());
 
 		Assert.assertEquals(2L, listeRessources.get(1).getId().longValue());
+	}
+
+	@Test
+	public void testListerRessourcesProjet() {
+		List<Ressource> listeRessources = ressourceDao.getRessources(new Projet(1L, "projet", null, null, null));
+
+		Assert.assertEquals(1, listeRessources.size());
+
+		Assert.assertEquals(4L, listeRessources.get(0).getId().longValue());
+		Assert.assertEquals("ressourceProjet", listeRessources.get(0).getTitre());
+		Assert.assertEquals("ressource de projet", listeRessources.get(0).getChemin());
+		Assert.assertEquals("projet", listeRessources.get(0).getEnseignement().getTitre());
 	}
 
 	@Test
