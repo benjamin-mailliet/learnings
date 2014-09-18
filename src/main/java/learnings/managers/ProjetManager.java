@@ -64,4 +64,13 @@ public class ProjetManager {
 		}
 		projetDao.modifierProjet(projet);
 	}
+
+	public Projet getLastProjetAvecRessources() {
+		Long idLastProjet = projetDao.getLastProjetId();
+		if (idLastProjet != null) {
+			return getProjetAvecRessources(idLastProjet);
+		} else {
+			return null;
+		}
+	}
 }

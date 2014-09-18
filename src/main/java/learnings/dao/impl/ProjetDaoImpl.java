@@ -35,6 +35,25 @@ public class ProjetDaoImpl extends GenericDaoImpl implements ProjetDao {
 	}
 
 	@Override
+	public Long getLastProjetId() {
+		Long lastId = null;
+		try {
+			Connection connection = getConnection();
+			Statement stmt = connection.createStatement();
+
+			ResultSet results = stmt.executeQuery("SELECT id FROM projettransversal ORDER BY datelimiterendulot2 DESC LIMIT 1");
+			if (results.next()) {
+				lastId = results.getLong("id");
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
+		}
+		return lastId;
+	}
+
+	@Override
 	public Projet getProjet(Long id) {
 		Projet projet = null;
 		try {

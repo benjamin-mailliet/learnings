@@ -13,4 +13,6 @@ public interface ProjetDao {
 	public Projet ajouterProjet(Projet projet);
 
 	public void modifierProjet(Projet projet);
+
+	public Long getLastProjetId();
 }
