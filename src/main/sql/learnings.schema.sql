@@ -40,7 +40,8 @@ CREATE TABLE `ressource` (
 
 CREATE TABLE `travail` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `chemin` VARCHAR(1000) NOT NULL,
+  `chemin` VARCHAR(1000),
+  `urlRepository` VARCHAR(1000),
   `note` decimal(4,2) DEFAULT NULL,
   `dateRendu` DATETIME NOT NULL,
   `seance_id` INT,

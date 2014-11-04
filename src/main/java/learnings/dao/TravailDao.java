@@ -12,6 +12,8 @@ public interface TravailDao {
 	public void ajouterUtilisateur(Long idTravail, Long idUtilisateur);
 
 	public Travail getTravailUtilisateurParSeance(Long idSeance, Long idUtilisateur);
+	
+	public Travail getTravailUtilisateurParProjet(Long idProjet, Long idUtilisateur);
 
 	public List<Travail> listerTravauxParSeance(Long idSeance);
 
@@ -21,5 +23,5 @@ public interface TravailDao {
 
 	public Travail getTravail(Long idTravail);
 
-	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin, String commentaire);
+	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin, String urlRepository, String commentaire);
 }

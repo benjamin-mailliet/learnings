@@ -2,6 +2,7 @@ package learnings.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class Projet extends Enseignement implements Serializable {
 
@@ -9,9 +10,19 @@ public class Projet extends Enseignement implements Serializable {
 
 	private Date dateLimiteRenduLot1;
 	private Date dateLimiteRenduLot2;
+	private List<Travail> travauxRendus;
+	
 
 	public Date getDateLimiteRenduLot1() {
 		return dateLimiteRenduLot1;
+	}
+
+	public List<Travail> getTravauxRendus() {
+		return travauxRendus;
+	}
+
+	public void setTravauxRendus(List<Travail> travauxRendus) {
+		this.travauxRendus = travauxRendus;
 	}
 
 	public void setDateLimiteRenduLot1(Date dateLimiteRenduLot1) {
@@ -31,4 +42,6 @@ public class Projet extends Enseignement implements Serializable {
 	public void setDateLimiteRenduLot2(Date dateLimiteRenduLot2) {
 		this.dateLimiteRenduLot2 = dateLimiteRenduLot2;
 	}
+	
+	
 }

@@ -4,14 +4,17 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import learnings.dao.ProjetDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
+import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.enums.TypeSeance;
 import learnings.exceptions.LearningsException;
+import learnings.model.Projet;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
@@ -24,10 +27,14 @@ public class TravailManager {
 	private static int NOMBRE_OCTETS_IN_MO = 1024 * 1024;
 
 	private static Logger LOGGER = Logger.getLogger(TravailManager.class.getName());
+	
+	private static String TYPE_TRAVAIL_TP = "tp";
+	private static String TYPE_TRAVAIL_PROJET = "projet";
 
 	private SeanceDao seanceDao = new SeanceDaoImpl();
 	private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 	private TravailDao travailDao = new TravailDaoImpl();
+	private ProjetDao projetDao = new ProjetDaoImpl();
 
 	private FichierManager fichierManager = new StockageLocalFichierManagerImpl();
 
@@ -51,7 +58,7 @@ public class TravailManager {
 			throw new IllegalArgumentException("Le fichier est trop gros.");
 		}
 
-		String chemin = genererCheminTravail(idSeance, nomFichier);
+		String chemin = genererCheminTravail(idSeance, nomFichier, TYPE_TRAVAIL_TP);
 
 		Travail travail = new Travail();
 		travail.setEnseignement(tp);
@@ -78,17 +85,39 @@ public class TravailManager {
 
 	protected void modifierTravail(InputStream fichier, Travail travailExistant, Travail travail) throws LearningsException {
 		try {
-			fichierManager.supprimerFichier(travailExistant.getChemin());
-			fichierManager.ajouterFichier(travail.getChemin(), fichier);
-			travailDao.mettreAJourTravail(travailExistant.getId(), new Date(), travail.getChemin(), travail.getCommentaire());
+			if(travailExistant.getChemin()!=null && !"".equals(travailExistant.getChemin())){
+				fichierManager.supprimerFichier(travailExistant.getChemin());
+			}
+			if(fichier!=null){
+				fichierManager.ajouterFichier(travail.getChemin(), fichier);
+			}
+			travailDao.mettreAJourTravail(travailExistant.getId(), new Date(), travail.getChemin(), travail.getUrlRepository(), travail.getCommentaire());
 		} catch (LearningsException e) {
 			throw new LearningsException("Problème à l'enregistrement du travail.", e);
 		}
 	}
 
+	protected void ajouterTravailForProjet(Utilisateur eleve, Travail travail) throws LearningsException {
+		ajouterTravail(null,eleve,null,travail);
+	}
+	
+	protected void ajouterTravailForProjetWithFichier(InputStream fichier, Utilisateur eleve, Travail travail) throws LearningsException {
+		ajouterTravail(fichier, eleve, null, travail);
+	}
+	
+	protected void modifierTravailForProjet(Travail travailExistant, Travail travail) throws LearningsException {
+		modifierTravail(null,travailExistant,travail);
+	}
+	
+	protected void modifierTravailForProjetWithFichier(InputStream fichier, Travail travailExistant, Travail travail) throws LearningsException {
+		modifierTravail(fichier,travailExistant,travail);
+	}
+	
 	protected void ajouterTravail(InputStream fichier, Utilisateur utilisateur1, Utilisateur utilisateur2, Travail travail) throws LearningsException {
 		try {
-			fichierManager.ajouterFichier(travail.getChemin(), fichier);
+			if(fichier!=null){
+				fichierManager.ajouterFichier(travail.getChemin(), fichier);
+			}
 		} catch (LearningsException e) {
 			throw new LearningsException("Problème à l'enregistrement du travail.", e);
 		}
@@ -128,10 +157,21 @@ public class TravailManager {
 		}
 		throw new LearningsException("Les deux utilisateur ont déjà rendu un travail dans des binômes différents.");
 	}
+	
+	protected Travail verifierExistanceTravail(Long idProjet, Long idUtilisateur) throws LearningsException {
+		Travail travailUtilisateur = travailDao.getTravailUtilisateurParProjet(idProjet, idUtilisateur);
+		// Pas de binôme
+			if (travailUtilisateur == null) {
+				return null;
+			}
+			return travailUtilisateur;
+		}
 
-	protected String genererCheminTravail(Long idSeance, String nomFichier) {
+	protected String genererCheminTravail(Long idSeance, String nomFichier, String typeTravail) {
 		StringBuilder chemin = new StringBuilder();
-		chemin.append("travaux/tp/");
+		chemin.append("travaux/");
+		chemin.append(typeTravail);
+		chemin.append("/");
 		chemin.append(idSeance);
 		chemin.append("/");
 		chemin.append(FichierUtils.rendreUniqueNomFichier(nomFichier));
@@ -168,5 +208,74 @@ public class TravailManager {
 			throw new IllegalArgumentException("Le travail ne peut pas être rendu maintenant");
 		}
 		return seance;
+	}
+	
+	protected Projet verifierProjetAvantRendu(Long idProjet) {
+		if (idProjet == null) {
+			throw new IllegalArgumentException("L'identifiant du projet est incorrect");
+		}
+		Projet projet= projetDao.getProjet(idProjet);
+		if (projet == null) {
+			throw new IllegalArgumentException("L'identifiant du tp est incorrect");
+		}
+		return projet;
+	}
+	
+
+	public void rendreProjetWithRepo(Long projetId, Long utilisateurId,
+			String commentaire, String urlRepository) throws LearningsException {
+		Projet projet= this.verifierProjetAvantRendu(projetId);
+		Utilisateur eleve = this.verifierUtilisateurAvantRendu(utilisateurId, true);
+		
+		Travail travailExistant = this.verifierExistanceTravail(projetId, utilisateurId);
+
+		Travail travail = initTravail(commentaire, projet, null, urlRepository);
+		
+		if (travailExistant == null) {
+			ajouterTravailForProjet(eleve, travail);
+		} else {
+			modifierTravailForProjet(travailExistant, travail);
+		}
+
+		LOGGER.info(String.format("rendreProjet|utilisateur=%d|urlRepository=%d;%s", utilisateurId, travail.getId(), urlRepository));
+		
+	}
+
+	public void rendreProjetWithFichier(Long projetId, Long utilisateurId,
+			String commentaire, String nomFichier, InputStream fichier,
+			long tailleFichier) throws LearningsException {
+		
+		Projet projet= this.verifierProjetAvantRendu(projetId);
+		Utilisateur eleve = this.verifierUtilisateurAvantRendu(utilisateurId, true);
+		
+		if (tailleFichier / NOMBRE_OCTETS_IN_MO > 10) {
+			throw new IllegalArgumentException("Le fichier est trop gros.");
+		}
+
+		String chemin = genererCheminTravail(projetId, nomFichier,TYPE_TRAVAIL_PROJET);
+		
+		Travail travailExistant = this.verifierExistanceTravail(projetId, utilisateurId);
+
+		Travail travail = initTravail(commentaire, projet, chemin, null);
+
+		if (travailExistant == null) {
+			ajouterTravailForProjetWithFichier(fichier, eleve, travail);
+		} else {
+			modifierTravailForProjetWithFichier(fichier, travailExistant, travail);
+		}
+
+		LOGGER.info(String.format("rendreProjet|utilisateur=%d|fichier=%d;%s", utilisateurId, travail.getId(), nomFichier));
+
+		
+	}
+
+	private Travail initTravail(String commentaire, Projet projet, String chemin, String urlRepository) {
+		Travail travail = new Travail();
+		travail.setEnseignement(projet);
+		travail.setDateRendu(new Date());
+		travail.setChemin(chemin);
+		travail.setCommentaire(commentaire);
+		travail.setUrlRepository(urlRepository);
+		return travail;
 	}
 }

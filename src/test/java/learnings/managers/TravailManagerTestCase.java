@@ -56,11 +56,11 @@ public class TravailManagerTestCase {
 	private Seance seanceFuture = new Seance(5L, "seance1", "description1", new GregorianCalendar(3000, Calendar.SEPTEMBER, 1).getTime(), true,
 			new GregorianCalendar(3000, Calendar.SEPTEMBER, 1).getTime(), TypeSeance.TP);
 	private Travail travail1 = new Travail(1L, seance1, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 5, 12, 50).getTime(),
-			"/chemin/12346578-fichier1.zip", "commentaire1");
+			"/chemin/12346578-fichier1.zip", "http://github1","commentaire1");
 	private Travail travail1SansId = new Travail(null, seance1, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 5, 12, 50).getTime(),
-			"/chemin/12346578-fichier1.zip", "commentaire1");
+			"/chemin/12346578-fichier1.zip","http://github1", "commentaire1");
 	private Travail travail2 = new Travail(2L, seance1, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 13, 51).getTime(),
-			"/chemin/12346578-fichier2.zip", "commentaire2");
+			"/chemin/12346578-fichier2.zip","http://github2", "commentaire2");
 
 	private InputStream inputStream1 = new ByteArrayInputStream(new byte[] {});
 	private InputStream inputStream2 = new ByteArrayInputStream(new byte[] {});
@@ -129,9 +129,9 @@ public class TravailManagerTestCase {
 		Mockito.verify(fichierManager).supprimerFichier(Mockito.anyString());
 		Mockito.verify(fichierManager).ajouterFichier(Mockito.eq("/chemin/12346578-fichier2.zip"), Mockito.eq(inputStream2));
 		Mockito.verify(fichierManager).ajouterFichier(Mockito.anyString(), Mockito.any(InputStream.class));
-		Mockito.verify(travailDao).mettreAJourTravail(Mockito.eq(1L), Mockito.any(Date.class), Mockito.eq("/chemin/12346578-fichier2.zip"),
+		Mockito.verify(travailDao).mettreAJourTravail(Mockito.eq(1L), Mockito.any(Date.class), Mockito.eq("/chemin/12346578-fichier2.zip"), Mockito.eq("http://github2"),
 				Mockito.eq("commentaire2"));
-		Mockito.verify(travailDao).mettreAJourTravail(Mockito.anyLong(), Mockito.any(Date.class), Mockito.anyString(), Mockito.anyString());
+		Mockito.verify(travailDao).mettreAJourTravail(Mockito.anyLong(), Mockito.any(Date.class), Mockito.anyString(),Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test
@@ -144,7 +144,7 @@ public class TravailManagerTestCase {
 			Mockito.verify(fichierManager).supprimerFichier(Mockito.anyString());
 			Mockito.verify(fichierManager, Mockito.never()).ajouterFichier(Mockito.anyString(), Mockito.any(InputStream.class));
 			Mockito.verify(travailDao, Mockito.never())
-					.mettreAJourTravail(Mockito.anyLong(), Mockito.any(Date.class), Mockito.anyString(), Mockito.anyString());
+					.mettreAJourTravail(Mockito.anyLong(), Mockito.any(Date.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		}
 
 	}

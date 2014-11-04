@@ -106,7 +106,7 @@ public class TravailDaoTestCase {
 
 	@Test
 	public void testMettreAJourTravail() throws Exception {
-		travailDao.mettreAJourTravail(1L, new GregorianCalendar(2014, Calendar.SEPTEMBER, 1, 13, 36, 25).getTime(), "/nouveau/chemin/fichier.zip",
+		travailDao.mettreAJourTravail(1L, new GregorianCalendar(2014, Calendar.SEPTEMBER, 1, 13, 36, 25).getTime(), "/nouveau/chemin/fichier.zip", "http://git/myproject",
 				"nouveauCommentaire");
 
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
@@ -115,6 +115,7 @@ public class TravailDaoTestCase {
 		if (results.next()) {
 			Assert.assertEquals(1L, results.getLong("id"));
 			Assert.assertEquals("/nouveau/chemin/fichier.zip", results.getString("chemin"));
+			Assert.assertEquals("http://git/myproject", results.getString("urlRepository"));
 			Assert.assertEquals("nouveauCommentaire", results.getString("commentaire"));
 			Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 1, 13, 36, 25).getTime(), results.getTimestamp("dateRendu"));
 			Assert.assertEquals(1L, results.getLong("seance_id"));

@@ -10,6 +10,7 @@
 				<li class="${param.pageSelectionnee == 'liensutiles' ? 'active' : ''}"><a href="liensutiles">Liens utiles</a></li>
 				<li class="${param.pageSelectionnee == 'remisetp' ? 'active' : ''}"><a href="remisetp">Rendre un TP</a></li>
 				<li class="${param.pageSelectionnee == 'projet' ? 'active' : ''}"><a href="projet">Projet personnel</a></li>
+				<li class="${param.pageSelectionnee == 'remiseprojet' ? 'active' : ''}"><a href="remiseprojet">Rendre le projet</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right ">
 				<c:if test="${sessionScope.utilisateur.admin}">

@@ -4,9 +4,13 @@ import java.util.List;
 
 import learnings.dao.ProjetDao;
 import learnings.dao.RessourceDao;
+import learnings.dao.TravailDao;
 import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
+import learnings.dao.impl.TravailDaoImpl;
 import learnings.model.Projet;
+import learnings.model.Travail;
+import learnings.pojos.ProjetAvecTravail;
 
 public class ProjetManager {
 
@@ -21,6 +25,7 @@ public class ProjetManager {
 
 	private ProjetDao projetDao = new ProjetDaoImpl();
 	private RessourceDao ressourceDao = new RessourceDaoImpl();
+	private TravailDao travailDao = new TravailDaoImpl();
 
 	public List<Projet> listerProjets() {
 		return projetDao.listerProjets();
@@ -72,5 +77,19 @@ public class ProjetManager {
 		} else {
 			return null;
 		}
+	}
+
+	public ProjetAvecTravail getProjetAvecTravail(Long idUtilisateur) {
+		if (idUtilisateur == null) {
+			throw new IllegalArgumentException("L'identifiant de l'utilisateur est incorrect.");
+		}
+		ProjetAvecTravail projetAvecTravail = new ProjetAvecTravail();
+		Long lastProjetId = projetDao.getLastProjetId();
+		projetAvecTravail.setProjet(projetDao.getProjet(lastProjetId));
+		
+		Travail travailRendu = travailDao.getTravailUtilisateurParProjet(lastProjetId,idUtilisateur);
+		projetAvecTravail.setTravail(travailRendu);
+
+		return projetAvecTravail;
 	}
 }

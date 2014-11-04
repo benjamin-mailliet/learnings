@@ -18,11 +18,12 @@ public class Travail implements Serializable {
 	private String chemin;
 	private String commentaire;
 	private List<Utilisateur> utilisateurs;
+	private String urlRepository;
 
 	public Travail() {
 	}
 
-	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire) {
+	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire, String urlRepository) {
 		super();
 		this.id = id;
 		this.enseignement = enseignement;
@@ -30,6 +31,7 @@ public class Travail implements Serializable {
 		this.dateRendu = dateRendu;
 		this.chemin = chemin;
 		this.commentaire = commentaire;
+		this.urlRepository = urlRepository;
 	}
 
 	public Enseignement getEnseignement() {
@@ -90,6 +92,14 @@ public class Travail implements Serializable {
 
 	public void setUtilisateurs(List<Utilisateur> utilisateurs) {
 		this.utilisateurs = utilisateurs;
+	}
+	
+	public String getUrlRepository() {
+		return urlRepository;
+	}
+
+	public void setUrlRepository(String urlRepository) {
+		this.urlRepository = urlRepository;
 	}
 
 }
