@@ -1,6 +1,10 @@
 package learnings.web.servlets;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,6 +13,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
+import com.mysql.fabric.xmlrpc.base.Data;
 
 import learnings.exceptions.LearningsException;
 import learnings.managers.ProjetManager;
@@ -19,7 +25,6 @@ import learnings.pojos.ProjetAvecTravail;
 @MultipartConfig
 public class RemiseProjetServlet extends GenericLearningsServlet {
 
-	
 	private static final long serialVersionUID = -3575126338268294035L;
 
 	@Override
@@ -32,7 +37,7 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 		view.forward(request, response);
 
 	}
-
+	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
@@ -44,7 +49,7 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 			String urlRepository = request.getParameter("urlRepo");
 			Part fichier = request.getPart("fichierprojet");
 			if(urlRepository!= null && (!"".equals(urlRepository)) && fichier.getSize() > 0L){
-				this.ajouterMessageErreur(request, "Veuillez ne remplir qu'un champ de rendu, l'URL ou le fichier.");
+				this.ajouterMessageErreur(request, "Veuillez ne renseigner qu'une méthode de rendu de projet : l'URL ou le fichier.");
 			}else if(urlRepository!= null && !"".equals(urlRepository)){
 				TravailManager.getInstance().rendreProjetWithRepo(projetId, utilisateur1Id, commentaire, urlRepository);
 				this.ajouterMessageSucces(request, "Le projet a bien été enregistré.");

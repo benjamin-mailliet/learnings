@@ -237,7 +237,7 @@ public class TravailManager {
 			modifierTravailForProjet(travailExistant, travail);
 		}
 
-		LOGGER.info(String.format("rendreProjet|utilisateur=%d|urlRepository=%d;%s", utilisateurId, travail.getId(), urlRepository));
+		LOGGER.info(String.format("rendreProjet|utilisateur=%d|urlRepository=%s", utilisateurId, urlRepository));
 		
 	}
 
@@ -264,7 +264,7 @@ public class TravailManager {
 			modifierTravailForProjetWithFichier(fichier, travailExistant, travail);
 		}
 
-		LOGGER.info(String.format("rendreProjet|utilisateur=%d|fichier=%d;%s", utilisateurId, travail.getId(), nomFichier));
+		LOGGER.info(String.format("rendreProjet|utilisateur=%d|fichier=%s", utilisateurId, nomFichier));
 
 		
 	}

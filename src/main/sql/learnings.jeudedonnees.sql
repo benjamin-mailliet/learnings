@@ -26,3 +26,6 @@ VALUES(2, 'http://www.yahoo.fr', 'Cours 1 : HTML / CSS', 1);
 INSERT INTO ressource
 (id, chemin, titre, seance_id)
 VALUES(1, 'http://www.google.fr', 'TP1 : les animaux laids', 2);
+
+DELETE FROM projettransversal;
+INSERT INTO projettransversal VALUES (1, 'Projet de ouf', 'Desription du projet de ouf', '2014-11-16 23:59:00', '2015-01-18 23:59:00');
