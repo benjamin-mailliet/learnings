@@ -60,7 +60,7 @@ public class TravailManagerTestCase {
 	private Travail travail1SansId = new Travail(null, seance1, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 5, 12, 50).getTime(),
 			"/chemin/12346578-fichier1.zip","http://github1", "commentaire1");
 	private Travail travail2 = new Travail(2L, seance1, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 13, 51).getTime(),
-			"/chemin/12346578-fichier2.zip","http://github2", "commentaire2");
+			"/chemin/12346578-fichier2.zip", "commentaire2","http://github2");
 
 	private InputStream inputStream1 = new ByteArrayInputStream(new byte[] {});
 	private InputStream inputStream2 = new ByteArrayInputStream(new byte[] {});
