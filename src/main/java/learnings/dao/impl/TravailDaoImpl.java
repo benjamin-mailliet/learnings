@@ -219,4 +219,24 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 		}
 		return travail;
 	}
+
+	@Override
+	public List<Travail> listerTravauxParProjet(Long idProjet) {
+		List<Travail> listeTravaux = new ArrayList<Travail>();
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM travail t  WHERE t.projettransversal_id = ?");
+			stmt.setLong(1, idProjet);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()) {
+				listeTravaux.add(new Travail(results.getLong("id"), new Projet(idProjet, null, null, null,null), results.getBigDecimal("note"), results
+						.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
+		}
+		return listeTravaux;
+	}
 }

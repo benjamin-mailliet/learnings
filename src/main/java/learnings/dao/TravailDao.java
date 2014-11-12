@@ -24,4 +24,6 @@ public interface TravailDao {
 	public Travail getTravail(Long idTravail);
 
 	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin, String urlRepository, String commentaire);
+
+	public List<Travail> listerTravauxParProjet(Long idProjet);
 }

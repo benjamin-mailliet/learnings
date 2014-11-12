@@ -12,6 +12,7 @@ import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.model.Projet;
+import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.pojos.ProjetAvecTravail;
 
@@ -116,5 +117,21 @@ public class ProjetManager {
 		mapNbJoursRestants.put(KEY_NB_JOURS_LOT_1, nbJoursRestantsLot1);
 		mapNbJoursRestants.put(KEY_NB_JOURS_LOT_2, nbJoursRestantsLot2);
 		return mapNbJoursRestants;
+	}
+	
+	public Projet getProjetAvecTravaux(Long idProjet) {
+		if (idProjet == null) {
+			throw new IllegalArgumentException("L'identifiant du projet est incorrect.");
+		}
+		Projet projet = projetDao.getProjet(idProjet);
+		if (projet == null) {
+			throw new IllegalArgumentException("L'identifiant du projet est inconnu.");
+		}
+		projet.setTravauxRendus(travailDao.listerTravauxParProjet(idProjet));
+		for (Travail travailRendu : projet.getTravauxRendus()) {
+			travailRendu.setUtilisateurs(travailDao.listerUtilisateurs(travailRendu.getId()));
+		}
+
+		return projet;
 	}
 }

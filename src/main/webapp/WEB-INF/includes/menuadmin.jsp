@@ -9,6 +9,7 @@
 				<li class="${param.pageSelectionnee == 'seance' ? 'active' : ''}"><a href="listeseances">Gestion des séances</a></li>
 				<li class="${param.pageSelectionnee == 'projet' ? 'active' : ''}"><a href="listeprojets">Gestion des projets</a></li>
 				<li class="${param.pageSelectionnee == 'travailtp' ? 'active' : ''}"><a href="travailtp">Travaux rendus</a></li>
+				<li class="${param.pageSelectionnee == 'travailprojet' ? 'active' : ''}"><a href="travailprojet">Projets rendus</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="../eleve/">Site principal</a></li>
