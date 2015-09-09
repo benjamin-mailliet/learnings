@@ -28,14 +28,14 @@
 								<th>Système</th>
 							</tr>
 							<tr>
+								<td><a href="http://www.sublimetext.com" target="_blank">Sublime Text</a></td>
+								<td>Windows, OSX, Linux</td>
+							</tr>
+							<tr>
 								<td rowspan="2">Editeur de texte</td>
 								<td rowspan="2">L'éditeur de texte permet de créer et modifier les différents fichier de votre site web. La coloration syntaxique facilite la lecture du code.</td>
 								<td><a href="http://notepad-plus-plus.org" target="_blank">Notepad++</a></td>
 								<td>Windows</td>
-							</tr>
-							<tr>
-								<td><a href="http://www.sublimetext.com" target="_blank">Sublime Text</a></td>
-								<td>Windows, OSX, Linux</td>
 							</tr>
 							<tr>
 								<td rowspan="4">Navigateur web</td>
@@ -68,12 +68,12 @@
 						</div>
 	  					<table class="table">
 							<tr>
-								<td><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html" target="_blank">JDK7</a></td>
+								<td><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank">JDK8</a></td>
 								<td>Le JDK contient la JRE permettant d'exécuter des applications Java ainsi que tous les utilitaires pour compiler ces applications.</td>
 							</tr>
 							<tr>
 								<td><a href="http://www.eclipse.org/downloads/" target="_blank">Eclipse</a></td>
-								<td>Eclipse est un environnement de développement. La version qui nous intéresse est <strong>Eclipse Luna for JavaEE Developpers</strong> qui contient tous les plugins nécessaires au dévelopement d'application web en Java.</td>
+								<td>Eclipse est un environnement de développement. La version qui nous intéresse est <strong>Eclipse Mars for JavaEE Developpers</strong> qui contient tous les plugins nécessaires au dévelopement d'application web en Java.</td>
 							</tr>
 							<tr>
 								<td><a href="http://tomcat.apache.org/download-80.cgi" target="_blank">Apache Tomcat 8</a></td>

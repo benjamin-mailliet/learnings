@@ -57,7 +57,7 @@
 										<ul>
 											<li>Pages HTML</li>
 											<li>Styles CSS (sans utilisation de framework)</li>
-											<li>Dynamisation avec Javascript</li>
+											<li>Schéma de la BDD</li>
 										</ul>
 									</td>
 								</tr>
@@ -67,6 +67,7 @@
 									<td>
 										<ul>
 											<li>Lot 1 finalisé</li>
+											<li>Dynamisation avec Javascript</li>
 											<li>Gestion du stockage des données</li>
 											<li>Code métier J2E</li>
 										</ul>
