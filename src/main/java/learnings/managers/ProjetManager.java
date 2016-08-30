@@ -1,10 +1,5 @@
 package learnings.managers;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import learnings.dao.ProjetDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.TravailDao;
@@ -12,9 +7,13 @@ import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.model.Projet;
-import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.pojos.ProjetAvecTravail;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProjetManager {
 
@@ -110,12 +109,13 @@ public class ProjetManager {
 		Date today = new Date();
 
 		Long millisecondsPerDay = 86400000L;
-		Integer nbJoursRestantsLot1 = Math.round(Math.abs((projetAvecTravail.getProjet().getDateLimiteRenduLot1().getTime()- today.getTime())/millisecondsPerDay));
-		Integer nbJoursRestantsLot2 = Math.round(Math.abs((projetAvecTravail.getProjet().getDateLimiteRenduLot2().getTime()- today.getTime())/millisecondsPerDay));
-		
+		Integer nbJoursRestantsLot1 = Math.round((projetAvecTravail.getProjet().getDateLimiteRenduLot1().getTime()- today.getTime())/millisecondsPerDay);
+		Integer nbJoursRestantsLot2 = Math.round((projetAvecTravail.getProjet().getDateLimiteRenduLot2().getTime()- today.getTime())/millisecondsPerDay);
+
 		HashMap<String, Integer> mapNbJoursRestants = new HashMap<String, Integer>();
-		mapNbJoursRestants.put(KEY_NB_JOURS_LOT_1, nbJoursRestantsLot1);
-		mapNbJoursRestants.put(KEY_NB_JOURS_LOT_2, nbJoursRestantsLot2);
+
+		mapNbJoursRestants.put(KEY_NB_JOURS_LOT_1, nbJoursRestantsLot1>0 ? nbJoursRestantsLot1 : 0);
+		mapNbJoursRestants.put(KEY_NB_JOURS_LOT_2, nbJoursRestantsLot2>0 ? nbJoursRestantsLot2 : 0);
 		return mapNbJoursRestants;
 	}
 	
