@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Projet personnel</title>
+		<title>Projet</title>
 		<c:import url="../includes/htmlheader.jsp" />
 		<link href="../css/projet.css" rel="stylesheet">
 		<!-- script src="../js/projet.js"></script-->
