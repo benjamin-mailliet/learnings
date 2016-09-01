@@ -1,7 +1,8 @@
 /bin/
 /target/
+/.idea/
 .classpath
 .project
 .jsdtscope
 org.eclipse.*
-learnings.iml
+*.iml
