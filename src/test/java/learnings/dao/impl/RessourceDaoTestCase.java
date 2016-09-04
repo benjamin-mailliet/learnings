@@ -18,18 +18,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RessourceDaoTestCase {
+public class RessourceDaoTestCase extends AbstractTestCase {
 	private RessourceDao ressourceDao = new RessourceDaoImpl();
 
 	@Before
 	public void init() throws Exception {
+		super.purgeBaseDeDonnees();
+
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
 		Statement stmt = connection.createStatement();
-		stmt.executeUpdate("DELETE FROM ressource");
-		stmt.executeUpdate("DELETE FROM travailutilisateur");
-		stmt.executeUpdate("DELETE FROM travail");
-		stmt.executeUpdate("DELETE FROM seance");
-		stmt.executeUpdate("DELETE FROM projettransversal");
 		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`, `datelimiterendulot2`) VALUES(1,'Projet','Projet','2014-08-26 10:00', '2014-09-26 10:00')");
 		stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`, `type`) VALUES(1,'cours1','cours de debuggage','2014-08-26', 'COURS')");
 		stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(1,'ressource1','chemin ressource de cours 1',1)");

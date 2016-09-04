@@ -15,18 +15,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ProjetDaoTestCase {
+public class ProjetDaoTestCase extends AbstractTestCase{
 	private ProjetDao projetDao = new ProjetDaoImpl();
 
 	@Before
 	public void init() throws Exception {
+		super.purgeBaseDeDonnees();
+
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
 		Statement stmt = connection.createStatement();
-		stmt.executeUpdate("DELETE FROM ressource");
-		stmt.executeUpdate("DELETE FROM travailutilisateur");
-		stmt.executeUpdate("DELETE FROM travail");
-		stmt.executeUpdate("DELETE FROM seance");
-		stmt.executeUpdate("DELETE FROM projettransversal");
 		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(1,'projet1','description 1','2014-09-16 18:00:00','2014-10-16 18:00:00')");
 		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(2,'projet2','description 2','2014-09-16 18:00:00','2014-10-10 18:00:00')");
 		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(3,'projet3','description 3','2014-09-17 18:00:00','2014-09-26 18:00:00')");

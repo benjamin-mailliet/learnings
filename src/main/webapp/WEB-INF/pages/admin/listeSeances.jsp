@@ -44,6 +44,7 @@
 						<td>
 							<a class="btn btn-xs btn-info" href="seance?id=${seance.id}" title="Modifier"><span class="glyphicon glyphicon-edit"></span></a>
 							<a class="btn btn-xs btn-warning" href="ressource?idSeance=${seance.id}" title="Gérer les ressources"><span class="glyphicon glyphicon-list-alt"></span></a>
+							<a class="btn btn-xs btn-success" href="appel?idSeance=${seance.id}" title="Faire l'appel"><i class="fa fa-users" aria-hidden="true"></i></a>
 						</td>
 					</tr>
 				</c:forEach>

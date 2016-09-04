@@ -64,3 +64,12 @@ CREATE TABLE `travailutilisateur` (
 );
 
 
+CREATE TABLE `appel` (
+  `idseance` INT(11) NOT NULL,
+  `ideleve` INT(11) NOT NULL,
+  `statut` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`idseance`, `ideleve`),
+  INDEX `fk_appel_eleve_idx` (`ideleve` ASC),
+  CONSTRAINT `fk_appel_seance` FOREIGN KEY (`idseance`) REFERENCES `learnings`.`seance` (`id`),
+  CONSTRAINT `fk_appel_eleve` FOREIGN KEY (`ideleve`) REFERENCES `learnings`.`utilisateur` (`id`)
+);
