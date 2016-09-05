@@ -7,7 +7,9 @@
 <head>
 <title>Travaux rendus</title>
 <c:import url="../../includes/htmlheader.jsp" />
-<script src="../js/utilisateur.js"></script>
+	<script src="../js/utilisateur.js"></script>
+	<script src="../js/travail.js"></script>
+
 </head>
 <body>
 	<c:import url="../../includes/menuadmin.jsp">
@@ -63,7 +65,8 @@
 								</ul>
 							</td>
 							<td>${travail.commentaire}</td>
-							<td><button class="btn btn-primary" id="actionNote" data-idTravail="${travail.id}">Noter</button></td>
+							<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#popupNote" data-travail="${travail.id}">Noter</button></td>
+							<!--td><button class="btn btn-primary" id="actionNote" ">Noter</button></td-->
 						</tr>
 					</c:forEach>
 				</table>

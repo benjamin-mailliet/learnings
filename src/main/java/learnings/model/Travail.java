@@ -1,11 +1,11 @@
 package learnings.model;
 
+import learnings.utils.FichierUtils;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import learnings.utils.FichierUtils;
 
 public class Travail implements Serializable {
 	private static final long serialVersionUID = 5229784210182658252L;
@@ -14,6 +14,7 @@ public class Travail implements Serializable {
 
 	private Enseignement enseignement;
 	private BigDecimal note;
+	private String commentaireNote;
 	private Date dateRendu;
 	private String chemin;
 	private String commentaire;
@@ -23,11 +24,12 @@ public class Travail implements Serializable {
 	public Travail() {
 	}
 
-	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire, String urlRepository) {
+	public Travail(Long id, Enseignement enseignement, BigDecimal note, String commentaireNote, Date dateRendu, String chemin, String commentaire, String urlRepository) {
 		super();
 		this.id = id;
 		this.enseignement = enseignement;
 		this.note = note;
+		this.commentaireNote=commentaireNote;
 		this.dateRendu = dateRendu;
 		this.chemin = chemin;
 		this.commentaire = commentaire;
@@ -48,6 +50,14 @@ public class Travail implements Serializable {
 
 	public void setNote(BigDecimal note) {
 		this.note = note;
+	}
+
+	public String getCommentaireNote() {
+		return commentaireNote;
+	}
+
+	public void setCommentaireNote(String commentaireNote) {
+		this.commentaireNote = commentaireNote;
 	}
 
 	public Date getDateRendu() {
