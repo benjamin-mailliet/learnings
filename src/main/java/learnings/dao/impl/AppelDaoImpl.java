@@ -39,4 +39,34 @@ public class AppelDaoImpl extends GenericDaoImpl implements AppelDao {
         }
         return appels;
     }
+
+    @Override
+    public void ajouterAppel(Long idSeance, Appel appel) {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO appel(idseance, ideleve, statut) values(?,?,?)")) {
+                statement.setLong(1, idSeance);
+                statement.setLong(2, appel.getEleve().getId());
+                statement.setString(3, appel.getStatut().toString());
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new LearningsSQLException(e);
+        }
+    }
+
+    @Override
+    public void modifierAppel(Long idSeance, Appel appel) {
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE appel SET statut = ? WHERE idseance = ? AND ideleve = ?")) {
+                statement.setString(1, appel.getStatut().toString());
+                statement.setLong(2, idSeance);
+                statement.setLong(3, appel.getEleve().getId());
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new LearningsSQLException(e);
+        }
+    }
 }
