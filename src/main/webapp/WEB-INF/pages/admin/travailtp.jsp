@@ -14,6 +14,9 @@
 		<c:param name="pageSelectionnee" value="travailtp" />
 	</c:import>
 
+	<c:import url="../../includes/popupnote.jsp">
+	</c:import>
+
 	<div class="container">
 		<c:import url="../../includes/messages.jsp" />
 		<header class="page-header">
@@ -42,6 +45,7 @@
 						<th>Fichier</th>
 						<th>Élèves</th>
 						<th>Commentaire</th>
+						<th>Evaluation</th>
 					</tr>
 					<c:forEach var="travail" items="${seanceSelectionnee.travauxRendus}">
 						<tr>
@@ -59,6 +63,7 @@
 								</ul>
 							</td>
 							<td>${travail.commentaire}</td>
+							<td><button class="btn btn-primary" id="actionNote" data-idTravail="${travail.id}">Noter</button></td>
 						</tr>
 					</c:forEach>
 				</table>
