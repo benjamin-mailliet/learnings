@@ -1,26 +1,25 @@
 package learnings.dao.impl;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import java.util.List;
-
 import learnings.dao.UtilisateurDao;
 import learnings.model.Utilisateur;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UtilisateurDaoTestCase {
+import java.sql.Connection;
+import java.sql.Statement;
+import java.util.List;
+
+
+public class UtilisateurDaoTestCase extends AbstractTestCase{
 	private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 
 	@Before
 	public void init() throws Exception {
+		super.purgeBaseDeDonnees();
+
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
 		Statement stmt = connection.createStatement();
-		stmt.executeUpdate("DELETE FROM travailutilisateur");
-		stmt.executeUpdate("DELETE FROM travail");
-		stmt.executeUpdate("DELETE FROM utilisateur");
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(1,'eleve@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(2,'admin@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',1)");
 		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(3,'eleve2@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
