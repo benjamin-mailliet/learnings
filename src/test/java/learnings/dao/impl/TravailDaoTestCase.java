@@ -1,23 +1,24 @@
 package learnings.dao.impl;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import learnings.dao.TravailDao;
 import learnings.model.Projet;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
-
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class TravailDaoTestCase extends  AbstractTestCase{
 	private TravailDao travailDao = new TravailDaoImpl();
@@ -196,6 +197,24 @@ public class TravailDaoTestCase extends  AbstractTestCase{
 		Travail travail = travailDao.getTravail(-1L);
 
 		Assert.assertNull(travail);
+	}
+
+
+	@Test
+	public void shouldEnregistrerNoteTravail() throws SQLException {
+		travailDao.enregistrerNoteTravail(1L, new BigDecimal(15), "commentaire de test");
+
+		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
+		Statement stmt = connection.createStatement();
+		ResultSet results = stmt.executeQuery("SELECT * FROM travail WHERE id=1");
+		if (results.next()) {
+			Assertions.assertThat(results.getLong("id")).isEqualTo(1L);
+			Assertions.assertThat(results.getBigDecimal("note").toString()).isEqualTo("15.00");
+			Assertions.assertThat(results.getString("commentaireNote")).isEqualTo("commentaire de test");
+		} else {
+			Assert.fail();
+		}
+
 	}
 
 }

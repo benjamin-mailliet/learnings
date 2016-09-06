@@ -1,5 +1,13 @@
 package learnings.dao.impl;
 
+import learnings.dao.TravailDao;
+import learnings.exceptions.LearningsSQLException;
+import learnings.model.Projet;
+import learnings.model.Seance;
+import learnings.model.Travail;
+import learnings.model.Utilisateur;
+
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,13 +17,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import learnings.dao.TravailDao;
-import learnings.exceptions.LearningsSQLException;
-import learnings.model.Projet;
-import learnings.model.Seance;
-import learnings.model.Travail;
-import learnings.model.Utilisateur;
 
 public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 
@@ -238,5 +239,23 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			throw new LearningsSQLException(e);
 		}
 		return listeTravaux;
+	}
+
+	@Override
+	public void enregistrerNoteTravail(Long idTravail, BigDecimal note, String commentaireNote) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("UPDATE travail SET note = ?, commentaireNote = ? WHERE id = ?");
+
+			stmt.setBigDecimal(1, note);
+			stmt.setString(2, commentaireNote);
+			stmt.setLong(3, idTravail);
+
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
+		}
 	}
 }

@@ -1,9 +1,5 @@
 package learnings.managers;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.logging.Logger;
-
 import learnings.dao.ProjetDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
@@ -20,6 +16,11 @@ import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.FichierComplet;
 import learnings.utils.FichierUtils;
+
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.logging.Logger;
 
 public class TravailManager {
 	private static TravailManager instance;
@@ -106,7 +107,7 @@ public class TravailManager {
 	}
 	
 	protected void modifierTravailForProjet(Travail travailExistant, Travail travail) throws LearningsException {
-		modifierTravail(null,travailExistant,travail);
+		modifierTravail(null, travailExistant, travail);
 	}
 	
 	protected void modifierTravailForProjetWithFichier(InputStream fichier, Travail travailExistant, Travail travail) throws LearningsException {
@@ -252,7 +253,7 @@ public class TravailManager {
 			throw new IllegalArgumentException("Le fichier est trop gros.");
 		}
 
-		String chemin = genererCheminTravail(projetId, nomFichier,TYPE_TRAVAIL_PROJET);
+		String chemin = genererCheminTravail(projetId, nomFichier, TYPE_TRAVAIL_PROJET);
 		
 		Travail travailExistant = this.verifierExistanceTravail(projetId, utilisateurId);
 
@@ -277,5 +278,13 @@ public class TravailManager {
 		travail.setCommentaire(commentaire);
 		travail.setUrlRepository(urlRepository);
 		return travail;
+	}
+
+	public void enregistrerNoteTravail(Long idTravail, BigDecimal note, String commentaire) {
+		if (idTravail == null) {
+			throw new IllegalArgumentException("L'identifiant du travail ne peut être null");
+		}
+		travailDao.enregistrerNoteTravail(idTravail, note, commentaire);
+		LOGGER.info(String.format("enregistrerNote|idTravail=%d", idTravail));
 	}
 }

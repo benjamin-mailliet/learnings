@@ -36,6 +36,17 @@ public class Travail implements Serializable {
 		this.urlRepository = urlRepository;
 	}
 
+	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire, String urlRepository) {
+		super();
+		this.id = id;
+		this.enseignement = enseignement;
+		this.note = note;
+		this.dateRendu = dateRendu;
+		this.chemin = chemin;
+		this.commentaire = commentaire;
+		this.urlRepository = urlRepository;
+	}
+
 	public Enseignement getEnseignement() {
 		return enseignement;
 	}

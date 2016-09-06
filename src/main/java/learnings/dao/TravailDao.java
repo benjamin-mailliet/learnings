@@ -1,10 +1,11 @@
 package learnings.dao;
 
-import java.util.Date;
-import java.util.List;
-
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 public interface TravailDao {
 	public Travail ajouterTravail(Travail travail);
@@ -26,4 +27,6 @@ public interface TravailDao {
 	public void mettreAJourTravail(Long idTravail, Date dateRendu, String chemin, String urlRepository, String commentaire);
 
 	public List<Travail> listerTravauxParProjet(Long idProjet);
+
+	public void enregistrerNoteTravail(Long idTravail, BigDecimal note, String commentaire);
 }

@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 	<display-name>Learnings</display-name>
-	
+
+	<!-- Resteasy configuration -->
+	<context-param>
+		<param-name>resteasy.scan</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>resteasy.servlet.mapping.prefix</param-name>
+		<param-value>/admin/ws</param-value>
+	</context-param>
+	<servlet>
+		<servlet-name>Resteasy</servlet-name>
+		<servlet-class>
+			org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Resteasy</servlet-name>
+		<url-pattern>/admin/ws/*</url-pattern>
+	</servlet-mapping>
+
 	<filter>
 		<filter-name>MessageFilter</filter-name>
 		<filter-class>learnings.web.filters.MessageFilter</filter-class>
@@ -17,7 +34,8 @@
 		<filter-name>AdminFilter</filter-name>
 		<filter-class>learnings.web.filters.AdminFilter</filter-class>
 	</filter>
-	
+
+
 	<filter-mapping>
 		<filter-name>MessageFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -30,8 +48,9 @@
 		<filter-name>AdminFilter</filter-name>
 		<url-pattern>/admin/*</url-pattern>
 	</filter-mapping>
-	
-	
+
+
+
 	<welcome-file-list>
 		<welcome-file>connexion</welcome-file>
 	</welcome-file-list>
