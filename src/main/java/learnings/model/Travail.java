@@ -24,7 +24,7 @@ public class Travail implements Serializable {
 	public Travail() {
 	}
 
-	public Travail(Long id, Enseignement enseignement, BigDecimal note, String commentaireNote, Date dateRendu, String chemin, String commentaire, String urlRepository) {
+	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire, String urlRepository, String commentaireNote) {
 		super();
 		this.id = id;
 		this.enseignement = enseignement;

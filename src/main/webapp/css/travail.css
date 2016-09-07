@@ -1,3 +1,11 @@
-.popupContent{
+.popupContent, #erreurNote, #ajaxLoading{
+    display: none;
+}
+
+.note-inline{
+    display: inline-block;
+}
+
+.note-hidden{
     display: none;
 }

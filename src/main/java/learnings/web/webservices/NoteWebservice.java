@@ -1,21 +1,27 @@
 package learnings.web.webservices;
 
+import com.google.gson.Gson;
 import learnings.managers.TravailManager;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 
 @Path("/note")
 public class NoteWebservice{
 
-    @Path("/")
+    @Path("/{idTravail}")
+    @Produces("application/json")
     @GET
-    public Response getAllNotes(){
-        return Response.status(200).entity("Toutes les notes ici").build();
+    public String getTravailForNote(@PathParam("idTravail") Long idTravail)
+    {
+        Gson gsonParser = new Gson();
+        return gsonParser.toJson(TravailManager.getInstance().getTravail(idTravail));
     }
 
     @Path("/")

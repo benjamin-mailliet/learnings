@@ -287,4 +287,8 @@ public class TravailManager {
 		travailDao.enregistrerNoteTravail(idTravail, note, commentaire);
 		LOGGER.info(String.format("enregistrerNote|idTravail=%d", idTravail));
 	}
+
+	public Travail getTravail(Long idTravail) {
+		return travailDao.getTravail(idTravail);
+	}
 }

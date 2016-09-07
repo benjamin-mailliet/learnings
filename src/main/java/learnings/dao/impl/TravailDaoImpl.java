@@ -188,7 +188,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			ResultSet results = stmt.executeQuery();
 			if (results.next()) {
 				travail = new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
-						results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository"));
+						results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository"), results.getString("commentaireNote"));
 			}
 			stmt.close();
 			connection.close();

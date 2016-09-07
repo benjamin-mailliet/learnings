@@ -8,7 +8,8 @@
                 <h4 class="modal-title">Noter ce travail</h4>
             </div>
             <div class="modal-body">
-                <form>
+                <p id="errorNote" class="text-danger"></p>
+                <form id="formNote">
                     <input type="hidden" name="idTravail" id="idTravail" name="idTravail"/>
                     <div class="form-group">
                         <label>Note</label>
@@ -20,6 +21,7 @@
                     </div>
 
                 </form>
+                <span id="ajaxLoading">Chargement des infos...</span>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success" id="validerNote">Valider</button>
