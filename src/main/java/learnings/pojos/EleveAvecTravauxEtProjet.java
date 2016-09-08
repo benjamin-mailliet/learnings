@@ -3,6 +3,7 @@ package learnings.pojos;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class EleveAvecTravauxEtProjet extends Utilisateur {
@@ -10,6 +11,8 @@ public class EleveAvecTravauxEtProjet extends Utilisateur {
     private Map<Long, Travail> mapSeanceIdTravail;
 
     private Travail projet;
+
+    private BigDecimal moyenne;
 
     public EleveAvecTravauxEtProjet(Utilisateur eleve, Map<Long, Travail> mapSeanceIdTravail, Travail projet) {
         super(eleve.getId(),eleve.getEmail(),false);
@@ -39,5 +42,13 @@ public class EleveAvecTravauxEtProjet extends Utilisateur {
 
     public void setProjet(Travail projet) {
         this.projet = projet;
+    }
+
+    public BigDecimal getMoyenne() {
+        return moyenne;
+    }
+
+    public void setMoyenne(BigDecimal moyenne) {
+        this.moyenne = moyenne;
     }
 }

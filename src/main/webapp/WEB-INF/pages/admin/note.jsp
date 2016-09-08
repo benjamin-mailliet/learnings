@@ -34,7 +34,7 @@
           <th>${eleve.mapSeanceIdTravail[seance.id].note}</th>
         </c:forEach>
         <td>${eleve.projet.note}</td>
-        <td>TODO</td>
+        <td>${eleve.moyenne}</td>
       </tr>
     </c:forEach>
   </table>
