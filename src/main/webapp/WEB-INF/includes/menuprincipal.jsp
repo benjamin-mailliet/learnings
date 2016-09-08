@@ -17,7 +17,7 @@
 					<li><a href="../admin/">Administration</a></li>
 				</c:if>
 				<li class="dropdown active">
-          			<a href="#" class="dropdown-toggle" data-toggle="dropdown">${sessionScope.utilisateur.email} <span class="caret"></span></a>
+          			<a href="#" class="dropdown-toggle" data-toggle="dropdown">${sessionScope.utilisateur.prenom} ${sessionScope.utilisateur.nom} <span class="caret"></span></a>
 		          	<ul class="dropdown-menu" role="menu">
 		            	<li><a href="compte">Mon compte</a></li>
 		            	<li class="divider"></li>

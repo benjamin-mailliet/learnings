@@ -9,6 +9,7 @@ import java.util.List;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
+import learnings.enums.Groupe;
 import learnings.enums.TypeSeance;
 import learnings.model.Ressource;
 import learnings.model.Seance;
@@ -48,27 +49,27 @@ public class SeanceManagerTestCase {
 			"http://github1", "commentaire1");
 	private Travail travail2 = new Travail(2L, seance3, null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 3, 10, 38).getTime(), "/chemin/fichier.zip",
 			"http://github2","commentaire2");
-	private Utilisateur utilisateur1 = new Utilisateur(1L, "email1", false);
-	private Utilisateur utilisateur2 = new Utilisateur(2L, "email2", false);
-	private Utilisateur utilisateur3 = new Utilisateur(3L, "email3", false);
+	private Utilisateur utilisateur1 = new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false);
+	private Utilisateur utilisateur2 = new Utilisateur(2L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false);
+	private Utilisateur utilisateur3 = new Utilisateur(3L, "nom3", "prenom3", "email3", null, false);
 
 	@Before
 	public void init() {
-		List<Seance> seances = new ArrayList<Seance>();
+		List<Seance> seances = new ArrayList<>();
 		seances.add(seance1);
 		seances.add(seance2);
 		Mockito.when(seanceDao.listerSeances()).thenReturn(seances);
 
-		List<Seance> seancesNotees = new ArrayList<Seance>();
+		List<Seance> seancesNotees = new ArrayList<>();
 		seancesNotees.add(seance2);
 		Mockito.when(seanceDao.listerSeancesNotees()).thenReturn(seancesNotees);
 
-		List<Seance> seancesRendusAccessibles = new ArrayList<Seance>();
+		List<Seance> seancesRendusAccessibles = new ArrayList<>();
 		seancesRendusAccessibles.add(seance3);
 		Mockito.when(seanceDao.listerTPNotesParDateRendu(Mockito.any(Date.class))).thenReturn(seancesRendusAccessibles);
 		Mockito.when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(3L), Mockito.eq(1L))).thenReturn(travail1);
 
-		List<Ressource> ressources = new ArrayList<Ressource>();
+		List<Ressource> ressources = new ArrayList<>();
 		ressources.add(ressource1);
 		Mockito.when(ressourceDao.getRessources(Mockito.eq(seance1))).thenReturn(ressources);
 		Mockito.when(ressourceDao.getRessources(Mockito.eq(seance2))).thenReturn(new ArrayList<Ressource>());
@@ -77,14 +78,14 @@ public class SeanceManagerTestCase {
 		Mockito.when(seanceDao.getSeance(Mockito.eq(2L))).thenReturn(seance2);
 		Mockito.when(seanceDao.getSeance(Mockito.eq(3L))).thenReturn(seance3);
 
-		List<Travail> listeTravaux = new ArrayList<Travail>();
+		List<Travail> listeTravaux = new ArrayList<>();
 		listeTravaux.add(travail1);
 		listeTravaux.add(travail2);
 		Mockito.when(travailDao.listerTravauxParSeance(Mockito.eq(3L))).thenReturn(listeTravaux);
 
-		List<Utilisateur> utilisateursTravail1 = new ArrayList<Utilisateur>();
+		List<Utilisateur> utilisateursTravail1 = new ArrayList<>();
 		utilisateursTravail1.add(utilisateur1);
-		List<Utilisateur> utilisateursTravail2 = new ArrayList<Utilisateur>();
+		List<Utilisateur> utilisateursTravail2 = new ArrayList<>();
 		utilisateursTravail2.add(utilisateur2);
 		utilisateursTravail2.add(utilisateur3);
 		Mockito.when(travailDao.listerUtilisateurs(Mockito.eq(1L))).thenReturn(utilisateursTravail1);

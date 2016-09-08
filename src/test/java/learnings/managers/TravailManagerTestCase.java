@@ -11,6 +11,7 @@ import java.util.List;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
+import learnings.enums.Groupe;
 import learnings.enums.TypeSeance;
 import learnings.exceptions.LearningsException;
 import learnings.model.Seance;
@@ -66,9 +67,9 @@ public class TravailManagerTestCase {
 	private InputStream inputStream2 = new ByteArrayInputStream(new byte[] {});
 	private InputStream inputStreamEx = new ByteArrayInputStream(new byte[] {});
 
-	private Utilisateur utilisateur1 = new Utilisateur(1L, "email1", false);
-	private Utilisateur utilisateur2 = new Utilisateur(2L, "email2", false);
-	private Utilisateur utilisateurAdmin = new Utilisateur(0L, "email2", true);
+	private Utilisateur utilisateur1 = new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false);
+	private Utilisateur utilisateur2 = new Utilisateur(2L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false);
+	private Utilisateur utilisateurAdmin = new Utilisateur(0L, "nom", "prenom", "email2", null, true);
 
 	@Before
 	public void init() throws Exception {
@@ -84,7 +85,7 @@ public class TravailManagerTestCase {
 		Mockito.when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(1L), Mockito.eq(2L))).thenReturn(travail1);
 		Mockito.when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(10L), Mockito.eq(1L))).thenReturn(travail1);
 		Mockito.when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(10L), Mockito.eq(2L))).thenReturn(travail1);
-		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
+		List<Utilisateur> utilisateurs = new ArrayList<>();
 		utilisateurs.add(utilisateur1);
 		utilisateurs.add(utilisateur2);
 		Mockito.when(travailDao.listerUtilisateurs(Mockito.eq(1L))).thenReturn(utilisateurs);
@@ -93,7 +94,7 @@ public class TravailManagerTestCase {
 		Mockito.when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(11L), Mockito.eq(2L))).thenReturn(travail2);
 
 		Mockito.when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(12L), Mockito.eq(1L))).thenReturn(travail2);
-		List<Utilisateur> utilisateurs2 = new ArrayList<Utilisateur>();
+		List<Utilisateur> utilisateurs2 = new ArrayList<>();
 		utilisateurs2.add(utilisateur1);
 		Mockito.when(travailDao.listerUtilisateurs(Mockito.eq(2L))).thenReturn(utilisateurs2);
 

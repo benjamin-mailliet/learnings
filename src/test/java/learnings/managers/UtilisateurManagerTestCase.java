@@ -1,15 +1,11 @@
 package learnings.managers;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
+import learnings.enums.Groupe;
 import learnings.exceptions.LearningsSecuriteException;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UtilisateurManagerTestCase {
@@ -34,19 +34,21 @@ public class UtilisateurManagerTestCase {
 	@InjectMocks
 	private UtilisateurManager utilisateurManager = new UtilisateurManager();
 
+	private Utilisateur utilisateur3 = new Utilisateur(null, "nom3", "prenom3", "email3", null, true);
+
 	@Before
 	public void init() throws Exception {
-		List<Travail> travaux = new ArrayList<Travail>();
+		List<Travail> travaux = new ArrayList<>();
 		travaux.add(new Travail(1L, null, null, null, null, null,null));
 
 		Mockito.when(travailDao.listerTravauxParUtilisateur(1L)).thenReturn(new ArrayList<Travail>());
 		Mockito.when(travailDao.listerTravauxParUtilisateur(2L)).thenReturn(travaux);
 		Mockito.when(utilisateurDao.getMotDePasseUtilisateurHashe(Mockito.eq("email1"))).thenReturn("motDePasseHash");
-		Mockito.when(utilisateurDao.getUtilisateur(Mockito.eq(1L))).thenReturn(new Utilisateur(1L, "email1", false));
-		Mockito.when(utilisateurDao.getUtilisateur(Mockito.eq(2L))).thenReturn(new Utilisateur(2L, "email2", false));
-		Mockito.when(utilisateurDao.getUtilisateur(Mockito.eq("email1"))).thenReturn(new Utilisateur(1L, "email1", false));
-		Mockito.when(utilisateurDao.ajouterUtilisateur(Mockito.eq("email3"), Mockito.eq("email3Hash"), Mockito.eq(true))).thenReturn(
-				new Utilisateur(3L, "email3", true));
+		Mockito.when(utilisateurDao.getUtilisateur(Mockito.eq(1L))).thenReturn(new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false));
+		Mockito.when(utilisateurDao.getUtilisateur(Mockito.eq(2L))).thenReturn(new Utilisateur(1L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false));
+		Mockito.when(utilisateurDao.getUtilisateur(Mockito.eq("email1"))).thenReturn(new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false));
+		Mockito.when(utilisateurDao.ajouterUtilisateur(Mockito.eq(utilisateur3), Mockito.eq("email3Hash"))).thenReturn(
+				new Utilisateur(3L, "nom3", "prenom3", "email3", null, true));
 
 		Mockito.when(motDePasseManager.validerMotDePasse(Mockito.eq("motDePasse"), Mockito.eq("motDePasseHash"))).thenReturn(true);
 		Mockito.when(motDePasseManager.validerMotDePasse(Mockito.eq("hashException"), Mockito.eq("motDePasseHash"))).thenThrow(new NoSuchAlgorithmException());
@@ -308,7 +310,7 @@ public class UtilisateurManagerTestCase {
 
 	@Test
 	public void testAjouterUtilisateur() throws Exception {
-		Utilisateur utilisateur = utilisateurManager.ajouterUtilisateur("email3", true);
+		Utilisateur utilisateur = utilisateurManager.ajouterUtilisateur(utilisateur3);
 		Assert.assertEquals(3L, utilisateur.getId().longValue());
 		Assert.assertEquals("email3", utilisateur.getEmail());
 		Assert.assertTrue(utilisateur.isAdmin());
@@ -316,48 +318,48 @@ public class UtilisateurManagerTestCase {
 		Mockito.verify(utilisateurDao).getUtilisateur(Mockito.anyString());
 		Mockito.verify(motDePasseManager).genererMotDePasse(Mockito.eq("email3"));
 		Mockito.verify(motDePasseManager).genererMotDePasse(Mockito.anyString());
-		Mockito.verify(utilisateurDao).ajouterUtilisateur(Mockito.eq("email3"), Mockito.eq("email3Hash"), Mockito.eq(true));
-		Mockito.verify(utilisateurDao).ajouterUtilisateur(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
+		Mockito.verify(utilisateurDao).ajouterUtilisateur(Mockito.eq(utilisateur3), Mockito.eq("email3Hash"));
+		Mockito.verify(utilisateurDao).ajouterUtilisateur(Mockito.any(Utilisateur.class), Mockito.anyString());
 	}
 
 	@Test
 	public void testAjouterUtilisateurKOEmailNull() throws Exception {
 		try {
-			utilisateurManager.ajouterUtilisateur(null, true);
+			utilisateurManager.ajouterUtilisateur(new Utilisateur(null, "nom3", "prenom3", null, null, true));
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.assertEquals("L'identifiant doit être renseigné.", e.getMessage());
 		}
 		try {
-			utilisateurManager.ajouterUtilisateur("", true);
+			utilisateurManager.ajouterUtilisateur(new Utilisateur(null, "nom3", "prenom3", "", null, true));
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.assertEquals("L'identifiant doit être renseigné.", e.getMessage());
 		}
 		Mockito.verify(utilisateurDao, Mockito.never()).getUtilisateur(Mockito.anyString());
 		Mockito.verify(motDePasseManager, Mockito.never()).genererMotDePasse(Mockito.anyString());
-		Mockito.verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
+		Mockito.verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.any(Utilisateur.class), Mockito.anyString());
 
 	}
 
 	@Test
 	public void testAjouterUtilisateurKOUtilisateurExistant() throws Exception {
 		try {
-			utilisateurManager.ajouterUtilisateur("email1", true);
+			utilisateurManager.ajouterUtilisateur(new Utilisateur(null, "nom1", "prenom1", "email1", null, true));
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.assertEquals("L'identifiant est déjà utilisé.", e.getMessage());
 			Mockito.verify(utilisateurDao).getUtilisateur(Mockito.eq("email1"));
 			Mockito.verify(utilisateurDao).getUtilisateur(Mockito.anyString());
 			Mockito.verify(motDePasseManager, Mockito.never()).genererMotDePasse(Mockito.anyString());
-			Mockito.verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
+			Mockito.verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.any(Utilisateur.class), Mockito.anyString());
 		}
 	}
 
 	@Test
 	public void testAjouterUtilisateurKOExceptionSecurite() throws Exception {
 		try {
-			utilisateurManager.ajouterUtilisateur("email2", true);
+			utilisateurManager.ajouterUtilisateur(new Utilisateur(null, "nom2", "prenom2", "email2", null, true));
 			Assert.fail();
 		} catch (LearningsSecuriteException e) {
 			Assert.assertEquals("Problème dans la génération du mot de passe.", e.getMessage());
@@ -365,7 +367,7 @@ public class UtilisateurManagerTestCase {
 			Mockito.verify(utilisateurDao).getUtilisateur(Mockito.anyString());
 			Mockito.verify(motDePasseManager).genererMotDePasse(Mockito.eq("email2"));
 			Mockito.verify(motDePasseManager).genererMotDePasse(Mockito.anyString());
-			Mockito.verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean());
+			Mockito.verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.any(Utilisateur.class), Mockito.anyString());
 		}
 	}
 

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import learnings.dao.TravailDao;
+import learnings.enums.Groupe;
 import learnings.exceptions.LearningsSQLException;
 import learnings.model.Projet;
 import learnings.model.Seance;
@@ -167,7 +168,8 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
 			stmt.setLong(1, idTravail);
 			ResultSet results = stmt.executeQuery();
 			while (results.next()) {
-				listeUtilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+				listeUtilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("nom"), results.getString("prenom"), results.getString("email"),
+						Groupe.valueOf(results.getString("groupe")), results.getBoolean("admin")));
 			}
 			stmt.close();
 			connection.close();

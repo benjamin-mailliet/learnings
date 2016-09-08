@@ -2,7 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 					<tr id="utilisateur${utilisateur.id}" style="display:none">
 						<td>${utilisateur.id}</td>
+						<td>${utilisateur.nom}</td>
+						<td>${utilisateur.prenom}</td>
 						<td>${utilisateur.email}</td>
+						<td>${utilisateur.groupe.libelle}</td>
 						<td>${utilisateur.admin ? 'Oui' : 'Non'}</td>
 						<td>
 							<c:if test="${utilisateur.id != sessionScope.utilisateur.id}">

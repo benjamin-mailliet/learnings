@@ -1,17 +1,16 @@
 package learnings.managers;
 
-import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.logging.Logger;
-
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
-import learnings.exceptions.LearningsException;
 import learnings.exceptions.LearningsSecuriteException;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
+
+import java.security.GeneralSecurityException;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class UtilisateurManager {
 	private static UtilisateurManager instance;
@@ -96,8 +95,6 @@ public class UtilisateurManager {
 	/**
 	 * Réinitialise le mot de passe de l'utilisateur avec pour valeur son email
 	 * 
-	 * @param id
-	 * @throws LearningsException
 	 */
 	public void reinitialiserMotDePasse(Long id) throws LearningsSecuriteException {
 		if (id == null) {
@@ -117,24 +114,24 @@ public class UtilisateurManager {
 		LOGGER.info(String.format("Utilisateur|reinitialiserMotDePasse|id=%d", id));
 	}
 
-	public Utilisateur ajouterUtilisateur(String email, boolean admin) throws LearningsSecuriteException {
-		if (email == null || "".equals(email)) {
+	public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) throws LearningsSecuriteException {
+		if (utilisateur.getEmail() == null || "".equals(utilisateur.getEmail())) {
 			throw new IllegalArgumentException("L'identifiant doit être renseigné.");
 		}
-		Utilisateur utilisateurExistant = this.getUtilisateur(email);
+		Utilisateur utilisateurExistant = this.getUtilisateur(utilisateur.getEmail());
 		if (utilisateurExistant != null) {
 			throw new IllegalArgumentException("L'identifiant est déjà utilisé.");
 		}
 
-		String motDePasse = null;
+		String motDePasse;
 		try {
-			motDePasse = motDePasseManager.genererMotDePasse(email);
+			motDePasse = motDePasseManager.genererMotDePasse(utilisateur.getEmail());
 		} catch (GeneralSecurityException e) {
 			throw new LearningsSecuriteException("Problème dans la génération du mot de passe.");
 		}
-		Utilisateur nouvelUtilisateur = utilisateurDao.ajouterUtilisateur(email, motDePasse, admin);
+		Utilisateur nouvelUtilisateur = utilisateurDao.ajouterUtilisateur(utilisateur, motDePasse);
 
-		LOGGER.info(String.format("Utilisateur|reinitialiserMotDePasse|id=%d;email=%s", nouvelUtilisateur.getId(), email));
+		LOGGER.info(String.format("Utilisateur|ajouterUtilisateur|id=%d;email=%s", nouvelUtilisateur.getId(), nouvelUtilisateur.getEmail()));
 		return nouvelUtilisateur;
 	}
 
