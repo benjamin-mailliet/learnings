@@ -20,7 +20,7 @@ public class AppelDaoImpl extends GenericDaoImpl implements AppelDao {
             try (PreparedStatement statement = connection.prepareStatement(
                     "SELECT utilisateur.id, utilisateur.nom, utilisateur.prenom, utilisateur.email, utilisateur.groupe, appel.statut FROM utilisateur" +
                             " LEFT OUTER JOIN appel ON appel.ideleve=utilisateur.id AND appel.idseance=?" +
-                            " WHERE utilisateur.admin=false ;")) {
+                            " WHERE utilisateur.admin=false ORDER BY utilisateur.groupe, utilisateur.nom, utilisateur.prenom")) {
                 statement.setLong(1, idSeance);
                 try (ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {

@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assertions.tuple;
 
-public class AppelDaoTestCase extends  AbstractTestCase{
+public class AppelDaoTestCase extends AbstractTestCase {
 
     private AppelDao appelDao = new AppelDaoImpl();
 
@@ -51,10 +51,10 @@ public class AppelDaoTestCase extends  AbstractTestCase{
         List<Appel> appels = appelDao.listerAppels(1L);
         // THEN
         assertThat(appels).hasSize(3);
-        assertThat(appels).extracting("eleve.id", "eleve.email", "statut").containsOnly(
-            tuple(1L, "eleve@learnings-devwebhei.fr", StatutAppel.PRESENT),
-            tuple(3L, "eleve2@learnings-devwebhei.fr", StatutAppel.ABSENT),
-            tuple(4L, "eleve3@learnings-devwebhei.fr", null)
+        assertThat(appels).extracting("eleve.id", "eleve.email", "statut").containsExactly(
+                tuple(1L, "eleve@learnings-devwebhei.fr", StatutAppel.PRESENT),
+                tuple(4L, "eleve3@learnings-devwebhei.fr", null),
+                tuple(3L, "eleve2@learnings-devwebhei.fr", StatutAppel.ABSENT)
         );
     }
 
@@ -66,9 +66,9 @@ public class AppelDaoTestCase extends  AbstractTestCase{
         // WHEN
         appelDao.ajouterAppel(2L, appel);
         // THEN
-        try(Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-            Statement stmt = connection.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT * FROM appel WHERE idseance=2 AND ideleve = 1")) {
+        try (Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet results = stmt.executeQuery("SELECT * FROM appel WHERE idseance=2 AND ideleve = 1")) {
             if (results.next()) {
                 assertThat(results.getString("statut")).isEqualTo("EXCUSE");
             } else {
@@ -85,9 +85,9 @@ public class AppelDaoTestCase extends  AbstractTestCase{
         // WHEN
         appelDao.modifierAppel(1L, appel);
         // THEN
-        try(Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-            Statement stmt = connection.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT * FROM appel WHERE idseance=1 AND ideleve = 1")) {
+        try (Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet results = stmt.executeQuery("SELECT * FROM appel WHERE idseance=1 AND ideleve = 1")) {
             if (results.next()) {
                 assertThat(results.getString("statut")).isEqualTo("EXCUSE");
             } else {

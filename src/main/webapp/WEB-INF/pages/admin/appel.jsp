@@ -25,7 +25,8 @@
 			<form class="form-horizontal" method="post">
 				<table id="tableau-appel" class="table table-bordered">
 					<tr>
-						<th>Email</th>
+						<th>Eleve</th>
+						<th>Groupe</th>
 						<th colspan="5">Statut</th>
 					</tr>
 					<c:forEach var="appel" items="${appels}">
@@ -38,7 +39,8 @@
 							<c:otherwise><c:set var="cssAppelCourant" value="active" /></c:otherwise>
 						</c:choose>
 
-						<td class="cellule-generale ${cssAppelCourant}">${appel.eleve.email}</td>
+						<td class="cellule-generale ${cssAppelCourant}">${appel.eleve.prenom} ${appel.eleve.nom}</td>
+						<td class="cellule-generale ${cssAppelCourant}">${appel.eleve.groupe.libelle}</td>
 						<td class="text-success ${appel.statut == 'PRESENT' ? 'success' : ''}">
 							<label>
 								<input type="radio" name="appel.${appel.eleve.id}" value="PRESENT" ${appel.statut == 'PRESENT' ? 'checked' : ''} class="radio-present" />
