@@ -17,7 +17,10 @@
 		<div class="container">
 			<c:import url="../../includes/messages.jsp" />
 			<header class="page-header">
-				<h1>Gestion des utilisateurs</h1>
+				<h1>
+					Gestion des utilisateurs
+					<a href="importutilisateurs" class="btn btn-success"><i class="fa fa-cloud-upload"></i> Importer utilisateurs</a>
+				</h1>
 			</header>
 			<table id="listeUtilisateurs" class="table table-striped">
 				<tr>
