@@ -1,17 +1,23 @@
 package learnings.managers;
 
-import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.logging.Logger;
-
+import learnings.dao.ProjetDao;
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
+import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.exceptions.LearningsException;
 import learnings.exceptions.LearningsSecuriteException;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
+import learnings.pojos.EleveAvecTravauxEtProjet;
+
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class UtilisateurManager {
 	private static UtilisateurManager instance;
@@ -21,6 +27,7 @@ public class UtilisateurManager {
 	private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 	private TravailDao travailDao = new TravailDaoImpl();
 	private MotDePasseManager motDePasseManager = new MotDePasseManager();
+	private ProjetDao projetDao = new ProjetDaoImpl();
 
 	public static UtilisateurManager getInstance() {
 		if (instance == null) {
@@ -153,5 +160,24 @@ public class UtilisateurManager {
 			throw new LearningsSecuriteException("Problème dans la génération du mot de passe.", e);
 		}
 		LOGGER.info(String.format("Utilisateur|modifierMotDePasse|id=%d", id));
+	}
+
+	public List<EleveAvecTravauxEtProjet> listerElevesAvecTravauxEtProjet() {
+		List<Utilisateur> eleves = utilisateurDao.listerEleves();
+		List<EleveAvecTravauxEtProjet> listeElevesComplets = new ArrayList<>();
+		for(Utilisateur eleve : eleves){
+			EleveAvecTravauxEtProjet eleveComplet = new EleveAvecTravauxEtProjet(eleve);
+
+			List<Travail> travauxEleve = travailDao.listerTravauxParUtilisateur(eleve.getId());
+			eleveComplet.setProjet(travailDao.getTravailUtilisateurParProjet(projetDao.getLastProjetId(),eleve.getId()));
+
+			Map<Long, Travail> mapTravaux = new HashMap<>();
+			for(Travail travail : travauxEleve){
+				mapTravaux.put(travail.getEnseignement().getId(), travail);
+			}
+			eleveComplet.setMapSeanceIdTravail(mapTravaux);
+			listeElevesComplets.add(eleveComplet);
+		}
+		return listeElevesComplets;
 	}
 }

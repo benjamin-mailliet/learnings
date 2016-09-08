@@ -1,8 +1,8 @@
 package learnings.dao;
 
-import java.util.List;
-
 import learnings.model.Utilisateur;
+
+import java.util.List;
 
 public interface UtilisateurDao {
 
@@ -23,4 +23,6 @@ public interface UtilisateurDao {
 	public Utilisateur ajouterUtilisateur(String email, String motDePasse, boolean admin);
 
 	public List<Utilisateur> listerAutresEleves(Long id);
+
+	public List<Utilisateur> listerEleves();
 }

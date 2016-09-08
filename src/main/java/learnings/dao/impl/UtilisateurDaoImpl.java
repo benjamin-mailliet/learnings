@@ -1,5 +1,9 @@
 package learnings.dao.impl;
 
+import learnings.dao.UtilisateurDao;
+import learnings.exceptions.LearningsSQLException;
+import learnings.model.Utilisateur;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,10 +11,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import learnings.dao.UtilisateurDao;
-import learnings.exceptions.LearningsSQLException;
-import learnings.model.Utilisateur;
 
 public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao {
 
@@ -50,6 +50,26 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 		}
 		return utilisateurs;
 	}
+
+	@Override
+	public List<Utilisateur> listerEleves() {
+		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE admin = ? ORDER BY email");
+			stmt.setBoolean(1, false);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()) {
+				utilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+			}
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
+		}
+		return utilisateurs;
+	}
+
 
 	@Override
 	public Utilisateur getUtilisateur(Long id) {

@@ -1,9 +1,5 @@
 package learnings.managers;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
@@ -13,6 +9,10 @@ import learnings.dao.impl.TravailDaoImpl;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.pojos.TpAvecTravail;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class SeanceManager {
 	private static SeanceManager instance;
@@ -38,6 +38,14 @@ public class SeanceManager {
 
 	public List<Seance> listerSeancesNotees() {
 		return seanceDao.listerSeancesNotees();
+	}
+
+	public List<Seance> listerSeancesNoteesWithTravaux() {
+		List<Seance> listeSeancesNotees = seanceDao.listerSeancesNotees();
+		for(Seance seance : listeSeancesNotees){
+			seance.setTravauxRendus(travailDao.listerTravauxParSeance(seance.getId()));
+		}
+		return listeSeancesNotees;
 	}
 
 	public List<TpAvecTravail> listerTPRenduAccessible(Long idUtilisateur) {
