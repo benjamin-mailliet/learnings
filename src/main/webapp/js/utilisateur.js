@@ -27,23 +27,60 @@ var reinitMdpUtilisateur = function(id) {
 	});
 };
 
-var ajouterUtilisateur = function() {
-	var email = $("#emailNouvelUtilisateur").val();
-	if(email == null || email == undefined || email == "") {
+var estVide = function (valeur) {
+	return valeur == null || valeur == undefined || valeur == "";
+};
+
+var validerFormulaireNouvelUtilisateur = function() {
+	var formOk = true;
+	if (estVide($("#nomNouvelUtilisateur").val())) {
+		$("#nomNouvelUtilisateur").parent().addClass("has-error");
+		formOk = false;
+	}
+	if (estVide($("#prenomNouvelUtilisateur").val())) {
+		$("#prenomNouvelUtilisateur").parent().addClass("has-error");
+		formOk = false;
+	}
+	if (estVide($("#emailNouvelUtilisateur").val())) {
 		$("#emailNouvelUtilisateur").parent().addClass("has-error");
-	} else {
-		var admin = $("#adminNouvelUtilisateur").is(":checked");
-		$.post("ajouterutilisateur",{email:email, admin:admin}).done(function(data) {
-			$("#emailNouvelUtilisateur").parent().removeClass("has-error");
-			$("#emailNouvelUtilisateur").val("");
+		formOk = false;
+	}
+	return formOk;
+};
+
+var reinitFormulaireNouvelUtilisateur = function() {
+	$("#nomNouvelUtilisateur").parent().removeClass("has-error");
+	$("#nomNouvelUtilisateur").val("");
+	$("#prenomNouvelUtilisateur").parent().removeClass("has-error");
+	$("#prenomNouvelUtilisateur").val("");
+	$("#emailNouvelUtilisateur").parent().removeClass("has-error");
+	$("#emailNouvelUtilisateur").val("");
+};
+
+var getUtilisateurJson = function() {
+	return {
+		nom: $("#nomNouvelUtilisateur").val(),
+		prenom: $("#prenomNouvelUtilisateur").val(),
+		email: $("#emailNouvelUtilisateur").val(),
+		groupe: $("#groupeNouvelUtilisateur").val(),
+		admin: $("#adminNouvelUtilisateur").is(":checked")
+	};
+};
+
+var ajouterUtilisateur = function () {
+	if (validerFormulaireNouvelUtilisateur()) {
+		$.post("ajouterutilisateur", getUtilisateurJson()).done(function (data) {
+			reinitFormulaireNouvelUtilisateur();
 			$("#adminNouvelUtilisateur").attr('checked', false);
 			$("#nouvelUtilisateurRow").before(data);
 			$("#nouvelUtilisateurRow").prev().show("slow");
-		}).fail(function() {
+		}).fail(function (data) {
+			$("#nomNouvelUtilisateur").parent().addClass("has-error");
+			$("#prenomNouvelUtilisateur").parent().addClass("has-error");
 			$("#emailNouvelUtilisateur").parent().addClass("has-error");
 		});
 	}
-}
+};
 
 $(document).ready(function(){
 	$("#listeUtilisateurs").on("click", ".supprimerUtilisateurAction", function() {

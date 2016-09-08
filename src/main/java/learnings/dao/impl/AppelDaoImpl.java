@@ -1,6 +1,7 @@
 package learnings.dao.impl;
 
 import learnings.dao.AppelDao;
+import learnings.enums.Groupe;
 import learnings.enums.StatutAppel;
 import learnings.exceptions.LearningsSQLException;
 import learnings.model.Appel;
@@ -17,13 +18,14 @@ public class AppelDaoImpl extends GenericDaoImpl implements AppelDao {
         List<Appel> appels = new ArrayList<>();
         try (Connection connection = getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(
-                    "SELECT utilisateur.id, utilisateur.email, appel.statut FROM utilisateur" +
+                    "SELECT utilisateur.id, utilisateur.nom, utilisateur.prenom, utilisateur.email, utilisateur.groupe, appel.statut FROM utilisateur" +
                             " LEFT OUTER JOIN appel ON appel.ideleve=utilisateur.id AND appel.idseance=?" +
                             " WHERE utilisateur.admin=false ;")) {
                 statement.setLong(1, idSeance);
                 try (ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {
-                        Utilisateur utilisateur = new Utilisateur(rs.getLong("id"), rs.getString("email"), false);
+                        Utilisateur utilisateur = new Utilisateur(rs.getLong("id"), rs.getString("nom"), rs.getString("prenom"), rs.getString("email"),
+                                Groupe.valueOf(rs.getString("groupe")), false);
                         StatutAppel statut;
                         try {
                             statut = StatutAppel.valueOf(rs.getString("statut"));

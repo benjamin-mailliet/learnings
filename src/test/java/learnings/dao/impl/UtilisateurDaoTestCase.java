@@ -1,6 +1,7 @@
 package learnings.dao.impl;
 
 import learnings.dao.UtilisateurDao;
+import learnings.enums.Groupe;
 import learnings.model.Utilisateur;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,6 +10,8 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class UtilisateurDaoTestCase extends AbstractTestCase{
@@ -20,10 +23,10 @@ public class UtilisateurDaoTestCase extends AbstractTestCase{
 
 		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
 		Statement stmt = connection.createStatement();
-		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(1,'eleve@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
-		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(2,'admin@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',1)");
-		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(3,'eleve2@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
-		stmt.executeUpdate("INSERT INTO `utilisateur`(`id`,`email`,`motdepasse`,`admin`) VALUES(4,'eleve3@learnings-devwebhei.fr','6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
+		stmt.executeUpdate("INSERT INTO utilisateur(id,nom,prenom,email,groupe,motdepasse,admin) VALUES(1,'nom', 'prenom', 'eleve@learnings-devwebhei.fr', 'GROUPE_1', '6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
+		stmt.executeUpdate("INSERT INTO utilisateur(id,nom,prenom,email,groupe,motdepasse,admin) VALUES(2,'admin', 'admin', 'admin@learnings-devwebhei.fr', null, '6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',1)");
+		stmt.executeUpdate("INSERT INTO utilisateur(id,nom,prenom,email,groupe,motdepasse,admin) VALUES(3,'nom2', 'prenom2', 'eleve2@learnings-devwebhei.fr', 'GROUPE_2', '6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
+		stmt.executeUpdate("INSERT INTO utilisateur(id,nom,prenom,email,groupe,motdepasse,admin) VALUES(4,'nom3', 'prenom3', 'eleve3@learnings-devwebhei.fr', 'GROUPE_1', '6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81',0)");
 		stmt.close();
 		connection.close();
 	}
@@ -127,10 +130,27 @@ public class UtilisateurDaoTestCase extends AbstractTestCase{
 
 	@Test
 	public void testAjouterUtilisateur() {
-		Utilisateur utilisateur = utilisateurDao.ajouterUtilisateur("email", "motDePasse", true);
-		Assert.assertNotNull(utilisateur.getId());
-		Assert.assertEquals("email", utilisateur.getEmail());
-		Assert.assertTrue(utilisateur.isAdmin());
+		Utilisateur utilisateur = utilisateurDao.ajouterUtilisateur(new Utilisateur(1L, "nom", "prenom", "email", Groupe.GROUPE_1, true), "motDePasse");
+		assertThat(utilisateur.getId()).isNotNull();
+		assertThat(utilisateur.getNom()).isEqualTo("nom");
+		assertThat(utilisateur.getPrenom()).isEqualTo("prenom");
+		assertThat(utilisateur.getEmail()).isEqualTo("email");
+		assertThat(utilisateur.getGroupe()).isEqualTo(Groupe.GROUPE_1);
+		assertThat(utilisateur.isAdmin()).isTrue();
+
+		Utilisateur utilisateurVerif = utilisateurDao.getUtilisateur("email");
+		Assert.assertEquals(utilisateur.getId(), utilisateurVerif.getId());
+	}
+
+	@Test
+	public void testAjouterUtilisateurAvecGroupeNull() {
+		Utilisateur utilisateur = utilisateurDao.ajouterUtilisateur(new Utilisateur(1L, "nom", "prenom", "email", null, true), "motDePasse");
+		assertThat(utilisateur.getId()).isNotNull();
+		assertThat(utilisateur.getNom()).isEqualTo("nom");
+		assertThat(utilisateur.getPrenom()).isEqualTo("prenom");
+		assertThat(utilisateur.getEmail()).isEqualTo("email");
+		assertThat(utilisateur.getGroupe()).isNull();
+		assertThat(utilisateur.isAdmin()).isTrue();
 
 		Utilisateur utilisateurVerif = utilisateurDao.getUtilisateur("email");
 		Assert.assertEquals(utilisateur.getId(), utilisateurVerif.getId());
