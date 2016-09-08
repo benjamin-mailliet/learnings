@@ -196,10 +196,10 @@ public class UtilisateurManager {
 
 		if(eleveComplet.getProjet()!=null && eleveComplet.getProjet().getNote()!=null){
 			somme = somme.add(eleveComplet.getProjet().getNote().multiply(new BigDecimal(Travail.COEFF_PROJET)));
-			quotient =+ Travail.COEFF_PROJET;
+			quotient = quotient + Travail.COEFF_PROJET;
 		}
 		if(quotient>0) {
-			return somme.divide(new BigDecimal(quotient), RoundingMode.HALF_EVEN);
+			return somme.divide(new BigDecimal(quotient), 2, RoundingMode.HALF_EVEN);
 		}else{
 			return null;
 		}

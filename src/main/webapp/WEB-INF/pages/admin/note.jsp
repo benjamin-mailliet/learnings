@@ -22,7 +22,7 @@
     <tr>
       <th>Eleve</th>
       <c:forEach var="seance" items="${seancesNotees}">
-        <th>TP du ${seance.date}</th>
+        <th><div>${seance.titre}</div><div><small>(${seance.date})</small></div></th>
       </c:forEach>
       <th>Projet</th>
       <th>Moyenne</th>
@@ -31,7 +31,7 @@
       <tr id="eleve${eleve.id}">
         <td>${eleve.email}</td>
         <c:forEach var="seance" items="${seancesNotees}">
-          <th>${eleve.mapSeanceIdTravail[seance.id].note}</th>
+          <td>${eleve.mapSeanceIdTravail[seance.id].note}</td>
         </c:forEach>
         <td>${eleve.projet.note}</td>
         <td>${eleve.moyenne}</td>
