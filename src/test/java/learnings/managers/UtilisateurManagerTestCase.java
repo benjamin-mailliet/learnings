@@ -32,7 +32,7 @@ public class UtilisateurManagerTestCase {
 	private MotDePasseManager motDePasseManager;
 
 	@InjectMocks
-	private UtilisateurManager utilisateurManager = new UtilisateurManager();
+	private UtilisateurManager utilisateurManager = UtilisateurManager.getInstance();
 
 	private Utilisateur utilisateur3 = new Utilisateur(null, "nom3", "prenom3", "email3", null, true);
 

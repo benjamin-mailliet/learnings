@@ -44,7 +44,7 @@ public class TravailManagerTestCase {
 	private FichierManager fichierManager;
 
 	@InjectMocks
-	private TravailManager travailManager = new TravailManager();
+	private TravailManager travailManager = TravailManager.getInstance();
 
 	private Seance seance1 = new Seance(1L, "seance1", "description1", new GregorianCalendar(2014, Calendar.SEPTEMBER, 5).getTime(), true,
 			new GregorianCalendar(3000, Calendar.SEPTEMBER, 5).getTime(), TypeSeance.TP);
