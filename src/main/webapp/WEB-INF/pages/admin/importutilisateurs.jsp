@@ -22,6 +22,17 @@
 				</h1>
 			</header>
 			<form class="form-horizontal" method="post" enctype="multipart/form-data">
+				<div class="well">
+					<p>Il est possible d'importer les utilisateurs à partir d'un fichier CSV avec les champs suivants séparés par des points-virgule <code>;</code> :</p>
+					<ul>
+						<li>Nom : non vide</li>
+						<li>Prénom : non vide</li>
+						<li>Adresse email : non vide</li>
+						<li>Groupe : vide ou une valeur parmis GROUPE_1, GROUPE_2, 1, 2</li>
+						<li>Admin : true (ou 1 ou oui) ou false (ou 0 ou non)</li>
+					</ul>
+					<p>La ligne d'entête <code>NOM;PRENOM;EMAIL;GROUPE;ADMIN</code> est facultative.</p>
+				</div>
 				<div class="form-group">
 					<label for="fichier" class="col-sm-2 control-label">Fichier :</label>
 					<div class="col-sm-6">

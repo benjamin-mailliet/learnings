@@ -4,11 +4,17 @@ import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
+import learnings.enums.Groupe;
+import learnings.exceptions.LearningsException;
 import learnings.exceptions.LearningsSecuriteException;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
+import learnings.utils.CsvUtils;
+import learnings.utils.FichierUtils;
 
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -150,5 +156,15 @@ public class UtilisateurManager {
 			throw new LearningsSecuriteException("Problème dans la génération du mot de passe.", e);
 		}
 		LOGGER.info(String.format("Utilisateur|modifierMotDePasse|id=%d", id));
+	}
+
+	public void importerUtilisateurs(InputStream utilisateursCsvInputStream) throws LearningsException, LearningsSecuriteException {
+		List<String> utilisateursCsv = FichierUtils.getLignes(utilisateursCsvInputStream);
+
+		List<Utilisateur> utilisateursACreer = CsvUtils.parserCsvVersUtilisateurs(utilisateursCsv);
+
+		for (Utilisateur utilisateur : utilisateursACreer) {
+			this.ajouterUtilisateur(utilisateur);
+		}
 	}
 }
