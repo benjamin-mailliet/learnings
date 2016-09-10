@@ -1,9 +1,9 @@
 package learnings.dao.impl;
 
+import learnings.AbstractDaoTestCase;
 import learnings.dao.SeanceDao;
 import learnings.enums.TypeSeance;
 import learnings.model.Seance;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,167 +12,151 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
-public class SeanceDaoTestCase extends AbstractTestCase {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+public class SeanceDaoTestCase extends AbstractDaoTestCase {
     private SeanceDao seanceDao = new SeanceDaoImpl();
 
     @Before
     public void init() throws Exception {
         super.purgeBaseDeDonnees();
 
-        Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`) VALUES(1,'cours1','cours de debuggage','2014-07-26','COURS')");
-        stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`) VALUES(2,'cours2','cours de correction','2014-08-26','COURS')");
-        stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`,`datelimiterendu`,`isnote`) VALUES(3,'tp1','tp de debuggage','2014-07-29','TP','2014-07-29 18:00:00',true)");
-        stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`,`datelimiterendu`,`isnote`) VALUES(4,'tp2','tp de correction','2014-08-29','TP','2014-08-29 18:00:00',true)");
-        stmt.close();
-        connection.close();
+        try (Connection connection = getConnection();
+             Statement stmt = connection.createStatement()
+        ) {
+            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`) VALUES(1,'cours1','cours de debuggage','2014-07-26','COURS')");
+            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`) VALUES(2,'cours2','cours de correction','2014-08-26','COURS')");
+            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`,`datelimiterendu`,`isnote`) VALUES(3,'tp1','tp de debuggage','2014-07-29','TP','2014-07-29 18:00:00',true)");
+            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`,`datelimiterendu`,`isnote`) VALUES(4,'tp2','tp de correction','2014-08-29','TP','2014-08-29 18:00:00',true)");
+        }
     }
 
     @Test
-    public void testListerSeances() {
+    public void shouldListerSeances() {
+        // WHEN
         List<Seance> listeCours = seanceDao.listerSeances();
-
-        Assert.assertEquals(4, listeCours.size());
-
-        Assert.assertEquals(1L, listeCours.get(0).getId().longValue());
-        Assert.assertEquals("cours1", listeCours.get(0).getTitre());
-        Assert.assertEquals("cours de debuggage", listeCours.get(0).getDescription());
-        Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 26).getTime().getTime(), listeCours.get(0).getDate().getTime());
-
-        Assert.assertEquals(3L, listeCours.get(1).getId().longValue());
-        Assert.assertEquals("tp1", listeCours.get(1).getTitre());
-        Assert.assertEquals("tp de debuggage", listeCours.get(1).getDescription());
-        Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 29).getTime().getTime(), listeCours.get(1).getDate().getTime());
-        Assert.assertEquals(TypeSeance.TP, listeCours.get(1).getType());
-        Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 29, 18, 0).getTime().getTime(), listeCours.get(1).getDateLimiteRendu().getTime());
-        Assert.assertTrue(listeCours.get(1).getIsNote());
-
+        // THEN
+        assertThat(listeCours).hasSize(4);
+        assertThat(listeCours).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote").containsExactly(
+                tuple(1L, "cours1", "cours de debuggage", getDate(2014, Calendar.JULY, 26), TypeSeance.COURS, null, false),
+                tuple(3L, "tp1", "tp de debuggage", getDate(2014, Calendar.JULY, 29), TypeSeance.TP, getDate(2014, Calendar.JULY, 29, 18, 0, 0).getTime(), true),
+                tuple(2L, "cours2", "cours de correction", getDate(2014, Calendar.AUGUST, 26), TypeSeance.COURS, null, false),
+                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true)
+        );
     }
 
     @Test
-    public void testListerSeancesNotees() {
+    public void shouldListerSeancesNotees() {
+        // WHEN
         List<Seance> listeCours = seanceDao.listerSeancesNotees();
-
-        Assert.assertEquals(2, listeCours.size());
-
-        Assert.assertEquals(3L, listeCours.get(0).getId().longValue());
-        Assert.assertEquals("tp1", listeCours.get(0).getTitre());
-        Assert.assertEquals("tp de debuggage", listeCours.get(0).getDescription());
-        Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 29).getTime().getTime(), listeCours.get(0).getDate().getTime());
-        Assert.assertEquals(4L, listeCours.get(1).getId().longValue());
-        Assert.assertEquals("tp2", listeCours.get(1).getTitre());
-        Assert.assertEquals("tp de correction", listeCours.get(1).getDescription());
-        Assert.assertEquals(new GregorianCalendar(2014, Calendar.AUGUST, 29).getTime().getTime(), listeCours.get(1).getDate().getTime());
-
+        // THEN
+        assertThat(listeCours).hasSize(2);
+        assertThat(listeCours).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote").containsExactly(
+                tuple(3L, "tp1", "tp de debuggage", getDate(2014, Calendar.JULY, 29), TypeSeance.TP, getDate(2014, Calendar.JULY, 29, 18, 0, 0).getTime(), true),
+                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true)
+        );
     }
 
     @Test
-    public void testListerTPNotesParDateRendu() {
-        Calendar cal = new GregorianCalendar(2014, Calendar.AUGUST, 29, 15, 27, 0);
-
-        List<Seance> listeTps = seanceDao.listerTPNotesParDateRendu(cal.getTime());
-        Assert.assertEquals(1, listeTps.size());
-
-        Assert.assertEquals(4L, listeTps.get(0).getId().longValue());
-        Assert.assertEquals("tp2", listeTps.get(0).getTitre());
-        Assert.assertEquals("tp de correction", listeTps.get(0).getDescription());
-        Assert.assertEquals(new GregorianCalendar(2014, Calendar.AUGUST, 29).getTime(), listeTps.get(0).getDate());
-        Assert.assertTrue(listeTps.get(0).getIsNote());
+    public void shouldListerTPNotesParDateRendu() {
+        // WHEN
+        List<Seance> listeTps = seanceDao.listerTPNotesParDateRendu(getDate(2014, Calendar.AUGUST, 29, 15, 27, 0));
+        // THEN
+        assertThat(listeTps).hasSize(1);
+        assertThat(listeTps).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote").containsExactly(
+                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true)
+        );
     }
 
     @Test
-    public void testGetSeance() {
+    public void shouldGetSeance() {
+        // WHEN
         Seance seance = seanceDao.getSeance(3L);
-
-        Assert.assertNotNull(seance);
-        Assert.assertEquals(3L, seance.getId().longValue());
-        Assert.assertEquals("tp1", seance.getTitre());
-        Assert.assertEquals("tp de debuggage", seance.getDescription());
-        Assert.assertEquals(TypeSeance.TP, seance.getType());
-        Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 29).getTime(), seance.getDate());
-        Assert.assertEquals(new GregorianCalendar(2014, Calendar.JULY, 29, 18, 0, 0).getTime(), seance.getDateLimiteRendu());
+        // THEN
+        assertThat(seance).isNotNull();
+        assertThat(seance.getId()).isEqualTo(3L);
+        assertThat(seance.getTitre()).isEqualTo("tp1");
+        assertThat(seance.getDescription()).isEqualTo("tp de debuggage");
+        assertThat(seance.getType()).isEqualTo(TypeSeance.TP);
+        assertThat(seance.getDate()).isEqualToIgnoringMillis(getDate(2014, Calendar.JULY, 29));
+        assertThat(seance.getDateLimiteRendu()).isEqualToIgnoringMillis(getDate(2014, Calendar.JULY, 29, 18, 0, 0));
+        assertThat(seance.getIsNote()).isTrue();
     }
 
     @Test
-    public void testAjouterSeanceComplete() throws Exception {
-        Seance seance = new Seance(null, "monTitre", "maDescription", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), true,
-                new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 18, 5).getTime(), TypeSeance.TP);
-
+    public void shouldAjouterSeanceComplete() throws Exception {
+        // GIVEN
+        Seance seance = new Seance(null, "monTitre", "maDescription", getDate(2014, Calendar.SEPTEMBER, 6), true, getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0), TypeSeance.TP);
+        // WHEN
         Seance seanceCreee = seanceDao.ajouterSeance(seance);
-
-        Assert.assertNotNull(seanceCreee.getId());
-
-        Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM seance WHERE id=?");
-        stmt.setLong(1, seanceCreee.getId());
-        ResultSet results = stmt.executeQuery();
-        if (results.next()) {
-            Assert.assertEquals(seanceCreee.getId().longValue(), results.getLong("id"));
-            Assert.assertEquals("monTitre", results.getString("titre"));
-            Assert.assertEquals("maDescription", results.getString("description"));
-            Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 0, 0).getTime(), results.getTimestamp("date"));
-            Assert.assertTrue(results.getBoolean("isnote"));
-            Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 18, 5).getTime(), results.getTimestamp("datelimiterendu"));
-            Assert.assertEquals(TypeSeance.TP, TypeSeance.valueOf(results.getString("type")));
-        } else {
-            Assert.fail();
+        // THEN
+        assertThat(seanceCreee).isNotNull();
+        assertThat(seanceCreee.getId()).isNotNull();
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM seance WHERE id=?")
+        ) {
+            stmt.setLong(1, seanceCreee.getId());
+            try (ResultSet results = stmt.executeQuery()) {
+                assertThat(results.next()).isTrue();
+                assertThat(results.getLong("id")).isEqualTo(seanceCreee.getId());
+                assertThat(results.getString("titre")).isEqualTo("monTitre");
+                assertThat(results.getString("description")).isEqualTo("maDescription");
+                assertThat(TypeSeance.valueOf(results.getString("type"))).isEqualTo(TypeSeance.TP);
+                assertThat(results.getTimestamp("date")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6));
+                assertThat(results.getTimestamp("datelimiterendu")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0));
+                assertThat(results.getBoolean("isnote")).isTrue();
+            }
         }
-        stmt.close();
-        connection.close();
     }
 
     @Test
-    public void testAjouterSeanceMini() throws Exception {
-        Seance seance = new Seance(null, "monTitre", null, new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), false, null, TypeSeance.TP);
-
+    public void shouldAjouterSeanceMini() throws Exception {
+        // GIVEN
+        Seance seance = new Seance(null, "monTitre", null, getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.TP);
+        // WHEN
         Seance seanceCreee = seanceDao.ajouterSeance(seance);
-
-        Assert.assertNotNull(seanceCreee.getId());
-
-        Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM seance WHERE id=?");
-        stmt.setLong(1, seanceCreee.getId());
-        ResultSet results = stmt.executeQuery();
-        if (results.next()) {
-            Assert.assertEquals(seanceCreee.getId().longValue(), results.getLong("id"));
-            Assert.assertEquals("monTitre", results.getString("titre"));
-            Assert.assertEquals("", results.getString("description"));
-            Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 0, 0).getTime(), results.getTimestamp("date"));
-            Assert.assertFalse(results.getBoolean("isnote"));
-            Assert.assertNull(results.getTimestamp("datelimiterendu"));
-            Assert.assertEquals(TypeSeance.TP, TypeSeance.valueOf(results.getString("type")));
-        } else {
-            Assert.fail();
+        // THEN
+        assertThat(seanceCreee).isNotNull();
+        assertThat(seanceCreee.getId()).isNotNull();
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM seance WHERE id=?")
+        ) {
+            stmt.setLong(1, seanceCreee.getId());
+            try (ResultSet results = stmt.executeQuery()) {
+                assertThat(results.next()).isTrue();
+                assertThat(results.getLong("id")).isEqualTo(seanceCreee.getId());
+                assertThat(results.getString("titre")).isEqualTo("monTitre");
+                assertThat(results.getString("description")).isEqualTo("");
+                assertThat(TypeSeance.valueOf(results.getString("type"))).isEqualTo(TypeSeance.TP);
+                assertThat(results.getTimestamp("date")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6));
+                assertThat(results.getTimestamp("datelimiterendu")).isNull();
+                assertThat(results.getBoolean("isnote")).isFalse();
+            }
         }
-        stmt.close();
-        connection.close();
     }
 
     @Test
-    public void testModifierSeance() throws Exception {
-        Seance seance = new Seance(1L, "monTitre", "maDescription", new GregorianCalendar(2014, Calendar.SEPTEMBER, 6).getTime(), true, new GregorianCalendar(
-                2014, Calendar.SEPTEMBER, 6, 18, 5).getTime(), TypeSeance.TP);
+    public void shouldModifierSeance() throws Exception {
+        // GIVEN
+        Seance seance = new Seance(1L, "monTitre", "maDescription", getDate(2014, Calendar.SEPTEMBER, 6), true, getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0), TypeSeance.TP);
+        // WHEN
         seanceDao.modifierSeance(seance);
-
-        Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-        Statement stmt = connection.createStatement();
-        ResultSet results = stmt.executeQuery("SELECT * FROM seance WHERE id=1");
-        if (results.next()) {
-            Assert.assertEquals(1L, results.getLong("id"));
-            Assert.assertEquals("monTitre", results.getString("titre"));
-            Assert.assertEquals("maDescription", results.getString("description"));
-            Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 0, 0).getTime(), results.getTimestamp("date"));
-            Assert.assertTrue(results.getBoolean("isnote"));
-            Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 6, 18, 5).getTime(), results.getTimestamp("datelimiterendu"));
-            Assert.assertEquals(TypeSeance.TP, TypeSeance.valueOf(results.getString("type")));
-        } else {
-            Assert.fail();
+        // THEN
+        try (Connection connection = getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet results = stmt.executeQuery("SELECT * FROM seance WHERE id=1")
+        ) {
+            assertThat(results.next()).isTrue();
+            assertThat(results.getLong("id")).isEqualTo(1L);
+            assertThat(results.getString("titre")).isEqualTo("monTitre");
+            assertThat(results.getString("description")).isEqualTo("maDescription");
+            assertThat(TypeSeance.valueOf(results.getString("type"))).isEqualTo(TypeSeance.TP);
+            assertThat(results.getTimestamp("date")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6));
+            assertThat(results.getTimestamp("datelimiterendu")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0));
+            assertThat(results.getBoolean("isnote")).isTrue();
         }
-        stmt.close();
-        connection.close();
     }
 }

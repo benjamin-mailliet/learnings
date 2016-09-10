@@ -42,10 +42,9 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
              ResultSet results = stmt
                      .executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance WHERE isnote is true ORDER BY date ASC")
         ) {
-            Date dateLimiteRendu = null;
             while (results.next()) {
                 listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
-                        .getBoolean("isnote"), dateLimiteRendu, TypeSeance.valueOf(results.getString("type"))));
+                        .getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
             }
         } catch (SQLException e) {
             throw new LearningsSQLException(e);

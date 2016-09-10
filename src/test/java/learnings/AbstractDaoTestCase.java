@@ -1,12 +1,14 @@
-package learnings.dao.impl;
+package learnings;
+
+import learnings.dao.impl.DataSourceProvider;
 
 import java.sql.Connection;
 import java.sql.Statement;
 
-public class AbstractTestCase {
+public abstract class AbstractDaoTestCase extends AbstractTestCase {
 
     protected void purgeBaseDeDonnees() throws  Exception{
-        Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
+        Connection connection = this.getConnection();
         Statement stmt = connection.createStatement();
         stmt.executeUpdate("DELETE FROM appel");
         stmt.executeUpdate("DELETE FROM ressource");
@@ -18,5 +20,9 @@ public class AbstractTestCase {
 
         stmt.close();
         connection.close();
+    }
+
+    protected Connection getConnection() throws Exception{
+        return DataSourceProvider.getInstance().getDataSource().getConnection();
     }
 }

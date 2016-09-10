@@ -2,14 +2,11 @@ package learnings.managers;
 
 import learnings.exceptions.LearningsException;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Properties;
 
 public class StockageLocalFichierManagerImpl implements FichierManager {
@@ -33,16 +30,13 @@ public class StockageLocalFichierManagerImpl implements FichierManager {
     @Override
     public void ajouterFichier(String path, InputStream datas) throws LearningsException {
         try {
-            File fichier = new File(repertoirePrincipal + path);
-            fichier.getParentFile().mkdirs();
-            FileOutputStream fos = new FileOutputStream(fichier);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-
-            while ((read = datas.read(bytes)) != -1) {
-                fos.write(bytes, 0, read);
+            Path fichier = Paths.get(repertoirePrincipal, path);
+            if (Files.notExists(fichier)) {
+                Files.createDirectories(fichier.getParent());
+                Files.copy(datas, fichier);
+            } else {
+                throw new LearningsException(String.format("Le fichier %s existe déjà", fichier.toAbsolutePath()));
             }
-            fos.close();
         } catch (IOException e) {
             throw new LearningsException("Problème avec la création d'un fichier.", e);
         }
@@ -58,21 +52,21 @@ public class StockageLocalFichierManagerImpl implements FichierManager {
                 throw new LearningsException("Le fichier demandé n'existe pas.");
             }
         } catch (IOException e) {
-            throw new LearningsException("Problème avec la création d'un fichier.", e);
+            throw new LearningsException("Problème avec la récupération d'un fichier.", e);
         }
     }
 
     @Override
     public void supprimerFichier(String path) throws LearningsException {
         Path fichier = Paths.get(repertoirePrincipal, path);
-        if (Files.notExists(fichier)) {
+        if (Files.exists(fichier)) {
             try {
                 Files.delete(fichier);
             } catch (IOException e) {
                 throw new LearningsException("Le fichier demandé n'a pas pu être supprimé.");
             }
         } else {
-            throw new LearningsException("Le fichier demandé n'a pas pu être supprimé.");
+            throw new LearningsException("Le fichier demandé n'existe pas.");
         }
     }
 }

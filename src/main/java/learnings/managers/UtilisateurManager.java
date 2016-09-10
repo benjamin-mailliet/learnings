@@ -122,7 +122,7 @@ public class UtilisateurManager {
 
     public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) throws LearningsSecuriteException {
         if (utilisateur.getEmail() == null || "".equals(utilisateur.getEmail())) {
-            throw new IllegalArgumentException("L'identifiant doit être renseigné.");
+            throw new IllegalArgumentException("L'adresse email doit être renseigné.");
         }
         Utilisateur utilisateurExistant = this.getUtilisateur(utilisateur.getEmail());
         if (utilisateurExistant != null) {

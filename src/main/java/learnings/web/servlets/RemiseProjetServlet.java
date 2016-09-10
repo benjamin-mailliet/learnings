@@ -1,10 +1,9 @@
 package learnings.web.servlets;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import learnings.exceptions.LearningsException;
+import learnings.managers.ProjetManager;
+import learnings.managers.TravailManager;
+import learnings.pojos.ProjetAvecTravail;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,13 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
-import com.mysql.fabric.xmlrpc.base.Data;
-
-import learnings.exceptions.LearningsException;
-import learnings.managers.ProjetManager;
-import learnings.managers.TravailManager;
-import learnings.pojos.ProjetAvecTravail;
+import java.io.IOException;
 
 @WebServlet(urlPatterns = { "/eleve/remiseprojet" })
 @MultipartConfig
