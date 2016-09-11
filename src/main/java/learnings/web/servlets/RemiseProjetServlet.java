@@ -47,8 +47,7 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 				TravailManager.getInstance().rendreProjetWithRepo(projetId, utilisateur1Id, commentaire, urlRepository);
 				this.ajouterMessageSucces(request, "Le projet a bien été enregistré.");
 			}else if(fichier.getSize() > 0L){
-				String nomFichier = this.getNomDuFichier(fichier);
-				TravailManager.getInstance().rendreProjetWithFichier(projetId, utilisateur1Id, commentaire, nomFichier, fichier.getInputStream(),
+				TravailManager.getInstance().rendreProjetWithFichier(projetId, utilisateur1Id, commentaire, fichier.getSubmittedFileName(), fichier.getInputStream(),
 						fichier.getSize());
 				this.ajouterMessageSucces(request, "Le projet a bien été enregistré.");
 			}else{

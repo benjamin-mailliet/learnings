@@ -56,8 +56,7 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 				if (fichier.getSize() == 0L) {
 					this.ajouterMessageErreur(request, "Veuillez ajouter un fichier.");
 				} else {
-					String nomFichier = this.getNomDuFichier(fichier);
-					TravailManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, commentaire, nomFichier, fichier.getInputStream(),
+					TravailManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, commentaire, fichier.getSubmittedFileName(), fichier.getInputStream(),
 							fichier.getSize());
 					this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
 				}
