@@ -10,8 +10,7 @@ import java.util.Map;
 
 public class AppelManager {
 
-    private AppelManager() {
-    }
+    private AppelManager() {}
 
     private static class AppelManagerHolder{
         private final static AppelManager instance = new AppelManager();

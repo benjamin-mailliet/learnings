@@ -9,9 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import learnings.enums.Groupe;
 public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao {
 
 	public List<Utilisateur> listerUtilisateurs() {
@@ -19,9 +21,10 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 		try {
 			Connection connection = getConnection();
 			Statement stmt = connection.createStatement();
-			ResultSet results = stmt.executeQuery("SELECT id, email, admin FROM utilisateur ORDER BY email");
+			ResultSet results = stmt.executeQuery("SELECT id, nom, prenom, email, groupe, admin FROM utilisateur ORDER BY email");
 			while (results.next()) {
-				utilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+
+				utilisateurs.add(mapperVersUtilisateur(results));
 			}
 			stmt.close();
 			connection.close();
@@ -31,17 +34,26 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 		return utilisateurs;
 	}
 
+	private Utilisateur mapperVersUtilisateur(ResultSet results) throws SQLException {
+		Groupe groupe = null;
+		if (results.getString("groupe") != null) {
+			groupe = Groupe.valueOf(results.getString("groupe"));
+		}
+		return new Utilisateur(results.getLong("id"), results.getString("nom"), results.getString("prenom"), results.getString("email"),
+                groupe, results.getBoolean("admin"));
+	}
+
 	@Override
 	public List<Utilisateur> listerAutresEleves(Long id) {
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
 		try {
 			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE admin = ? AND id != ? ORDER BY email");
+			PreparedStatement stmt = connection.prepareStatement("SELECT id, nom, prenom, email, groupe, admin FROM utilisateur WHERE admin = ? AND id != ? ORDER BY email");
 			stmt.setBoolean(1, false);
 			stmt.setLong(2, id);
 			ResultSet results = stmt.executeQuery();
 			while (results.next()) {
-				utilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+				utilisateurs.add(mapperVersUtilisateur(results));
 			}
 			stmt.close();
 			connection.close();
@@ -76,11 +88,11 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 		Utilisateur utilisateur = null;
 		try {
 			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE id=?");
+			PreparedStatement stmt = connection.prepareStatement("SELECT id, nom, prenom, email, groupe, admin FROM utilisateur WHERE id=?");
 			stmt.setLong(1, id);
 			ResultSet results = stmt.executeQuery();
 			if (results.next()) {
-				utilisateur = new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin"));
+				utilisateur = mapperVersUtilisateur(results);
 			}
 			stmt.close();
 			connection.close();
@@ -94,11 +106,11 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 		Utilisateur utilisateur = null;
 		try {
 			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE email=?");
+			PreparedStatement stmt = connection.prepareStatement("SELECT id, nom, prenom, email, groupe, admin FROM utilisateur WHERE email=?");
 			stmt.setString(1, identifiant);
 			ResultSet results = stmt.executeQuery();
 			if (results.next()) {
-				utilisateur = new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin"));
+				utilisateur = mapperVersUtilisateur(results);
 			}
 			stmt.close();
 			connection.close();
@@ -173,27 +185,31 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 	}
 
 	@Override
-	public Utilisateur ajouterUtilisateur(String email, String motDePasse, boolean admin) {
-		Utilisateur utilisateur = null;
-		try {
-			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("INSERT INTO utilisateur(email, motdepasse, admin) VALUES(?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, email);
-			stmt.setString(2, motDePasse);
-			stmt.setBoolean(3, admin);
-			stmt.executeUpdate();
-
-			ResultSet ids = stmt.getGeneratedKeys();
-			if (ids.next()) {
-				utilisateur = new Utilisateur(ids.getLong(1), email, admin);
+	public Utilisateur ajouterUtilisateur(Utilisateur nouvelUtilisateur, String motDePasse) {
+		try (Connection connection = getConnection()) {
+			try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO utilisateur(nom, prenom, email, groupe, motdepasse, admin) VALUES(?, ?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS)){
+				stmt.setString(1, nouvelUtilisateur.getNom());
+				stmt.setString(2, nouvelUtilisateur.getPrenom());
+				stmt.setString(3, nouvelUtilisateur.getEmail());
+				if(nouvelUtilisateur.getGroupe() != null) {
+					stmt.setString(4, nouvelUtilisateur.getGroupe().name());
+				} else {
+					stmt.setNull(4, Types.VARCHAR);
+				}
+				stmt.setString(5, motDePasse);
+				stmt.setBoolean(6, nouvelUtilisateur.isAdmin());
+				stmt.executeUpdate();
+				try (ResultSet ids = stmt.getGeneratedKeys()) {
+					if (ids.next()) {
+						nouvelUtilisateur.setId(ids.getLong(1));
+					}
+				}
 			}
 
-			stmt.close();
-			connection.close();
 		} catch (SQLException e) {
 			throw new LearningsSQLException(e);
 		}
-		return utilisateur;
+		return nouvelUtilisateur;
 	}
 }

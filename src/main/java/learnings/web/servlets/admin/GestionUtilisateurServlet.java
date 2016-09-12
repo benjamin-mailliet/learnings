@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import learnings.enums.Groupe;
 import learnings.exceptions.LearningsSecuriteException;
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
@@ -23,6 +24,7 @@ public class GestionUtilisateurServlet extends GenericLearningsServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Utilisateur> utilisateurs = UtilisateurManager.getInstance().listerUtilisateurs();
 		request.setAttribute("utilisateurs", utilisateurs);
+		request.setAttribute("groupes", Groupe.values());
 		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/utilisateur.jsp");
 		view.forward(request, response);
 	}

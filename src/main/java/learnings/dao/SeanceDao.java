@@ -6,15 +6,15 @@ import java.util.List;
 import learnings.model.Seance;
 
 public interface SeanceDao {
-	public List<Seance> listerSeances();
+	List<Seance> listerSeances();
 
-	public List<Seance> listerSeancesNotees();
+	List<Seance> listerSeancesNotees();
 
-	public List<Seance> listerTPNotesParDateRendu(Date date);
+	List<Seance> listerTPNotesParDateRendu(Date date);
 
-	public Seance getSeance(Long idSeance);
+	Seance getSeance(Long idSeance);
 
-	public Seance ajouterSeance(Seance seance);
+	Seance ajouterSeance(Seance seance);
 
-	public void modifierSeance(Seance seance);
+	void modifierSeance(Seance seance);
 }

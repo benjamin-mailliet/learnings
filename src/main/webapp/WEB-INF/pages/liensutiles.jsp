@@ -72,8 +72,8 @@
 								<td>Le JDK contient la JRE permettant d'exécuter des applications Java ainsi que tous les utilitaires pour compiler ces applications.</td>
 							</tr>
 							<tr>
-								<td><a href="http://www.eclipse.org/downloads/" target="_blank">Eclipse</a></td>
-								<td>Eclipse est un environnement de développement. La version qui nous intéresse est <strong>Eclipse Luna for JavaEE Developpers</strong> qui contient tous les plugins nécessaires au dévelopement d'application web en Java.</td>
+								<td><a href="http://www.eclipse.org/downloads/eclipse-packages/" target="_blank">Eclipse</a></td>
+								<td>Eclipse est un environnement de développement. La version qui nous intéresse est <strong>Eclipse IDE for Java EE Developers</strong> qui contient tous les plugins nécessaires au dévelopement d'application web en Java.</td>
 							</tr>
 							<tr>
 								<td><a href="http://tomcat.apache.org/download-80.cgi" target="_blank">Apache Tomcat 8</a></td>
@@ -87,7 +87,7 @@
 						<div class="panel-heading"><h4>Base de données</h4></div>
 	  					<table class="table">
 							<tr>
-								<td><a href="http://dev.mysql.com/downloads/mysql/" target="_blank">MySQL 5.6</a></td>
+								<td><a href="http://dev.mysql.com/downloads/mysql/" target="_blank">MySQL 5.7</a></td>
 								<td>MySQL est un serveur de base de données relationnel, l'un des plus utilisés dans le monde.</td>
 							</tr>
 							<tr>
@@ -122,7 +122,11 @@
 								<td>SourceTree est un client graphique pour Git (et Mercurial) permettant de s'affranchir des lignes de commande et de simplifier la gestion d'un projet Git.</td>
 							</tr>
 							<tr>
-								<td><a href="http://www.sourcetreeapp.com" target="_blank">GitHub</a></td>
+								<td><a href="https://www.gitkraken.com/download" target="_blank">GitKraken</a></td>
+								<td>GitKraken est un autre client graphique pour Git.</td>
+							</tr>
+							<tr>
+								<td><a href="https://github.com/" target="_blank">GitHub</a></td>
 								<td>GitHub est un site web permettant d'héberger des dépôts Git. Son utilisation est gratuite si le projet développé est open souce. Des comptes payants permettent d'héberger des projets privés.</td>
 							</tr>
 							<tr>
@@ -148,6 +152,12 @@
 								<td>Autre offre PAAS qui permet l'hébergement de projet Java. L'utilisation d'un serveur MySQL n'est pas possible mais PostgreSQL est disponible.</td>
 							</tr>
 	  					</table>
+					</article>
+					<article class="panel panel-default">
+						<div class="panel-heading"><h4>Code source de ce site</h4></div>
+						<div class="panel-body">
+							<p>Le code source de ce site est disponible en intégralité sur <a href="https://github.com/benjamin-mailliet/learnings-devwebhei" title="Projet Learnings sur GitHub" target="_blank">GitHub</a>. N'hésitez à pas à aller le parcourir !</p>
+						</div>
 					</article>
 				</div>
 			</div>

@@ -6,13 +6,13 @@ import learnings.model.Projet;
 
 public interface ProjetDao {
 
-	public List<Projet> listerProjets();
+	List<Projet> listerProjets();
 
-	public Projet getProjet(Long id);
+	Projet getProjet(Long id);
 
-	public Projet ajouterProjet(Projet projet);
+	Projet ajouterProjet(Projet projet);
 
-	public void modifierProjet(Projet projet);
+	void modifierProjet(Projet projet);
 
-	public Long getLastProjetId();
+	Long getLastProjetId();
 }
