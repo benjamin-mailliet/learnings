@@ -77,7 +77,7 @@ public class SeanceManager {
         }
         seance.setTravauxRendus(travailDao.listerTravauxParSeance(idSeance));
         for (Travail travailRendu : seance.getTravauxRendus()) {
-            travailRendu.setUtilisateurs(travailDao.listerUtilisateurs(travailRendu.getId()));
+            travailRendu.setUtilisateurs(travailDao.listerUtilisateursParTravail(travailRendu.getId()));
         }
 
         return seance;

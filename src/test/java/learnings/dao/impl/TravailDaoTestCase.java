@@ -200,7 +200,7 @@ public class TravailDaoTestCase extends AbstractDaoTestCase {
     @Test
     public void shouldListerUtilisateurs() {
         // WHEN
-        List<Utilisateur> utilisateurs = travailDao.listerUtilisateurs(3L);
+        List<Utilisateur> utilisateurs = travailDao.listerUtilisateursParTravail(3L);
         // THEN
         assertThat(utilisateurs).hasSize(2);
         assertThat(utilisateurs).extracting("id").containsOnly(1L, 2L);

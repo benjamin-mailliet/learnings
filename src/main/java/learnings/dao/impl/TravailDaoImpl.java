@@ -149,7 +149,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
     }
 
     @Override
-    public List<Utilisateur> listerUtilisateurs(Long idTravail) {
+    public List<Utilisateur> listerUtilisateursParTravail(Long idTravail) {
         List<Utilisateur> listeUtilisateurs = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
@@ -158,7 +158,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
             stmt.setLong(1, idTravail);
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    listeUtilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("nom"), results.getString("prenom"), results.getString("email"),
+                    listeUtilisateurs.add( new Utilisateur(results.getLong("id"), results.getString("nom"), results.getString("prenom"), results.getString("email"),
                             Groupe.valueOf(results.getString("groupe")), results.getBoolean("admin")));
                 }
             }

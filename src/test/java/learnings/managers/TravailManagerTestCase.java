@@ -82,7 +82,7 @@ public class TravailManagerTestCase extends AbstractTestCase {
         List<Utilisateur> utilisateurs = new ArrayList<>();
         utilisateurs.add(utilisateur1);
         utilisateurs.add(utilisateur2);
-        when(travailDao.listerUtilisateurs(Mockito.eq(1L))).thenReturn(utilisateurs);
+        when(travailDao.listerUtilisateursParTravail(Mockito.eq(1L))).thenReturn(utilisateurs);
 
         when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(11L), Mockito.eq(1L))).thenReturn(travail1);
         when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(11L), Mockito.eq(2L))).thenReturn(travail2);
@@ -90,7 +90,7 @@ public class TravailManagerTestCase extends AbstractTestCase {
         when(travailDao.getTravailUtilisateurParSeance(Mockito.eq(12L), Mockito.eq(1L))).thenReturn(travail2);
         List<Utilisateur> utilisateurs2 = new ArrayList<>();
         utilisateurs2.add(utilisateur1);
-        when(travailDao.listerUtilisateurs(Mockito.eq(2L))).thenReturn(utilisateurs2);
+        when(travailDao.listerUtilisateursParTravail(Mockito.eq(2L))).thenReturn(utilisateurs2);
 
         when(utilisateurDao.getUtilisateur(Mockito.eq(0L))).thenReturn(utilisateurAdmin);
         when(utilisateurDao.getUtilisateur(Mockito.eq(1L))).thenReturn(utilisateur1);

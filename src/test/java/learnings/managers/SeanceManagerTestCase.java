@@ -88,8 +88,8 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         List<Utilisateur> utilisateursTravail2 = new ArrayList<>();
         utilisateursTravail2.add(utilisateur2);
         utilisateursTravail2.add(utilisateur3);
-        when(travailDao.listerUtilisateurs(Mockito.eq(1L))).thenReturn(utilisateursTravail1);
-        when(travailDao.listerUtilisateurs(Mockito.eq(2L))).thenReturn(utilisateursTravail2);
+        when(travailDao.listerUtilisateursParTravail(Mockito.eq(1L))).thenReturn(utilisateursTravail1);
+        when(travailDao.listerUtilisateursParTravail(Mockito.eq(2L))).thenReturn(utilisateursTravail2);
 
     }
 
@@ -168,9 +168,9 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         verify(seanceDao).getSeance(Mockito.anyLong());
         verify(travailDao).listerTravauxParSeance(Mockito.eq(3L));
         verify(travailDao).listerTravauxParSeance(Mockito.anyLong());
-        verify(travailDao).listerUtilisateurs(Mockito.eq(1L));
-        verify(travailDao).listerUtilisateurs(Mockito.eq(2L));
-        verify(travailDao, Mockito.times(2)).listerUtilisateurs(Mockito.anyLong());
+        verify(travailDao).listerUtilisateursParTravail(Mockito.eq(1L));
+        verify(travailDao).listerUtilisateursParTravail(Mockito.eq(2L));
+        verify(travailDao, Mockito.times(2)).listerUtilisateursParTravail(Mockito.anyLong());
     }
 
     @Test
@@ -185,7 +185,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
             assertThat(e.getMessage()).isEqualTo("L'identifiant de la séance est incorrect.");
             verify(seanceDao, Mockito.never()).getSeance(Mockito.anyLong());
             verify(travailDao, Mockito.never()).listerTravauxParSeance(Mockito.anyLong());
-            verify(travailDao, Mockito.never()).listerUtilisateurs(Mockito.anyLong());
+            verify(travailDao, Mockito.never()).listerUtilisateursParTravail(Mockito.anyLong());
         }
     }
 
@@ -202,7 +202,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
             verify(seanceDao).getSeance(Mockito.eq(-1L));
             verify(seanceDao).getSeance(Mockito.anyLong());
             verify(travailDao, Mockito.never()).listerTravauxParSeance(Mockito.anyLong());
-            verify(travailDao, Mockito.never()).listerUtilisateurs(Mockito.anyLong());
+            verify(travailDao, Mockito.never()).listerUtilisateursParTravail(Mockito.anyLong());
         }
     }
 
@@ -233,7 +233,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
             assertThat(e.getMessage()).isEqualTo("L'identifiant de la séance est incorrect.");
             verify(seanceDao, Mockito.never()).getSeance(Mockito.anyLong());
             verify(travailDao, Mockito.never()).listerTravauxParSeance(Mockito.anyLong());
-            verify(travailDao, Mockito.never()).listerUtilisateurs(Mockito.anyLong());
+            verify(travailDao, Mockito.never()).listerUtilisateursParTravail(Mockito.anyLong());
         }
     }
 
@@ -250,7 +250,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
             verify(seanceDao).getSeance(Mockito.eq(-1L));
             verify(seanceDao).getSeance(Mockito.anyLong());
             verify(travailDao, Mockito.never()).listerTravauxParSeance(Mockito.anyLong());
-            verify(travailDao, Mockito.never()).listerUtilisateurs(Mockito.anyLong());
+            verify(travailDao, Mockito.never()).listerUtilisateursParTravail(Mockito.anyLong());
         }
     }
 

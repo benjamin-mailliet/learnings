@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class NoteWebservice{
 
     @Path("/{idTravail}")
-    @Produces("application/json")
+    @Produces("application/json;charset=UTF-8")
     @GET
     public String getTravailForNote(@PathParam("idTravail") Long idTravail)
     {

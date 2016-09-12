@@ -20,7 +20,7 @@ public interface TravailDao {
 
 	List<Travail> listerTravauxParUtilisateur(Long idUtilisateur);
 
-	List<Utilisateur> listerUtilisateurs(Long idTravail);
+	List<Utilisateur> listerUtilisateursParTravail(Long idTravail);
 
 	Travail getTravail(Long idTravail);
 

@@ -143,7 +143,7 @@ public class TravailManager {
             if (travailUtilisateur1 == null) {
                 return null;
             }
-            if (travailDao.listerUtilisateurs(travailUtilisateur1.getId()).size() == 1) {
+            if (travailDao.listerUtilisateursParTravail(travailUtilisateur1.getId()).size() == 1) {
                 return travailUtilisateur1;
             }
             throw new LearningsException("L'utilisateur a déjà rendu un travail avec un binôme différent.");
