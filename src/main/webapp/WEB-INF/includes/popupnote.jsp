@@ -13,7 +13,7 @@
                     <input type="hidden" name="idTravail" id="idTravail" name="idTravail"/>
                     <div class="form-group">
                         <label>Note</label>
-                        <input class="form-control" type="number" value="10" name="noteValue" id="noteValue"/>
+                        <input class="form-control" type="number" min="0" max="20" value="10" name="noteValue" id="noteValue"/>
                     </div>
                     <div class="form-group">
                         <label>Commentaire</label>

@@ -1,8 +1,8 @@
 $(document).ready(function(){
-    function showError(erreurTexte) {
+    var showError = function(erreurTexte) {
         $("erreurNote").text(erreurTexte);
         $("#erreurNote").show();
-    }
+    };
 
     $('#popupNote').on('show.bs.modal', function (event) {
         $("#erreurNote").hide();
@@ -27,17 +27,17 @@ $(document).ready(function(){
             });
     });
 
-    function actualiserNote(travailId, valeur) {
+    var  actualiserNote = function(travailId, valeur) {
         var noteActuelle = $("#noteActuelle" + travailId);
         noteActuelle.text(valeur);
-    }
+        };
 
-    function actualiserLigneTableau(travailId) {
+    var actualiserLigneTableau = function(travailId) {
         var ligneTravail = $("#ligneTravail" + travailId);
         if (!ligneTravail.hasClass("success")) {
             ligneTravail.addClass("success");
         }
-    }
+    };
 
     var enregistrerNote = function(travailId, valeur, commentaire){
         $("#erreurNote").hide();
