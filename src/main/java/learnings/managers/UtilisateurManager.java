@@ -11,7 +11,10 @@ import learnings.exceptions.LearningsSecuriteException;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.utils.CsvUtils;
+import learnings.utils.FichierUtils;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.GeneralSecurityException;

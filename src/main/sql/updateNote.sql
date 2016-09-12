@@ -1,1 +1,0 @@
-ALTER TABLE travail ADD column commentaireNote TEXT DEFAULT NULL;

@@ -6,11 +6,9 @@ import learnings.model.Projet;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import org.assertj.core.api.Assertions;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -19,8 +17,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TravailDaoTestCase extends AbstractDaoTestCase {
     private TravailDao travailDao = new TravailDaoImpl();
@@ -238,9 +237,8 @@ public class TravailDaoTestCase extends AbstractDaoTestCase {
 			Assertions.assertThat(results.getBigDecimal("note").toString()).isEqualTo("15.00");
 			Assertions.assertThat(results.getString("commentaireNote")).isEqualTo("commentaire de test");
 		} else {
-			Assert.fail();
+			Assertions.fail("Aucun travail n'a été enregistré");
 		}
-
     }
 
 }

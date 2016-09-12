@@ -1,6 +1,7 @@
 package learnings.dao.impl;
 
 import learnings.dao.TravailDao;
+import learnings.enums.Groupe;
 import learnings.exceptions.LearningsSQLException;
 import learnings.model.Projet;
 import learnings.model.Seance;
@@ -130,15 +131,15 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
     public List<Travail> listerTravauxParUtilisateur(Long idUtilisateur) {
         List<Travail> listeTravaux = new ArrayList<>();
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection
-                     .prepareStatement("SELECT t.* FROM travail t JOIN travailutilisateur tu ON t.id = tu.idtravail WHERE tu.idutilisateur = ?")
+             PreparedStatement stmt = connection.prepareStatement("SELECT t.* FROM travail t JOIN travailutilisateur tu ON t.id = tu.idtravail WHERE tu.idutilisateur = ?")
         ) {
             stmt.setLong(1, idUtilisateur);
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-				if(results.getLong("seance_id")!=0) {
-					listeTravaux.add(new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
-							results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository")));
+					if (results.getLong("seance_id") != 0) {
+						listeTravaux.add(new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
+								results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository")));
+					}
 				}
 			}
         } catch (SQLException e) {

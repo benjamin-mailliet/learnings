@@ -13,3 +13,5 @@ ALTER TABLE `utilisateur`
   ADD COLUMN `nom` VARCHAR(50) NOT NULL AFTER `id`,
   ADD COLUMN `prenom` VARCHAR(50) NOT NULL AFTER `nom`,
   ADD COLUMN `groupe` VARCHAR(10) NULL AFTER `email`;
+
+ALTER TABLE travail ADD column commentaireNote TEXT DEFAULT NULL;

@@ -1,6 +1,5 @@
 package learnings.managers;
 
-import java.security.NoSuchAlgorithmException;
 import learnings.dao.ProjetDao;
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
@@ -10,7 +9,6 @@ import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.EleveAvecTravauxEtProjet;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,12 +18,6 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,14 +68,14 @@ public class UtilisateurManagerTestCase {
 		when(utilisateurDao.getUtilisateur(Mockito.eq("email1"))).thenReturn(new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false));
 		when(utilisateurDao.ajouterUtilisateur(Mockito.eq(utilisateur3), Mockito.eq("email3Hash"))).thenReturn(
 				new Utilisateur(3L, "nom3", "prenom3", "email3", null, true));
-		elevesPourNotes.add(new Utilisateur(3L, "eleve3@mail.com", false));
-		elevesPourNotes.add(new Utilisateur(4L, "eleve4@mail.com", false));
+		elevesPourNotes.add(new Utilisateur(3L, "eleve3@mail.com", "eleveNom3", "elevePrenom3", Groupe.GROUPE_1,  false));
+		elevesPourNotes.add(new Utilisateur(4L, "eleve4@mail.com", "eleveNom4", "elevePrenom4", Groupe.GROUPE_2,  false));
 
-		Mockito.when(travailDao.listerTravauxParUtilisateur(3L)).thenReturn(travauxAvecNote);
-		Mockito.when(travailDao.listerTravauxParUtilisateur(4L)).thenReturn(travauxAvecNote);
-		Mockito.when(travailDao.getTravailUtilisateurParProjet(10L, 3L)).thenReturn(travailProjetAvecNote);
-		Mockito.when(travailDao.getTravailUtilisateurParProjet(10L, 4L)).thenReturn(travailProjetAvecNote);
-		Mockito.when(utilisateurDao.listerEleves()).thenReturn(elevesPourNotes);
+		when(travailDao.listerTravauxParUtilisateur(3L)).thenReturn(travauxAvecNote);
+		when(travailDao.listerTravauxParUtilisateur(4L)).thenReturn(travauxAvecNote);
+		when(travailDao.getTravailUtilisateurParProjet(10L, 3L)).thenReturn(travailProjetAvecNote);
+		when(travailDao.getTravailUtilisateurParProjet(10L, 4L)).thenReturn(travailProjetAvecNote);
+		when(utilisateurDao.listerEleves()).thenReturn(elevesPourNotes);
 
 		when(motDePasseManager.validerMotDePasse(Mockito.eq("motDePasse"), Mockito.eq("motDePasseHash"))).thenReturn(true);
 		when(motDePasseManager.validerMotDePasse(Mockito.eq("hashException"), Mockito.eq("motDePasseHash"))).thenThrow(new NoSuchAlgorithmException());

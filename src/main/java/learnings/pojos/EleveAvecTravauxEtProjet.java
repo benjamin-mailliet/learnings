@@ -15,7 +15,7 @@ public class EleveAvecTravauxEtProjet extends Utilisateur {
     private BigDecimal moyenne;
 
     public EleveAvecTravauxEtProjet(Utilisateur eleve, Map<Long, Travail> mapSeanceIdTravail, Travail projet) {
-        super(eleve.getId(),eleve.getEmail(),false);
+        super(eleve.getId(),eleve.getNom(), eleve.getPrenom(),eleve.getEmail(),eleve.getGroupe(), false);
         this.mapSeanceIdTravail = mapSeanceIdTravail;
         this.projet = projet;
     }
@@ -25,7 +25,7 @@ public class EleveAvecTravauxEtProjet extends Utilisateur {
     }
 
     public EleveAvecTravauxEtProjet(Utilisateur eleve) {
-        super(eleve.getId(),eleve.getEmail(),false);
+        super(eleve.getId(),eleve.getNom(), eleve.getPrenom(),eleve.getEmail(),eleve.getGroupe(), false);
     }
 
     public Map<Long, Travail> getMapSeanceIdTravail() {

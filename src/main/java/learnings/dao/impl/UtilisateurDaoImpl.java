@@ -1,6 +1,7 @@
 package learnings.dao.impl;
 
 import learnings.dao.UtilisateurDao;
+import learnings.enums.Groupe;
 import learnings.exceptions.LearningsSQLException;
 import learnings.model.Utilisateur;
 
@@ -12,8 +13,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-
-import learnings.enums.Groupe;
 public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao {
 
 	public List<Utilisateur> listerUtilisateurs() {
@@ -68,11 +67,11 @@ public class UtilisateurDaoImpl extends GenericDaoImpl implements UtilisateurDao
 		List<Utilisateur> utilisateurs = new ArrayList<Utilisateur>();
 		try {
 			Connection connection = getConnection();
-			PreparedStatement stmt = connection.prepareStatement("SELECT id, email, admin FROM utilisateur WHERE admin = ? ORDER BY email");
+			PreparedStatement stmt = connection.prepareStatement("SELECT id, nom, prenom, email, groupe, admin FROM utilisateur WHERE admin = ? ORDER BY email");
 			stmt.setBoolean(1, false);
 			ResultSet results = stmt.executeQuery();
 			while (results.next()) {
-				utilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("email"), results.getBoolean("admin")));
+				utilisateurs.add(mapperVersUtilisateur(results));
 			}
 			stmt.close();
 			connection.close();
