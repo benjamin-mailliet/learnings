@@ -6,6 +6,7 @@ import learnings.model.Projet;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
 import java.util.List;
@@ -198,7 +200,7 @@ public class TravailDaoTestCase extends AbstractDaoTestCase {
     @Test
     public void shouldListerUtilisateurs() {
         // WHEN
-        List<Utilisateur> utilisateurs = travailDao.listerUtilisateurs(3L);
+        List<Utilisateur> utilisateurs = travailDao.listerUtilisateursParTravail(3L);
         // THEN
         assertThat(utilisateurs).hasSize(2);
         assertThat(utilisateurs).extracting("id").containsOnly(1L, 2L);
@@ -220,6 +222,23 @@ public class TravailDaoTestCase extends AbstractDaoTestCase {
         Travail travail = travailDao.getTravail(-1L);
         // THEN
         assertThat(travail).isNull();
+	}
+
+
+	@Test
+	public void shouldEnregistrerNoteTravail() throws SQLException {
+		travailDao.enregistrerNoteTravail(1L, new BigDecimal(15), "commentaire de test");
+
+		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
+		Statement stmt = connection.createStatement();
+		ResultSet results = stmt.executeQuery("SELECT * FROM travail WHERE id=1");
+		if (results.next()) {
+			Assertions.assertThat(results.getLong("id")).isEqualTo(1L);
+			Assertions.assertThat(results.getBigDecimal("note").toString()).isEqualTo("15.00");
+			Assertions.assertThat(results.getString("commentaireNote")).isEqualTo("commentaire de test");
+		} else {
+			Assertions.fail("Aucun travail n'a été enregistré");
+		}
     }
 
 }

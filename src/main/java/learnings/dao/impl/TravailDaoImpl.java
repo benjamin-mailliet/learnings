@@ -8,6 +8,7 @@ import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -130,16 +131,17 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
     public List<Travail> listerTravauxParUtilisateur(Long idUtilisateur) {
         List<Travail> listeTravaux = new ArrayList<>();
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection
-                     .prepareStatement("SELECT t.* FROM travail t JOIN travailutilisateur tu ON t.id = tu.idtravail WHERE tu.idutilisateur = ?")
+             PreparedStatement stmt = connection.prepareStatement("SELECT t.* FROM travail t JOIN travailutilisateur tu ON t.id = tu.idtravail WHERE tu.idutilisateur = ?")
         ) {
             stmt.setLong(1, idUtilisateur);
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    listeTravaux.add(new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
-                            results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository")));
-                }
-            }
+					if (results.getLong("seance_id") != 0) {
+						listeTravaux.add(new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
+								results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository")));
+					}
+				}
+			}
         } catch (SQLException e) {
             throw new LearningsSQLException(e);
         }
@@ -147,7 +149,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
     }
 
     @Override
-    public List<Utilisateur> listerUtilisateurs(Long idTravail) {
+    public List<Utilisateur> listerUtilisateursParTravail(Long idTravail) {
         List<Utilisateur> listeUtilisateurs = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
@@ -156,7 +158,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
             stmt.setLong(1, idTravail);
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    listeUtilisateurs.add(new Utilisateur(results.getLong("id"), results.getString("nom"), results.getString("prenom"), results.getString("email"),
+                    listeUtilisateurs.add( new Utilisateur(results.getLong("id"), results.getString("nom"), results.getString("prenom"), results.getString("email"),
                             Groupe.valueOf(results.getString("groupe")), results.getBoolean("admin")));
                 }
             }
@@ -176,7 +178,7 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
             try (ResultSet results = stmt.executeQuery()) {
                 if (results.next()) {
                     travail = new Travail(results.getLong("id"), new Seance(results.getLong("seance_id"), null, null, null), results.getBigDecimal("note"),
-                            results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository"));
+						results.getTimestamp("dateRendu"), results.getString("chemin"), results.getString("commentaire"), results.getString("urlRepository"), results.getString("commentaireNote"));
                 }
             }
         } catch (SQLException e) {
@@ -222,5 +224,23 @@ public class TravailDaoImpl extends GenericDaoImpl implements TravailDao {
             throw new LearningsSQLException(e);
         }
         return listeTravaux;
+	}
+
+	@Override
+	public void enregistrerNoteTravail(Long idTravail, BigDecimal note, String commentaireNote) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement("UPDATE travail SET note = ?, commentaireNote = ? WHERE id = ?");
+
+			stmt.setBigDecimal(1, note);
+			stmt.setString(2, commentaireNote);
+			stmt.setLong(3, idTravail);
+
+			stmt.executeUpdate();
+			stmt.close();
+			connection.close();
+		} catch (SQLException e) {
+			throw new LearningsSQLException(e);
+		}
     }
 }

@@ -41,6 +41,14 @@ public class SeanceManager {
 
     public List<Seance> listerSeancesNotees() {
         return seanceDao.listerSeancesNotees();
+	}
+
+	public List<Seance> listerSeancesNoteesWithTravaux() {
+		List<Seance> listeSeancesNotees = seanceDao.listerSeancesNotees();
+		for(Seance seance : listeSeancesNotees){
+			seance.setTravauxRendus(travailDao.listerTravauxParSeance(seance.getId()));
+		}
+		return listeSeancesNotees;
     }
 
     public List<TpAvecTravail> listerTPRenduAccessible(Long idUtilisateur) {
@@ -69,7 +77,7 @@ public class SeanceManager {
         }
         seance.setTravauxRendus(travailDao.listerTravauxParSeance(idSeance));
         for (Travail travailRendu : seance.getTravauxRendus()) {
-            travailRendu.setUtilisateurs(travailDao.listerUtilisateurs(travailRendu.getId()));
+            travailRendu.setUtilisateurs(travailDao.listerUtilisateursParTravail(travailRendu.getId()));
         }
 
         return seance;

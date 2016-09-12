@@ -7,11 +7,16 @@
 <head>
 <title>Travaux rendus</title>
 <c:import url="../../includes/htmlheader.jsp" />
-<script src="../js/utilisateur.js"></script>
+	<script src="../js/utilisateur.js"></script>
+	<script src="../js/travail.js"></script>
+
 </head>
 <body>
 	<c:import url="../../includes/menuadmin.jsp">
 		<c:param name="pageSelectionnee" value="travailtp" />
+	</c:import>
+
+	<c:import url="../../includes/popupnote.jsp">
 	</c:import>
 
 	<div class="container">
@@ -42,9 +47,11 @@
 						<th>Fichier</th>
 						<th>Élèves</th>
 						<th>Commentaire</th>
+						<th>Note</th>
+						<th>Actions</th>
 					</tr>
 					<c:forEach var="travail" items="${seanceSelectionnee.travauxRendus}">
-						<tr>
+						<tr class="${(travail.note!='' &&  travail.note!=null) ? 'success' : ''}" id="ligneTravail${travail.id}">
 							<td>
 								<p>
 									<a href="telechargerTravail?id=${travail.id}">${travail.nomFichier}</a><br>
@@ -59,6 +66,10 @@
 								</ul>
 							</td>
 							<td>${travail.commentaire}</td>
+							<td><h4 id="noteActuelle${travail.id}">${travail.note}</h4></td>
+							<td>
+								<button id="noterTravail${travail.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" data-travail="${travail.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>

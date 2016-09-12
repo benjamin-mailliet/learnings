@@ -131,7 +131,7 @@ public class ProjetManager {
         }
         projet.setTravauxRendus(travailDao.listerTravauxParProjet(idProjet));
         for (Travail travailRendu : projet.getTravauxRendus()) {
-            travailRendu.setUtilisateurs(travailDao.listerUtilisateurs(travailRendu.getId()));
+            travailRendu.setUtilisateurs(travailDao.listerUtilisateursParTravail(travailRendu.getId()));
         }
 
         return projet;

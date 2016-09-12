@@ -1,12 +1,14 @@
 package learnings.managers;
 
+import learnings.dao.ProjetDao;
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
 import learnings.enums.Groupe;
 import learnings.exceptions.LearningsSecuriteException;
+import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
-import org.assertj.core.api.Assertions;
+import learnings.pojos.EleveAvecTravauxEtProjet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,9 @@ public class UtilisateurManagerTestCase {
 	private TravailDao travailDao;
 
 	@Mock
+	private ProjetDao projetDao;
+
+	@Mock
 	private MotDePasseManager motDePasseManager;
 
 	@InjectMocks
@@ -46,6 +52,14 @@ public class UtilisateurManagerTestCase {
 		List<Travail> travaux = new ArrayList<>();
 		travaux.add(new Travail(1L, null, null, null, null, null,null));
 
+		List<Travail> travauxAvecNote = new ArrayList<Travail>();
+		travauxAvecNote.add(new Travail(2L, new Seance(1L,null,null,null), new BigDecimal(10), null, null, null,null));
+		travauxAvecNote.add(new Travail(3L, new Seance(2L,null,null,null), new BigDecimal(8), null, null, null, null));
+		travauxAvecNote.add(new Travail(4L, new Seance(3L,null,null,null), new BigDecimal(15), null, null, null, null));
+
+		Travail travailProjetAvecNote = new Travail(5L, null, new BigDecimal(13), null, null, null, null);
+
+		List<Utilisateur> elevesPourNotes = new ArrayList<>();
 		when(travailDao.listerTravauxParUtilisateur(1L)).thenReturn(new ArrayList<Travail>());
 		when(travailDao.listerTravauxParUtilisateur(2L)).thenReturn(travaux);
 		when(utilisateurDao.getMotDePasseUtilisateurHashe(Mockito.eq("email1"))).thenReturn("motDePasseHash");
@@ -54,6 +68,14 @@ public class UtilisateurManagerTestCase {
 		when(utilisateurDao.getUtilisateur(Mockito.eq("email1"))).thenReturn(new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false));
 		when(utilisateurDao.ajouterUtilisateur(Mockito.eq(utilisateur3), Mockito.eq("email3Hash"))).thenReturn(
 				new Utilisateur(3L, "nom3", "prenom3", "email3", null, true));
+		elevesPourNotes.add(new Utilisateur(3L, "eleve3@mail.com", "eleveNom3", "elevePrenom3", Groupe.GROUPE_1,  false));
+		elevesPourNotes.add(new Utilisateur(4L, "eleve4@mail.com", "eleveNom4", "elevePrenom4", Groupe.GROUPE_2,  false));
+
+		when(travailDao.listerTravauxParUtilisateur(3L)).thenReturn(travauxAvecNote);
+		when(travailDao.listerTravauxParUtilisateur(4L)).thenReturn(travauxAvecNote);
+		when(travailDao.getTravailUtilisateurParProjet(10L, 3L)).thenReturn(travailProjetAvecNote);
+		when(travailDao.getTravailUtilisateurParProjet(10L, 4L)).thenReturn(travailProjetAvecNote);
+		when(utilisateurDao.listerEleves()).thenReturn(elevesPourNotes);
 
 		when(motDePasseManager.validerMotDePasse(Mockito.eq("motDePasse"), Mockito.eq("motDePasseHash"))).thenReturn(true);
 		when(motDePasseManager.validerMotDePasse(Mockito.eq("hashException"), Mockito.eq("motDePasseHash"))).thenThrow(new NoSuchAlgorithmException());
@@ -61,6 +83,7 @@ public class UtilisateurManagerTestCase {
 		when(motDePasseManager.genererMotDePasse(Mockito.eq("email2"))).thenThrow(new NoSuchAlgorithmException());
 		when(motDePasseManager.genererMotDePasse(Mockito.eq("email3"))).thenReturn("email3Hash");
 
+		Mockito.when(projetDao.getLastProjetId()).thenReturn(10L);
 	}
 
 	@Test
@@ -566,6 +589,23 @@ public class UtilisateurManagerTestCase {
 			verify(motDePasseManager).genererMotDePasse(Mockito.anyString());
 			verify(utilisateurDao, Mockito.never()).modifierMotDePasse(Mockito.anyLong(), Mockito.anyString());
 		}
+	}
+
+	@Test
+	public void shouldReturnElevesAvecTravauxEtProjetEtMoyenne(){
+		//WHEN
+		List<EleveAvecTravauxEtProjet> elevesComplets = utilisateurManager.listerElevesAvecTravauxEtProjet();
+
+		//THEN
+		assertThat(elevesComplets).extracting("id").contains(3L,4L);
+
+		assertThat(elevesComplets).extracting("projet.note").contains(new BigDecimal(13));
+
+		assertThat(elevesComplets.get(0).getMapSeanceIdTravail().get(1L).getNote()).isEqualTo(new BigDecimal(10));
+		assertThat(elevesComplets.get(0).getMapSeanceIdTravail().get(3L).getNote()).isEqualTo(new BigDecimal(15));
+
+		assertThat(elevesComplets).extracting("moyenne").containsOnly(new BigDecimal(12.14).setScale(2,BigDecimal.ROUND_HALF_EVEN));
+
 	}
 
 }

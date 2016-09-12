@@ -1,9 +1,5 @@
 package learnings.managers;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.logging.Logger;
-
 import learnings.dao.ProjetDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.TravailDao;
@@ -20,6 +16,11 @@ import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.FichierComplet;
 import learnings.utils.FichierUtils;
+
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.logging.Logger;
 
 public class TravailManager {
     private static class TravailManagerHolder {
@@ -142,7 +143,7 @@ public class TravailManager {
             if (travailUtilisateur1 == null) {
                 return null;
             }
-            if (travailDao.listerUtilisateurs(travailUtilisateur1.getId()).size() == 1) {
+            if (travailDao.listerUtilisateursParTravail(travailUtilisateur1.getId()).size() == 1) {
                 return travailUtilisateur1;
             }
             throw new LearningsException("L'utilisateur a déjà rendu un travail avec un binôme différent.");
@@ -273,5 +274,17 @@ public class TravailManager {
         travail.setCommentaire(commentaire);
         travail.setUrlRepository(urlRepository);
         return travail;
+	}
+
+	public void enregistrerNoteTravail(Long idTravail, BigDecimal note, String commentaire) {
+		if (idTravail == null) {
+			throw new IllegalArgumentException("L'identifiant du travail ne peut être null");
+		}
+		travailDao.enregistrerNoteTravail(idTravail, note, commentaire);
+		LOGGER.info(String.format("enregistrerNote|idTravail=%d", idTravail));
+	}
+
+	public Travail getTravail(Long idTravail) {
+		return travailDao.getTravail(idTravail);
     }
 }

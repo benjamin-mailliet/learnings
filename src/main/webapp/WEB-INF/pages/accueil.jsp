@@ -25,7 +25,7 @@
 						<label for="motDePasse">Mot de passe</label>
 						<input type="password" class="form-control" id="motDePasse" name="motDePasse" placeholder="Mot de passe">
 					</div>
-					<button type="submit" class="btn btn-default">Submit</button>
+					<button type="submit" class="btn btn-default">Valider</button>
 				</form>
 			</div>
 		</div>

@@ -226,4 +226,13 @@ public class UtilisateurDaoTestCase extends AbstractDaoTestCase {
         }
     }
 
+    @Test
+    public void shouldReturnEleves(){
+        //WHEN
+        List<Utilisateur> eleves = utilisateurDao.listerEleves();
+
+        //THEN
+        assertThat(eleves).hasSize(3);
+        assertThat(eleves).extracting("nom").containsOnly("nom", "nom2", "nom3");
+    }
 }

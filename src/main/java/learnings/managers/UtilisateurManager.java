@@ -1,19 +1,27 @@
 package learnings.managers;
 
+import learnings.dao.ProjetDao;
 import learnings.dao.TravailDao;
 import learnings.dao.UtilisateurDao;
+import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.exceptions.LearningsException;
 import learnings.exceptions.LearningsSecuriteException;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
+import learnings.pojos.EleveAvecTravauxEtProjet;
 import learnings.utils.CsvUtils;
 import learnings.utils.FichierUtils;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class UtilisateurManager {
@@ -33,6 +41,7 @@ public class UtilisateurManager {
     private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
     private TravailDao travailDao = new TravailDaoImpl();
     private MotDePasseManager motDePasseManager = new MotDePasseManager();
+	private ProjetDao projetDao = new ProjetDaoImpl();
 
 
     public List<Utilisateur> listerUtilisateurs() {
@@ -156,6 +165,47 @@ public class UtilisateurManager {
             throw new LearningsSecuriteException("Problème dans la génération du mot de passe.", e);
         }
         LOGGER.info(String.format("Utilisateur|modifierMotDePasse|id=%d", id));
+	}
+
+	public List<EleveAvecTravauxEtProjet> listerElevesAvecTravauxEtProjet() {
+		List<Utilisateur> eleves = utilisateurDao.listerEleves();
+		List<EleveAvecTravauxEtProjet> listeElevesComplets = new ArrayList<>();
+		for(Utilisateur eleve : eleves){
+			EleveAvecTravauxEtProjet eleveComplet = new EleveAvecTravauxEtProjet(eleve);
+
+			List<Travail> travauxEleve = travailDao.listerTravauxParUtilisateur(eleve.getId());
+			eleveComplet.setProjet(travailDao.getTravailUtilisateurParProjet(projetDao.getLastProjetId(),eleve.getId()));
+			Map<Long, Travail> mapTravaux = new HashMap<>();
+			for(Travail travail : travauxEleve){
+				mapTravaux.put(travail.getEnseignement().getId(), travail);
+			}
+			eleveComplet.setMapSeanceIdTravail(mapTravaux);
+			eleveComplet.setMoyenne(calculMoyenneEleve(eleveComplet));
+			listeElevesComplets.add(eleveComplet);
+		}
+		return listeElevesComplets;
+	}
+
+	private BigDecimal calculMoyenneEleve(EleveAvecTravauxEtProjet eleveComplet){
+		BigDecimal somme = new BigDecimal(0);
+		Integer quotient = 0;
+		for(Map.Entry<Long, Travail> travailEntry : eleveComplet.getMapSeanceIdTravail().entrySet()){
+			BigDecimal noteTravail = travailEntry.getValue().getNote();
+			if(noteTravail!=null) {
+				somme = somme.add(noteTravail);
+				quotient++;
+			}
+		}
+
+		if(eleveComplet.getProjet()!=null && eleveComplet.getProjet().getNote()!=null){
+			somme = somme.add(eleveComplet.getProjet().getNote().multiply(new BigDecimal(Travail.COEFF_PROJET)));
+			quotient = quotient + Travail.COEFF_PROJET;
+		}
+		if(quotient>0) {
+			return somme.divide(new BigDecimal(quotient), 2, RoundingMode.HALF_EVEN);
+		}else{
+			return null;
+		}
     }
 
     public void importerUtilisateurs(InputStream utilisateursCsvInputStream) throws LearningsException, LearningsSecuriteException {

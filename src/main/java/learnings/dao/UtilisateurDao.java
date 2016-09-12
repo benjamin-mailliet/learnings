@@ -23,4 +23,6 @@ public interface UtilisateurDao {
 	Utilisateur ajouterUtilisateur(Utilisateur nouvelUtilisateur, String motDePasse);
 
 	List<Utilisateur> listerAutresEleves(Long id);
+
+	public List<Utilisateur> listerEleves();
 }
