@@ -20,6 +20,7 @@
 				<h1>
 					Gestion des utilisateurs
 					<a href="importutilisateurs" class="btn btn-success"><i class="fa fa-cloud-upload"></i> Importer utilisateurs</a>
+					<button class="btn btn-default pull-right"><i class="fa fa-envelope" ></i> Envoyer Email</button>
 				</h1>
 			</header>
 			<table id="listeUtilisateurs" class="table table-striped">

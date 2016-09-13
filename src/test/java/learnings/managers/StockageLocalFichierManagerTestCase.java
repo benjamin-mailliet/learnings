@@ -28,6 +28,7 @@ public class StockageLocalFichierManagerTestCase {
         Files.deleteIfExists(Paths.get("C:/HEI/learningsdatatest/test/test.txt"));
 
         if (Files.notExists(fichierExistant)) {
+            Files.createDirectories(fichierExistant.getParent());
             Files.createFile(fichierExistant);
         }
         String contenuFichiertExistant = "Première Ligne existante\nDeuxième Ligne existante";
@@ -71,7 +72,7 @@ public class StockageLocalFichierManagerTestCase {
         InputStream dataInputStream = fichierManager.getFichier("existant.txt");
         // THEN
         assertThat(dataInputStream).isNotNull();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(dataInputStream))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(dataInputStream, StandardCharsets.UTF_8))) {
             assertThat(reader.readLine()).isEqualTo("Première Ligne existante");
             assertThat(reader.readLine()).isEqualTo("Deuxième Ligne existante");
             assertThat(reader.readLine()).isNull();
