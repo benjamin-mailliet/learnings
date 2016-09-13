@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class UtilisateurManager {
     private static class UtilisateurManagerHolder {
@@ -216,5 +217,10 @@ public class UtilisateurManager {
         for (Utilisateur utilisateur : utilisateursACreer) {
             this.ajouterUtilisateur(utilisateur);
         }
+    }
+
+    public String listerEmailsElevesPourEnvoi() {
+        List<Utilisateur> eleves = utilisateurDao.listerEleves();
+        return eleves.stream().map(Utilisateur::getEmail).collect(Collectors.joining(";"));
     }
 }
