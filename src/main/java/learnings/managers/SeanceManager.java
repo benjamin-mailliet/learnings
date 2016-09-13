@@ -8,6 +8,7 @@ import learnings.dao.impl.SeanceDaoImpl;
 import learnings.dao.impl.TravailDaoImpl;
 import learnings.model.Seance;
 import learnings.model.Travail;
+import learnings.pojos.EleveAvecTravauxEtProjet;
 import learnings.pojos.TpAvecTravail;
 
 import java.util.ArrayList;
@@ -15,6 +16,17 @@ import java.util.Date;
 import java.util.List;
 
 public class SeanceManager {
+    public void calculerMoyenneSeance(List<Seance> seancesNotees, List<EleveAvecTravauxEtProjet> eleves) {
+        for(EleveAvecTravauxEtProjet eleve : eleves){
+            for(Seance seance  : seancesNotees) {
+                Travail travailSeance = eleve.getMapSeanceIdTravail().get(seance.getId());
+                if (travailSeance!=null && travailSeance.getNote()!=null){
+                    seance.addNote(travailSeance.getNote());
+                }
+            }
+        }
+    }
+
     private static class SeanceManagerHolder {
         private static SeanceManager instance = new SeanceManager();
     }
@@ -50,6 +62,7 @@ public class SeanceManager {
 		}
 		return listeSeancesNotees;
     }
+
 
     public List<TpAvecTravail> listerTPRenduAccessible(Long idUtilisateur) {
         if (idUtilisateur == null) {

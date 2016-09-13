@@ -5,13 +5,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Gestion des utilisateurs</title>
+  <title>Tableau des notes</title>
   <c:import url="../../includes/htmlheader.jsp" />
 
 </head>
 <body>
 <c:import url="../../includes/menuadmin.jsp">
-  <c:param name="pageSelectionnee" value="utilisateur"/>
+  <c:param name="pageSelectionnee" value="note"/>
 </c:import>
 
 <div class="container">
@@ -37,6 +37,14 @@
         <td>${eleve.moyenne}</td>
       </tr>
     </c:forEach>
+    <tr>
+      <td></td>
+      <c:forEach var="seance" items="${seancesNotees}">
+        <td>${seance.moyenne}</td>
+      </c:forEach>
+      <td>${moyenneProjet}</td>
+      <td>${moyenneClasse}</td>
+    </tr>
   </table>
 </div>
 </body>
