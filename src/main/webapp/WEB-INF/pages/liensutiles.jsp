@@ -76,6 +76,10 @@
 								<td>Eclipse est un environnement de développement. La version qui nous intéresse est <strong>Eclipse IDE for Java EE Developers</strong> qui contient tous les plugins nécessaires au dévelopement d'application web en Java.</td>
 							</tr>
 							<tr>
+								<td><a href="https://www.jetbrains.com/idea/" target="_blank">IntelliJ</a></td>
+								<td>IntelliJ est un autre environnement de développement Java. IntelliJ est gratuit pour les étudiants, il vous suffit de créer un compte avec l'adresse email de votre école.</td>
+							</tr>
+							<tr>
 								<td><a href="http://tomcat.apache.org/download-80.cgi" target="_blank">Apache Tomcat 8</a></td>
 								<td>Apache Tomcat est un conteneur de servlet permettant d'exécuter une application web développée en Java.</td>
 							</tr>
