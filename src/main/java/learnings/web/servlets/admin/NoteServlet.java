@@ -26,14 +26,16 @@ public class NoteServlet extends GenericLearningsServlet {
         List<EleveAvecTravauxEtProjet> eleves = UtilisateurManager.getInstance().listerElevesAvecTravauxEtProjet();
         request.setAttribute("eleves", eleves);
 
-        SeanceManager.getInstance().calculerMoyenneSeance(seancesNotees, eleves);
-        request.setAttribute("seancesNotees", seancesNotees);
+        if(eleves.size()>0) {
+            SeanceManager.getInstance().calculerMoyenneSeance(seancesNotees, eleves);
+            request.setAttribute("seancesNotees", seancesNotees);
 
-        Double moyenneProjet = eleves.stream().filter(e -> e.getProjet() != null && e.getProjet().getNote() != null).mapToDouble(e -> e.getProjet().getNote().doubleValue()).average().getAsDouble();
-        request.setAttribute("moyenneProjet", new DecimalFormat("####0.00").format(moyenneProjet));
+            Double moyenneProjet = eleves.stream().filter(e -> e.getProjet() != null && e.getProjet().getNote() != null).mapToDouble(e -> e.getProjet().getNote().doubleValue()).average().getAsDouble();
+            request.setAttribute("moyenneProjet", new DecimalFormat("####0.00").format(moyenneProjet));
 
-        Double moyenneClasse = eleves.stream().filter(e->e.getMoyenne()!=null).mapToDouble(e->e.getMoyenne().doubleValue()).average().getAsDouble();
-        request.setAttribute("moyenneClasse", new DecimalFormat("####0.00").format(moyenneClasse));
+            Double moyenneClasse = eleves.stream().filter(e -> e.getMoyenne() != null).mapToDouble(e -> e.getMoyenne().doubleValue()).average().getAsDouble();
+            request.setAttribute("moyenneClasse", new DecimalFormat("####0.00").format(moyenneClasse));
+        }
 
         RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/note.jsp");
         view.forward(request, response);

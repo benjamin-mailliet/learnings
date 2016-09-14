@@ -66,7 +66,7 @@
 								</p>
 							</td>
 							<td>
-								<ul>
+								<ul id="mailTravail${travail.id}">
 									<c:forEach var="utilisateur" items="${travail.utilisateurs}">
 										<li>${utilisateur.email}</li>
 									</c:forEach>

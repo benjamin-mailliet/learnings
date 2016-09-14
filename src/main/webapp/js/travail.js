@@ -61,5 +61,33 @@ $(document).ready(function(){
 
     $("#validerNote").click(function(){
         enregistrerNote($("#idTravail").val(), $("#noteValue").val(),$("#noteComment").val());
-    })
+    });
+
+    var getBodyMail = function(){
+        return encodeURI($("#noteComment").val().replace("[[note]]",$("#noteValue").val()));
+    };
+
+    var getEmailEleves = function(travailId){
+        var emails = "";
+        $("#mailTravail"+travailId).find("li").each(function(index, element){
+           emails = emails + ";"+element.textContent;
+        });
+        return emails;
+    };
+
+    var getObjectMail = function(){
+        var titreTravail = "";
+        if($("#idSeance").length>0) {
+            titreTravail = $("#idSeance").find("option[selected]")[0].textContent;
+        }else{
+            titreTravail = $("#idProjet").find("option[selected]")[0].textContent;
+        }
+        return "Note :  ".concat(titreTravail);
+    };
+
+    $("#mailNote").click(function(){
+        window.location = "mailto:"+getEmailEleves($("#idTravail").val())+"?subject="+getObjectMail()+"&body="+getBodyMail();
+    });
+
+
 });

@@ -24,7 +24,9 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		ProjetAvecTravail projetAvecTravail = ProjetManager.getInstance().getProjetAvecTravail(this.getUtilisateurCourant(request).getId());
-		request.setAttribute("projetAvecTravail", projetAvecTravail);
+		if(projetAvecTravail!=null) {
+			request.setAttribute("projetAvecTravail", projetAvecTravail);
+		}
 
 		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/remiseprojet.jsp");
 		view.forward(request, response);

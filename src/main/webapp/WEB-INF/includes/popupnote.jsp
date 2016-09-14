@@ -17,7 +17,7 @@
                     </div>
                     <div class="form-group">
                         <label>Commentaire</label>
-                        <textarea class="form-control" id="noteComment" name="noteComment"></textarea>
+                        <textarea rows="20" class="form-control" id="noteComment" name="noteComment"></textarea>
                     </div>
 
                 </form>
@@ -25,6 +25,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success" id="validerNote">Valider</button>
+                <button class="btn btn-info" id="mailNote">Envoyer note</button>
                 <button class="btn btn-danger" data-dismiss="modal">Annuler</button>
             </div>
         </div>

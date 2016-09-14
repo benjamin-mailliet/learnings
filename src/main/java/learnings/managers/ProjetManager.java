@@ -93,17 +93,22 @@ public class ProjetManager {
         }
         ProjetAvecTravail projetAvecTravail = new ProjetAvecTravail();
         Long lastProjetId = projetDao.getLastProjetId();
-        projetAvecTravail.setProjet(projetDao.getProjet(lastProjetId));
+        if(lastProjetId!=null) {
+            projetAvecTravail.setProjet(projetDao.getProjet(lastProjetId));
 
-        Travail travailRendu = travailDao.getTravailUtilisateurParProjet(lastProjetId, idUtilisateur);
-        projetAvecTravail.setTravail(travailRendu);
+            Travail travailRendu = travailDao.getTravailUtilisateurParProjet(lastProjetId, idUtilisateur);
+            projetAvecTravail.setTravail(travailRendu);
 
-        Map<String, Integer> mapJoursRestants = getNbJoursRestants(projetAvecTravail);
+            Map<String, Integer> mapJoursRestants = getNbJoursRestants(projetAvecTravail);
 
-        projetAvecTravail.setNbJoursRestantsLot1(mapJoursRestants.get(KEY_NB_JOURS_LOT_1));
-        projetAvecTravail.setNbJoursRestantsLot2(mapJoursRestants.get(KEY_NB_JOURS_LOT_2));
+            projetAvecTravail.setNbJoursRestantsLot1(mapJoursRestants.get(KEY_NB_JOURS_LOT_1));
+            projetAvecTravail.setNbJoursRestantsLot2(mapJoursRestants.get(KEY_NB_JOURS_LOT_2));
+            return projetAvecTravail;
+        }else{
+            return null;
+        }
 
-        return projetAvecTravail;
+
     }
 
     private Map<String, Integer> getNbJoursRestants(
