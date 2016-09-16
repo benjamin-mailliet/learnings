@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.OptionalDouble;
 
 @WebServlet(urlPatterns = { "/admin/note" })
 public class NoteServlet extends GenericLearningsServlet {
@@ -29,12 +30,19 @@ public class NoteServlet extends GenericLearningsServlet {
         if(eleves.size()>0) {
             SeanceManager.getInstance().calculerMoyenneSeance(seancesNotees, eleves);
             request.setAttribute("seancesNotees", seancesNotees);
+            OptionalDouble moyenneOptionnel = eleves.stream()
+                    .filter(e -> e.getProjet() != null && e.getProjet().getNote() != null)
+                    .mapToDouble(e -> e.getProjet().getNote().doubleValue()).average();
+            if(moyenneOptionnel.isPresent()){
+                Double moyenneProjet = moyenneOptionnel.getAsDouble();
+                request.setAttribute("moyenneProjet", new DecimalFormat("####0.00").format(moyenneProjet));
+            }
 
-            Double moyenneProjet = eleves.stream().filter(e -> e.getProjet() != null && e.getProjet().getNote() != null).mapToDouble(e -> e.getProjet().getNote().doubleValue()).average().getAsDouble();
-            request.setAttribute("moyenneProjet", new DecimalFormat("####0.00").format(moyenneProjet));
-
-            Double moyenneClasse = eleves.stream().filter(e -> e.getMoyenne() != null).mapToDouble(e -> e.getMoyenne().doubleValue()).average().getAsDouble();
-            request.setAttribute("moyenneClasse", new DecimalFormat("####0.00").format(moyenneClasse));
+            moyenneOptionnel = eleves.stream().filter(e -> e.getMoyenne() != null).mapToDouble(e -> e.getMoyenne().doubleValue()).average();
+            if(moyenneOptionnel.isPresent()){
+                Double moyenneClasse = moyenneOptionnel.getAsDouble();
+                request.setAttribute("moyenneClasse", new DecimalFormat("####0.00").format(moyenneClasse));
+            }
         }
 
         RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/note.jsp");
