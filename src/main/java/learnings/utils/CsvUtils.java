@@ -2,14 +2,83 @@ package learnings.utils;
 
 import learnings.enums.Groupe;
 import learnings.exceptions.LearningsException;
+import learnings.model.Enseignement;
+import learnings.model.Seance;
+import learnings.model.Travail;
 import learnings.model.Utilisateur;
+import learnings.pojos.EleveAvecTravauxEtProjet;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CsvUtils {
 
     private static final String CSV_SEPARATOR = ";";
+
+
+    public static void ecrireLigne(Writer w, List<String> listeValeurs) throws IOException {
+        boolean premiereLigne = true;
+        StringBuilder sb = new StringBuilder();
+        for (String value : listeValeurs) {
+            if (!premiereLigne) {
+                sb.append(CSV_SEPARATOR);
+            }
+            sb.append(value);
+            premiereLigne = false;
+        }
+        sb.append("\n");
+        w.append(sb.toString());
+    }
+
+    public static void creerCSVElevesNotes(Writer writer, List<EleveAvecTravauxEtProjet> eleves, List<Seance> seancesNotees) throws IOException {
+        List<Long> listeIdsSeances = seancesNotees.stream().map(Enseignement::getId).collect(Collectors.toList());
+        ecrireEnTeteCSVNotes(writer, seancesNotees);
+        for (EleveAvecTravauxEtProjet eleve : eleves) {
+            ecrireLigneEleve(writer, listeIdsSeances, eleve);
+        }
+    }
+
+    private static void ecrireLigneEleve(Writer writer, List<Long> listeIdsSeances, EleveAvecTravauxEtProjet eleve) throws IOException {
+        List<String> ligneEleve = new ArrayList<>();
+        ligneEleve.add(eleve.getNom() + " " + eleve.getPrenom());
+        final Map<Long, Travail> mapTravaux = eleve.getMapSeanceIdTravail();
+        for (Long idSeance : listeIdsSeances) {
+            final Travail travail = mapTravaux.get(idSeance);
+            if (travail != null) {
+                if (travail.getNote() != null) {
+                    ligneEleve.add(travail.getNote().toString());
+                }
+            }
+        }
+        if (eleve.getProjet() != null){
+            ajouterNoteIfNoNull(eleve.getProjet().getNote(),ligneEleve);
+        }
+        ligneEleve = ajouterNoteIfNoNull(eleve.getMoyenne(), ligneEleve);
+        ecrireLigne(writer,ligneEleve);
+    }
+
+    private static List<String> ajouterNoteIfNoNull(BigDecimal note, List<String> ligneEleve) {
+        if (note != null){
+            ligneEleve.add(note.toString());
+        }else{
+            ligneEleve.add(" ");
+        }
+        return ligneEleve;
+    }
+
+    private static void ecrireEnTeteCSVNotes(Writer writer, List<Seance> seancesNotees) throws IOException {
+        ArrayList<String> valeursPremiereLigne= new ArrayList<>();
+        valeursPremiereLigne.add("Elève");
+        valeursPremiereLigne.addAll(seancesNotees.stream().map(Seance::getTitre).collect(Collectors.toList()));
+        valeursPremiereLigne.add("Projet");
+        valeursPremiereLigne.add("Moyenne");
+        ecrireLigne(writer, valeursPremiereLigne);
+    }
 
     public static List<Utilisateur> parserCsvVersUtilisateurs(List<String> utilisateursCsv) throws LearningsException {
         List<Utilisateur> utilisateurs = new ArrayList<>();

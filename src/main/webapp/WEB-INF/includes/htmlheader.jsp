@@ -6,5 +6,6 @@
 	<script src="../js/bootstrap.min.js"></script>
 	<link href="../css/common-styles.css" rel="stylesheet">
 	<link href="../css/travail.css" rel="stylesheet">
+	<link href="../css/note.css" rel="stylesheet">
 	<!-- Font Awesome -->
 	<link href="../css/font-awesome.min.css" rel="stylesheet">

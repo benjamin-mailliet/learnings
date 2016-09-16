@@ -2,12 +2,20 @@ package learnings.utils;
 
 import learnings.enums.Groupe;
 import learnings.exceptions.LearningsException;
+import learnings.model.Seance;
+import learnings.model.Travail;
 import learnings.model.Utilisateur;
-import org.assertj.core.api.Assertions;
+import learnings.pojos.EleveAvecTravauxEtProjet;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -136,5 +144,62 @@ public class CsvUtilsTestCase {
         catch (LearningsException e) {
             assertThat(e.getMessage()).isEqualTo("Le nombre de champs est incorrect à la ligne 3");
         }
+    }
+
+    @Test
+    public void shouldWriteLignesElevesNotes() throws IOException {
+        //GIVEN
+        List<EleveAvecTravauxEtProjet> eleves = getElevesWithTravauxAndProjet();
+        List<Seance> seances = getSeances();
+
+        //WHEN
+        StringWriter writer = new StringWriter();
+        CsvUtils.creerCSVElevesNotes(writer, eleves, seances);
+
+        //THEN
+        assertThat(writer.toString()).isEqualTo("Elève;TP 1;TP 2;Projet;Moyenne\n" +
+                "1 Eleve;11;12;13;10\n" +
+                "2 Eleve;14;15;16;12\n" +
+                "3 Eleve;17;18;19;13\n");
+    }
+
+    private List<EleveAvecTravauxEtProjet> getElevesWithTravauxAndProjet() {
+        EleveAvecTravauxEtProjet eleve1 = new EleveAvecTravauxEtProjet();
+        eleve1.setNom("1");
+        eleve1.setPrenom("Eleve");
+        eleve1.setMoyenne(new BigDecimal(10));
+        eleve1.setProjet(new Travail(3L, null, new BigDecimal(13), null, null, null, null));
+        Map<Long, Travail> mapTravaux = new HashMap<>();
+        mapTravaux.put(1L, new Travail(1L, null, new BigDecimal(11), null, null, null, null));
+        mapTravaux.put(2L, new Travail(2L, null, new BigDecimal(12), null, null, null, null));
+        eleve1.setMapSeanceIdTravail(mapTravaux);
+
+        EleveAvecTravauxEtProjet eleve2 = new EleveAvecTravauxEtProjet();
+        eleve2.setNom("2");
+        eleve2.setPrenom("Eleve");
+        eleve2.setMoyenne(new BigDecimal(12));
+        eleve2.setProjet(new Travail(6L, null, new BigDecimal(16), null, null, null, null));
+        Map<Long, Travail> mapTravaux2 = new HashMap<>();
+        mapTravaux2.put(1L, new Travail(4L, null, new BigDecimal(14), null, null, null, null));
+        mapTravaux2.put(2L, new Travail(5L, null, new BigDecimal(15), null, null, null, null));
+        eleve2.setMapSeanceIdTravail(mapTravaux2);
+
+        EleveAvecTravauxEtProjet eleve3 = new EleveAvecTravauxEtProjet();
+        eleve3.setNom("3");
+        eleve3.setPrenom("Eleve");
+        eleve3.setMoyenne(new BigDecimal(13));
+        eleve3.setProjet(new Travail(9L, null, new BigDecimal(19), null, null, null, null));
+        Map<Long, Travail> mapTravaux3 = new HashMap<>();
+        mapTravaux3.put(1L, new Travail(7L, null, new BigDecimal(17), null, null, null, null));
+        mapTravaux3.put(2L, new Travail(8L, null, new BigDecimal(18), null, null, null, null));
+        eleve3.setMapSeanceIdTravail(mapTravaux3);
+
+        return Arrays.asList(eleve1, eleve2, eleve3);
+    }
+
+    private List<Seance> getSeances(){
+        Seance seance1 = new Seance(1L, "TP 1", null, null);
+        Seance seance2 = new Seance(2L, "TP 2", null, null);
+        return Arrays.asList(seance1, seance2);
     }
 }

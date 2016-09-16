@@ -16,8 +16,12 @@
 
 <div class="container">
   <header class="page-header">
-    <h1>Notes des élèves</h1>
+    <h1>
+      Notes des élèves
+      </h1>
+    <form action="${pageContext.request.contextPath}/admin/note" method="post"><button name="export-csv" type="submit" class="btn btn-success pull-right" id="export-csv" value="Export CSV"><i class="fa fa-file-excel-o"></i> Exporter</button></form>
   </header>
+
   <table id="listeNotes" class="table table-striped">
     <tr>
       <th>Eleve</th>

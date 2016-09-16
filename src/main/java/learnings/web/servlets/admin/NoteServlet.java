@@ -4,6 +4,7 @@ import learnings.managers.SeanceManager;
 import learnings.managers.UtilisateurManager;
 import learnings.model.Seance;
 import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.utils.CsvUtils;
 import learnings.web.servlets.GenericLearningsServlet;
 
 import javax.servlet.RequestDispatcher;
@@ -19,12 +20,13 @@ import java.util.OptionalDouble;
 @WebServlet(urlPatterns = { "/admin/note" })
 public class NoteServlet extends GenericLearningsServlet {
 
+    List<EleveAvecTravauxEtProjet> eleves;
+    List<Seance> seancesNotees;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Seance> seancesNotees = SeanceManager.getInstance().listerSeancesNoteesWithTravaux();
-
-
-        List<EleveAvecTravauxEtProjet> eleves = UtilisateurManager.getInstance().listerElevesAvecTravauxEtProjet();
+        seancesNotees = SeanceManager.getInstance().listerSeancesNoteesWithTravaux();
+        eleves = UtilisateurManager.getInstance().listerElevesAvecTravauxEtProjet();
         request.setAttribute("eleves", eleves);
 
         if(eleves.size()>0) {
@@ -47,5 +49,14 @@ public class NoteServlet extends GenericLearningsServlet {
 
         RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/note.jsp");
         view.forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (request.getParameter("export-csv") != null) {
+            CsvUtils.creerCSVElevesNotes(response.getWriter(), eleves, seancesNotees);
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment; filename=\"notes.csv\"");
+        }
     }
 }
