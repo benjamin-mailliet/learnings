@@ -37,7 +37,7 @@
 						</header>
 						<c:if test="${seance.datePassee}">
 							<section class="details panel-body collapse" id="${typeSeance}${seance.id}">
-								<p>${seance.description}</p>
+								<div>${seance.description}</div>
 								Ressources :
 								<ul>
 								<c:forEach var="ressource" items="${seance.ressources}">
