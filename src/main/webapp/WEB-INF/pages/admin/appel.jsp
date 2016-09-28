@@ -22,7 +22,7 @@
 					<small><a href="listeseances" class="label label-default">Retour à la liste</a></small>
 				</h1>
 			</header>
-			<form class="form-horizontal" method="post">
+			<form class="form-horizontal" id="form-appel" method="post">
 				<table id="tableau-appel" class="table table-bordered">
 					<tr>
 						<th>Eleve</th>
@@ -43,31 +43,31 @@
 						<td class="cellule-generale ${cssAppelCourant}">${appel.eleve.groupe.libelle}</td>
 						<td class="text-success ${appel.statut == 'PRESENT' ? 'success' : ''}">
 							<label>
-								<input type="radio" name="appel.${appel.eleve.id}" value="PRESENT" ${appel.statut == 'PRESENT' ? 'checked' : ''} class="radio-present" />
+								<input type="radio" name="appel.${appel.eleve.id}" value="PRESENT" ${appel.statut == 'PRESENT' ? 'checked' : ''} class="radio-appel radio-present" />
 								Présent
 							</label>
 						</td>
 						<td class="text-warning ${appel.statut == 'RETARD' ? 'warning' : ''}">
 							<label>
-								<input type="radio" name="appel.${appel.eleve.id}" value="RETARD" ${appel.statut == 'RETARD' ? 'checked' : ''} class="radio-retard" />
+								<input type="radio" name="appel.${appel.eleve.id}" value="RETARD" ${appel.statut == 'RETARD' ? 'checked' : ''} class="radio-appel radio-retard" />
 								Retard
 							</label>
 						</td>
 						<td class="text-info ${appel.statut == 'EXCUSE' ? 'info' : ''}">
 							<label>
-								<input type="radio" name="appel.${appel.eleve.id}" value="EXCUSE" ${appel.statut == 'EXCUSE' ? 'checked' : ''} class="radio-excuse" />
+								<input type="radio" name="appel.${appel.eleve.id}" value="EXCUSE" ${appel.statut == 'EXCUSE' ? 'checked' : ''} class="radio-appel radio-excuse" />
 								Excusé
 							</label>
 						</td>
 						<td class="text-danger ${appel.statut == 'ABSENT' ? 'danger' : ''}">
 							<label>
-								<input type="radio" name="appel.${appel.eleve.id}" value="ABSENT" ${appel.statut == 'ABSENT' ? 'checked' : ''} class="radio-absent" />
+								<input type="radio" name="appel.${appel.eleve.id}" value="ABSENT" ${appel.statut == 'ABSENT' ? 'checked' : ''} class="radio-appel radio-absent" />
 								Absent
 							</label>
 						</td>
 						<td class="text-active ${appel.statut == 'NON_SAISI' || appel.statut == null ? 'active' : ''}">
 							<label>
-								<input type="radio" name="appel.${appel.eleve.id}" value="NON_SAISI" ${appel.statut == 'NON_SAISI' || appel.statut == null ? 'checked' : ''} class="radio-non-saisi" />
+								<input type="radio" name="appel.${appel.eleve.id}" value="NON_SAISI" ${appel.statut == 'NON_SAISI' || appel.statut == null ? 'checked' : ''} class="radio-appel radio-non-saisi" />
 								Non saisi
 							</label>
 						</td>
@@ -76,6 +76,8 @@
 				</table>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-default" id="boutonChargementSauvegardeLocale">Charger sauvegarde locale</button>
+						<button type="button" class="btn btn-default" id="boutonSauvegardeLocale">Enregistrer en local</button>
 						<button type="submit" class="btn btn-primary">Enregistrer</button>
 				    </div>
 			  </div>
