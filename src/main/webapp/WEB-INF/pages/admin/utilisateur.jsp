@@ -88,7 +88,7 @@
 								<p id="listeEmailsData"><textarea class="form-control"></textarea></p>
 							</div>
 							<div class="panel-footer">
-								<button class="btn btn-primary" id="boutonOuvrirClientMail">Ouvrir un clien mail</button>
+								<button class="btn btn-primary" id="boutonOuvrirClientMail">Ouvrir un client mail</button>
 								<button class="btn btn-default" id="boutonFermerModal">Fermer</button>
 							</div>
 						</div>

@@ -192,12 +192,12 @@ public class CsvUtilsTestCase {
         mapTravaux3.put(2L, new Travail(8L, null, new BigDecimal(18), null, null, null, null));
         eleve3.setMapSeanceIdTravail(mapTravaux3);
 
-        return Arrays.asList(eleve1, eleve2, eleve3);
+        return Arrays.asList(eleve1, eleve3, eleve2);
     }
 
     private List<Seance> getSeances(){
         Seance seance1 = new Seance(1L, "TP 1", null, null);
         Seance seance2 = new Seance(2L, "TP 2", null, null);
-        return Arrays.asList(seance1, seance2);
+        return Arrays.asList(seance2, seance1);
     }
 }
