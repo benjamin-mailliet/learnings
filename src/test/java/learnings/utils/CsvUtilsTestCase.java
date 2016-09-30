@@ -159,8 +159,8 @@ public class CsvUtilsTestCase {
         //THEN
         assertThat(writer.toString()).isEqualTo("Elève;TP 1;TP 2;Projet;Moyenne\n" +
                 "1 Eleve;11;12;13;10\n" +
-                "2 Eleve;14;15;16;12\n" +
-                "3 Eleve;17;18;19;13\n");
+                "2 Eleve;14;15;;12\n" +
+                "3 Eleve;;18;19;13\n");
     }
 
     private List<EleveAvecTravauxEtProjet> getElevesWithTravauxAndProjet() {
@@ -178,7 +178,6 @@ public class CsvUtilsTestCase {
         eleve2.setNom("2");
         eleve2.setPrenom("Eleve");
         eleve2.setMoyenne(new BigDecimal(12));
-        eleve2.setProjet(new Travail(6L, null, new BigDecimal(16), null, null, null, null));
         Map<Long, Travail> mapTravaux2 = new HashMap<>();
         mapTravaux2.put(1L, new Travail(4L, null, new BigDecimal(14), null, null, null, null));
         mapTravaux2.put(2L, new Travail(5L, null, new BigDecimal(15), null, null, null, null));
@@ -190,7 +189,6 @@ public class CsvUtilsTestCase {
         eleve3.setMoyenne(new BigDecimal(13));
         eleve3.setProjet(new Travail(9L, null, new BigDecimal(19), null, null, null, null));
         Map<Long, Travail> mapTravaux3 = new HashMap<>();
-        mapTravaux3.put(1L, new Travail(7L, null, new BigDecimal(17), null, null, null, null));
         mapTravaux3.put(2L, new Travail(8L, null, new BigDecimal(18), null, null, null, null));
         eleve3.setMapSeanceIdTravail(mapTravaux3);
 
