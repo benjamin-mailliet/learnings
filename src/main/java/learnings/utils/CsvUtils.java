@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,9 +35,10 @@ public class CsvUtils {
     }
 
     public static void creerCSVElevesNotes(Writer writer, List<EleveAvecTravauxEtProjet> eleves, List<Seance> seancesNotees) throws IOException {
+        List<EleveAvecTravauxEtProjet> elevesSorted = eleves.stream().sorted((e1, e2) -> e1.getNom().compareTo(e2.getNom())).collect(Collectors.toList());
         List<Long> listeIdsSeances = seancesNotees.stream().map(Enseignement::getId).sorted().collect(Collectors.toList());
         ecrireEnTeteCSVNotes(writer, seancesNotees);
-        for (EleveAvecTravauxEtProjet eleve : eleves) {
+        for (EleveAvecTravauxEtProjet eleve : elevesSorted) {
             ecrireLigneEleve(writer, listeIdsSeances, eleve);
         }
     }
