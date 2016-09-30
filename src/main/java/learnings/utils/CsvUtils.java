@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,7 +20,6 @@ import java.util.stream.Collectors;
 public class CsvUtils {
 
     private static final String CSV_SEPARATOR = ";";
-
 
     public static void ecrireLigne(Writer w, List<String> listeValeurs) throws IOException {
         boolean premiereLigne = true;
@@ -37,6 +37,7 @@ public class CsvUtils {
 
     public static void creerCSVElevesNotes(Writer writer, List<EleveAvecTravauxEtProjet> eleves, List<Seance> seancesNotees) throws IOException {
         List<Long> listeIdsSeances = seancesNotees.stream().map(Enseignement::getId).collect(Collectors.toList());
+        Collections.sort(listeIdsSeances);
         ecrireEnTeteCSVNotes(writer, seancesNotees);
         for (EleveAvecTravauxEtProjet eleve : eleves) {
             ecrireLigneEleve(writer, listeIdsSeances, eleve);
@@ -48,25 +49,29 @@ public class CsvUtils {
         ligneEleve.add(eleve.getNom() + " " + eleve.getPrenom());
         final Map<Long, Travail> mapTravaux = eleve.getMapSeanceIdTravail();
         for (Long idSeance : listeIdsSeances) {
+            String noteString = "";
             final Travail travail = mapTravaux.get(idSeance);
             if (travail != null) {
                 if (travail.getNote() != null) {
-                    ligneEleve.add(travail.getNote().toString());
+                    noteString = travail.getNote().toString();
                 }
             }
+            ligneEleve.add(noteString);
         }
         if (eleve.getProjet() != null){
             ajouterNoteIfNoNull(eleve.getProjet().getNote(),ligneEleve);
+        }else{
+            ligneEleve.add("");
         }
         ligneEleve = ajouterNoteIfNoNull(eleve.getMoyenne(), ligneEleve);
-        ecrireLigne(writer,ligneEleve);
+        ecrireLigne(writer, ligneEleve);
     }
 
     private static List<String> ajouterNoteIfNoNull(BigDecimal note, List<String> ligneEleve) {
         if (note != null){
             ligneEleve.add(note.toString());
         }else{
-            ligneEleve.add(" ");
+            ligneEleve.add("");
         }
         return ligneEleve;
     }
@@ -74,7 +79,7 @@ public class CsvUtils {
     private static void ecrireEnTeteCSVNotes(Writer writer, List<Seance> seancesNotees) throws IOException {
         ArrayList<String> valeursPremiereLigne= new ArrayList<>();
         valeursPremiereLigne.add("Elève");
-        valeursPremiereLigne.addAll(seancesNotees.stream().map(Seance::getTitre).collect(Collectors.toList()));
+        valeursPremiereLigne.addAll(seancesNotees.stream().sorted((s1, s2) -> s1.getId().compareTo(s2.getId())).map(Seance::getTitre).collect(Collectors.toList()));
         valeursPremiereLigne.add("Projet");
         valeursPremiereLigne.add("Moyenne");
         ecrireLigne(writer, valeursPremiereLigne);
