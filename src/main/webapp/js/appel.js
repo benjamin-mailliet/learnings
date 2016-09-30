@@ -27,7 +27,7 @@ var getAppelsLocalStorage = function () {
 };
 
 var enregistrerSauvegardeLocale = function() {
-    console.log("sauvegarde");
+    console.log("sauvegarde : "+new Date());
     var appels = {};
     $(".radio-appel:checked").each(function () {
         var radio = $(this)[0];
@@ -38,6 +38,7 @@ var enregistrerSauvegardeLocale = function() {
     var appelsSauvegardes = getAppelsLocalStorage();
     appelsSauvegardes['seance_'+getParameterByName("idSeance")] = appels;
     localStorage.setItem("appels", JSON.stringify(appelsSauvegardes));
+    console.log("fin sauvegarde : "+new Date());
 };
 
 var chargerSauvegardeLocale = function() {
@@ -79,6 +80,10 @@ $(document).ready(function () {
 
     $(".radio-non-saisi").change(function () {
         appliquerStyle($(this).parents("tr"), "active");
+    });
+
+    $(".radio-appel").change(function () {
+        enregistrerSauvegardeLocale();
     });
 
     $("#form-appel").on("submit", function () {
