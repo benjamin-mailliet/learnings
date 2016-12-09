@@ -65,7 +65,7 @@
 									</c:forEach>
 								</ul>
 							</td>
-							<td>${travail.commentaire}</td>
+							<td>${fn:escapeXml(travail.commentaire)}</td>
 							<td><h4 id="noteActuelle${travail.id}">${travail.note}</h4></td>
 							<td>
 								<button id="noterTravail${travail.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" data-travail="${travail.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
