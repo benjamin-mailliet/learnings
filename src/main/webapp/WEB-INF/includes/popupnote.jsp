@@ -10,13 +10,13 @@
             <div class="modal-body">
                 <p id="errorNote" class="text-danger"></p>
                 <form id="formNote">
-                    <input type="hidden" name="idTravail" id="idTravail" name="idTravail"/>
+                    <input type="hidden" name="idTravail" id="idTravail"/>
                     <div class="form-group">
-                        <label>Note</label>
-                        <input class="form-control" type="number" min="0" max="20" value="10" name="noteValue" id="noteValue"/>
+                        <label for="noteValue">Note</label>
+                        <input class="form-control" type="number" min="0" max="20" value="10" name="noteValue" id="noteValue" autofocus/>
                     </div>
                     <div class="form-group">
-                        <label>Commentaire</label>
+                        <label for="noteComment">Commentaire</label>
                         <textarea rows="20" class="form-control" id="noteComment" name="noteComment"></textarea>
                     </div>
 

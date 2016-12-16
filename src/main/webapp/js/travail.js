@@ -19,6 +19,7 @@ $(document).ready(function(){
             $("#idTravail").val(idTravail);
             $("#ajaxLoading").hide();
             $("#formNote").show();
+            setTimeout(function () {  $("#noteValue").focus(); }, 500);
         })
         .fail(function () {
             console.error("Erreur de chargement de la note");
@@ -46,7 +47,7 @@ $(document).ready(function(){
             url: "ws/note",
             data: {idTravail: travailId, note: valeur, commentaireNote: commentaire}
         })
-            .done(function (data) {
+            .done(function () {
                 console.log("Enregistrement de la note OK");
                 actualiserNote(travailId, valeur);
                 actualiserLigneTableau(travailId);
@@ -77,8 +78,9 @@ $(document).ready(function(){
 
     var getObjectMail = function(){
         var titreTravail = "";
-        if($("#idSeance").length>0) {
-            titreTravail = $("#idSeance").find("option[selected]")[0].textContent;
+        var seance = $("#idSeance");
+        if(seance.length>0) {
+            titreTravail = seance.find("option[selected]")[0].textContent;
         }else{
             titreTravail = $("#idProjet").find("option[selected]")[0].textContent;
         }
