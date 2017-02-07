@@ -1,15 +1,15 @@
 package learnings.web.servlets;
 
-import java.io.IOException;
+import learnings.exceptions.LearningsSecuriteException;
+import learnings.managers.UtilisateurManager;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import learnings.exceptions.LearningsSecuriteException;
-import learnings.managers.UtilisateurManager;
+import java.io.IOException;
 
 @WebServlet("/connexion")
 public class ConnexionServlet extends GenericLearningsServlet {
@@ -18,8 +18,8 @@ public class ConnexionServlet extends GenericLearningsServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getSession().getAttribute("utilisateur") == null) {
-			RequestDispatcher view = request.getRequestDispatcher("WEB-INF/pages/accueil.jsp");
-			view.forward(request, response);
+			TemplateEngine engine = this.createTemplateEngine(request);
+			engine.process("public/connexion", new WebContext(request, response, getServletContext()), response.getWriter());
 		} else {
 			response.sendRedirect("eleve/");
 		}
@@ -27,7 +27,6 @@ public class ConnexionServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		String identifiant = request.getParameter("identifiant");
 		String motDePasse = request.getParameter("motDePasse");
 		try {

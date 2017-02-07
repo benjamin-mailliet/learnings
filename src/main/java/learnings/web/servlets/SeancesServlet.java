@@ -1,16 +1,16 @@
 package learnings.web.servlets;
 
-import java.io.IOException;
-import java.util.List;
+import learnings.managers.SeanceManager;
+import learnings.model.Seance;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import learnings.managers.SeanceManager;
-import learnings.model.Seance;
+import java.io.IOException;
+import java.util.List;
 
 @WebServlet(urlPatterns = { "/eleve/", "/eleve/seances" })
 public class SeancesServlet extends GenericLearningsServlet {
@@ -20,10 +20,9 @@ public class SeancesServlet extends GenericLearningsServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Seance> listeCours = SeanceManager.getInstance().listerSeances();
-
-		request.setAttribute("seances", listeCours);
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/seances.jsp");
-		view.forward(request, response);
-
+		TemplateEngine engine = this.createTemplateEngine(request);
+		WebContext context = new WebContext(request, response, getServletContext());
+		context.setVariable("seances", listeCours);
+		engine.process("eleve/seances", context, response.getWriter());
 	}
 }

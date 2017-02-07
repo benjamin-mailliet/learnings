@@ -44,7 +44,6 @@ public class ProjetServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		Long idProjet = null;
 		try {
 			idProjet = Long.parseLong(request.getParameter("id"));

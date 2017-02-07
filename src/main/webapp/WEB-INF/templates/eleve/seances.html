@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Séances (Cours et TPs)</title>
+		<th:block th:replace="fragments/htmlheader" />
+		<link th:href="@{/css/seances.css}" rel="stylesheet">
+		<script th:src="@{/js/seances.js}"></script>
+	</head>
+	<body>
+		<nav th:replace="fragments/menu :: principal('seances')"></nav>
+		<div class="container">
+			<div th:replace="fragments/messages"></div>
+			<header class="page-header"><h1>Cours et TPs</h1></header>
+			
+			<section class="panel-group">
+
+				<article th:each="seance : ${seances}"
+						 th:with="typeSeance=${seance.type.name()=='COURS' ? 'cours' : (seance.type.name() == 'TP' ?'tp' : '')}"
+						 th:class="${typeSeance}+'-article panel'" th:classappend="${seance.datePassee ? 'panel-info' : 'panel-default'}">
+					<header class="panel-heading" data-toggle="collapse" th:data-target="'#'+${typeSeance}+${seance.id}">
+						<h4>
+							<span  class="glyphicon" th:classappend="${seance.type.name()=='TP' ? 'glyphicon-cog' : 'glyphicon-folder-close'}"></span>
+							[[${seance.titre}]]
+							<small th:if="${seance.datePassee}">(cliquez pour ouvrir)</small>
+						</h4>
+						<time th:text="${#dates.format(seance.date, 'dd/MM/yyyy')}"></time>
+					</header>
+					<section th:if="${seance.datePassee}"
+							class="details panel-body collapse" th:id="${typeSeance}+${seance.id}">
+						<div th:utext="${seance.description}"></div>
+						<p>Ressources :</p>
+						<ul>
+							<li th:each="ressource : ${seance.ressources}">
+								<a th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
+							</li>
+						</ul>
+					</section>
+				</article>
+			</section>
+		</div>
+	</body>
+</html>

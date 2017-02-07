@@ -40,7 +40,6 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		try {
 			Long tpId = Long.parseLong(request.getParameter("idtp"));
 			Long utilisateur1Id = this.getUtilisateurCourant(request).getId();

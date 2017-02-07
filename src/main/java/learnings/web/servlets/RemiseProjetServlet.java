@@ -35,7 +35,6 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		try {
 			Long projetId = Long.parseLong(request.getParameter("idprojet"));
 			Long utilisateur1Id = this.getUtilisateurCourant(request).getId();
