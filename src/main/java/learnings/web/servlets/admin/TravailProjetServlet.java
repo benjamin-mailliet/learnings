@@ -1,19 +1,17 @@
 package learnings.web.servlets.admin;
 
-import java.io.IOException;
-import java.util.List;
+import learnings.managers.ProjetManager;
+import learnings.model.Projet;
+import learnings.web.servlets.GenericLearningsServlet;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import learnings.managers.ProjetManager;
-import learnings.managers.SeanceManager;
-import learnings.model.Projet;
-import learnings.model.Seance;
-import learnings.web.servlets.GenericLearningsServlet;
+import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/admin/travailprojet")
 public class TravailProjetServlet extends GenericLearningsServlet {
@@ -23,15 +21,15 @@ public class TravailProjetServlet extends GenericLearningsServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Projet> projets = ProjetManager.getInstance().listerProjets();
-		request.setAttribute("projets", projets);
 
+		TemplateEngine engine = this.createTemplateEngine(request);
+		WebContext context = new WebContext(request, response, getServletContext());
+		context.setVariable("projets", projets);
 		if (request.getParameter("idProjet") != null && !"".equals(request.getParameter("idProjet"))) {
 			Projet projetSelectionne = ProjetManager.getInstance().getProjetAvecTravaux(Long.parseLong(request.getParameter("idProjet")));
-			request.setAttribute("projetSelectionne", projetSelectionne);
+			context.setVariable("projetSelectionne", projetSelectionne);
 		}
-
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/travailprojet.jsp");
-		view.forward(request, response);
+		engine.process("admin/travailprojet", context, response.getWriter());
 	}
 
 }

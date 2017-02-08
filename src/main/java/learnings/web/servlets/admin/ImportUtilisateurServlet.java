@@ -1,13 +1,12 @@
 package learnings.web.servlets.admin;
 
-import learnings.enums.Groupe;
 import learnings.exceptions.LearningsException;
 import learnings.exceptions.LearningsSecuriteException;
 import learnings.managers.UtilisateurManager;
-import learnings.model.Utilisateur;
 import learnings.web.servlets.GenericLearningsServlet;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet(urlPatterns = { "/admin/importutilisateurs" })
 @MultipartConfig
@@ -25,14 +23,12 @@ public class ImportUtilisateurServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/importutilisateurs.jsp");
-		view.forward(request, response);
+		TemplateEngine engine = this.createTemplateEngine(request);
+		engine.process("admin/importutilisateurs", new WebContext(request, response, getServletContext()), response.getWriter());
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		Part fichier = request.getPart("fichier");
 
 		try {

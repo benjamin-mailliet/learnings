@@ -7,6 +7,13 @@ import javax.servlet.http.Part;
 import learnings.model.Utilisateur;
 import learnings.pojos.MessageContainer;
 import learnings.pojos.MessageContainer.Niveau;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.IContext;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+
+import java.io.Writer;
 
 public abstract class GenericLearningsServlet extends HttpServlet {
 
@@ -35,5 +42,19 @@ public abstract class GenericLearningsServlet extends HttpServlet {
 
 	protected Utilisateur getUtilisateurCourant(HttpServletRequest request) {
 		return (Utilisateur) request.getSession().getAttribute("utilisateur");
+	}
+
+	protected TemplateEngine createTemplateEngine(HttpServletRequest request) {
+		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(request.getServletContext());
+		templateResolver.setPrefix("WEB-INF/templates/");
+		templateResolver.setSuffix(".html");
+		templateResolver.setCharacterEncoding("UTF-8");
+		templateResolver.setTemplateMode(TemplateMode.HTML);
+
+		TemplateEngine templateEngine = new TemplateEngine();
+		templateEngine.addDialect(new Java8TimeDialect());
+		templateEngine.setTemplateResolver(templateResolver);
+
+		return templateEngine;
 	}
 }

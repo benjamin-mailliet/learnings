@@ -1,21 +1,21 @@
 package learnings.web.servlets.admin;
 
+import learnings.enums.TypeSeance;
+import learnings.managers.SeanceManager;
+import learnings.model.Seance;
+import learnings.web.servlets.GenericLearningsServlet;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import learnings.enums.TypeSeance;
-import learnings.managers.SeanceManager;
-import learnings.model.Seance;
-import learnings.web.servlets.GenericLearningsServlet;
 
 @WebServlet(urlPatterns = { "/admin/seance" })
 public class SeanceServlet extends GenericLearningsServlet {
@@ -32,44 +32,46 @@ public class SeanceServlet extends GenericLearningsServlet {
 		} catch (NumberFormatException e) {
 			// Ne rien faire
 		}
-		if (idSeance == null) {
-			request.setAttribute("mode", "creation");
-		} else {
-			request.setAttribute("mode", "modification");
-			Seance seance = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
-			request.setAttribute("seance", seance);
-		}
 
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/seance.jsp");
-		view.forward(request, response);
+		TemplateEngine engine = this.createTemplateEngine(request);
+		WebContext context = new WebContext(request, response, getServletContext());
+		if (idSeance == null) {
+			context.setVariable("mode", "creation");
+		} else {
+			context.setVariable("mode", "modification");
+			Seance seance = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
+			context.setVariable("seance", seance);
+		}
+		engine.process("admin/seance", context, response.getWriter());
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		Long idSeance = null;
 		try {
 			idSeance = Long.parseLong(request.getParameter("id"));
 		} catch (NumberFormatException e) {
+			// Ne rien faire
 		}
 		Date date = null;
 		try {
 			date = formatJour.parse(request.getParameter("date"));
 		} catch (ParseException e) {
+			// Ne rien faire
 		}
 		Date dateLimiteRendu = null;
 		try {
 			dateLimiteRendu = formatJourHeure.parse(request.getParameter("dateLimiteRendu"));
 		} catch (ParseException e) {
+			// Ne rien faire
 		}
 		TypeSeance type = null;
 		try {
 			type = TypeSeance.valueOf(request.getParameter("type"));
-		} catch (IllegalArgumentException e) {
-		} catch (NullPointerException e) {
+		} catch (IllegalArgumentException | NullPointerException e) {
+			// Ne rien faire
 		}
-		Seance seance = new Seance(idSeance, request.getParameter("titre"), request.getParameter("description"), date, Boolean.parseBoolean(request
-				.getParameter("isNote")), dateLimiteRendu, type);
+		Seance seance = new Seance(idSeance, request.getParameter("titre"), request.getParameter("description"), date, Boolean.parseBoolean(request.getParameter("isNote")), dateLimiteRendu, type);
 		try {
 			if (idSeance == null) {
 				SeanceManager.getInstance().ajouterSeance(seance);

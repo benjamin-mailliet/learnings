@@ -38,7 +38,7 @@ public class TelechargerRessource extends GenericLearningsServlet {
 				fichier.getDonnees().close();
 				out.flush();
 			} catch (IllegalArgumentException e) {
-				this.ajouterMessageErreur(request, "L'identifiant du travail est incorrect.");
+				this.ajouterMessageErreur(request, "L'identifiant de la ressource est incorrect.");
 				e.printStackTrace();
 				response.sendRedirect("seances");
 			} catch (LearningsException e) {

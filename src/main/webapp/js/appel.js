@@ -3,6 +3,7 @@ var purgerClasses = function(element) {
     $(element).removeClass("info");
     $(element).removeClass("warning");
     $(element).removeClass("danger");
+    $(element).removeClass("active");
 };
 
 

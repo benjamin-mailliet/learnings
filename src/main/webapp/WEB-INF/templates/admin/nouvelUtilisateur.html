@@ -1,0 +1,14 @@
+<tr th:id="'utilisateur'+${utilisateur.id}" style="display:none" xmlns:th="http://www.thymeleaf.org">
+	<td th:text="${utilisateur.id}"></td>
+	<td th:text="${utilisateur.nom}"></td>
+	<td th:text="${utilisateur.prenom}"></td>
+	<td th:text="${utilisateur.email}"></td>
+	<td th:text="${utilisateur.groupe} ? ${utilisateur.groupe.libelle}"></td>
+	<td class="isAdminCell" th:text="${utilisateur.admin ? 'Oui' : 'Non'}"></td>
+	<td>
+		<button type="button" class="btn btn-primary btn-xs reinitMdpUtilisateurAction" title="Réinitialiser le mot de passe"><span class="glyphicon glyphicon-repeat"></span></button>
+		<button type="button" class="btn btn-danger btn-xs supprimerUtilisateurAction" title="Supprimer l'utilisateur"><span class="glyphicon glyphicon-trash"></span></button>
+		<button th:style="${utilisateur.admin} ? 'display:none;'" type="button" class="btn btn-success btn-xs donnerAdminUtilisateurAction" title="Donner l'admin"><span class="glyphicon glyphicon-chevron-up"></span></button>
+		<button th:style="${!utilisateur.admin} ? 'display:none;'" type="button" class="btn btn-warning btn-xs enleverAdminUtilisateurAction" title="Enlever l'admin"><span class="glyphicon glyphicon-chevron-down"></span></button>
+	</td>
+</tr>

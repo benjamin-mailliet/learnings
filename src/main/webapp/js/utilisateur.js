@@ -8,6 +8,7 @@ var supprimerUtilisateur = function (id) {
 
 var donnerAdminUtilisateur = function (id) {
     $.post("utilisateur", {id: id, action: "donnerAdmin"}).done(function () {
+        $("#utilisateur" + id).find(".isAdminCell").html("Oui");
         $("#utilisateur" + id + " .donnerAdminUtilisateurAction").hide("fast", function () {
             $("#utilisateur" + id + " .enleverAdminUtilisateurAction").show("fast");
         });
@@ -16,6 +17,7 @@ var donnerAdminUtilisateur = function (id) {
 
 var enleverAdminUtilisateur = function (id) {
     $.post("utilisateur", {id: id, action: "enleverAdmin"}).done(function () {
+        $("#utilisateur" + id).find(".isAdminCell").html("Non");
         $("#utilisateur" + id + " .enleverAdminUtilisateurAction").hide("fast", function () {
             $("#utilisateur" + id + " .donnerAdminUtilisateurAction").show("fast");
         });

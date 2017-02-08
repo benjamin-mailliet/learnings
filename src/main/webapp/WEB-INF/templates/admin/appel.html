@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Gestion des séances</title>
+		<th:block th:replace="fragments/htmlheader" />
+		<script th:src="@{/js/appel.js}"></script>
+	</head>
+	<body>
+		<nav th:replace="fragments/menu :: admin('seance')"></nav>
+	
+		<div class="container">
+			<div th:replace="fragments/messages"></div>
+			<header class="page-header">
+				<h1>
+					Appel de la séance "[[${seance.titre}]]"
+					<small><a href="listeseances" class="label label-default">Retour à la liste</a></small>
+				</h1>
+			</header>
+			<form class="form-horizontal" id="form-appel" method="post">
+				<table id="tableau-appel" class="table table-bordered">
+					<tr>
+						<th>Eleve</th>
+						<th>Groupe</th>
+						<th colspan="5">Statut</th>
+					</tr>
+					<tr th:each="appel : ${appels}" th:with="cssAppelCourant=${appel.statut} ? ${cssClasses[appel.statut]} : 'active'">
+						<td class="cellule-generale" th:classappend="${cssAppelCourant}">[[${appel.eleve.prenom}]] [[${appel.eleve.nom}]]</td>
+						<td class="cellule-generale" th:classappend="${cssAppelCourant}">[[${appel.eleve.groupe.libelle}]]</td>
+						<td class="text-success" th:classappend="${appel.statut && appel.statut.name() == 'PRESENT'} ? 'success'">
+							<label>
+								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="PRESENT" th:checked="${appel.statut && appel.statut.name() == 'PRESENT'}" class="radio-appel radio-present" />
+								Présent
+							</label>
+						</td>
+						<td class="text-warning" th:classappend="${appel.statut && appel.statut.name() == 'RETARD'} ? 'warning'">
+							<label>
+								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="RETARD" th:checked="${appel.statut && appel.statut.name() == 'RETARD'}" class="radio-appel radio-retard" />
+								Retard
+							</label>
+						</td>
+						<td class="text-info" th:classappend="${appel.statut && appel.statut.name() == 'EXCUSE'} ? 'info'">
+							<label>
+								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="EXCUSE" th:checked="${appel.statut && appel.statut.name() == 'EXCUSE'}" class="radio-appel radio-excuse" />
+								Excusé
+							</label>
+						</td>
+						<td class="text-danger" th:classappend="${appel.statut && appel.statut.name() == 'ABSENT'} ? 'danger'">
+							<label>
+								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="ABSENT" th:checked="${appel.statut && appel.statut.name() == 'ABSENT'}" class="radio-appel radio-absent" />
+								Absent
+							</label>
+						</td>
+						<td class="text-active" th:classappend="${appel.statut == null || appel.statut.name() == 'NON_SAISI'} ? 'active'">
+							<label>
+								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="NON_SAISI" th:checked="${appel.statut == null || appel.statut.name() == 'NON_SAISI'}" class="radio-appel radio-non-saisi" />
+								Non saisi
+							</label>
+						</td>
+					</tr>
+				</table>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-default" id="boutonChargementSauvegardeLocale">Charger sauvegarde locale</button>
+						<button type="button" class="btn btn-default" id="boutonSauvegardeLocale">Enregistrer en local</button>
+						<button type="submit" class="btn btn-primary">Enregistrer</button>
+				    </div>
+			  </div>
+			</form>
+		</div>
+	</body>
+</html>
