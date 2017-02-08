@@ -4,8 +4,9 @@ import learnings.exceptions.LearningsException;
 import learnings.managers.ProjetManager;
 import learnings.managers.TravailManager;
 import learnings.pojos.ProjetAvecTravail;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -24,13 +25,13 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		ProjetAvecTravail projetAvecTravail = ProjetManager.getInstance().getProjetAvecTravail(this.getUtilisateurCourant(request).getId());
+
+		TemplateEngine engine = this.createTemplateEngine(request);
+		WebContext context = new WebContext(request, response, getServletContext());
 		if(projetAvecTravail!=null) {
-			request.setAttribute("projetAvecTravail", projetAvecTravail);
+			context.setVariable("projetAvecTravail", projetAvecTravail);
 		}
-
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/remiseprojet.jsp");
-		view.forward(request, response);
-
+		engine.process("eleve/remiseprojet", context, response.getWriter());
 	}
 	
 	@Override
@@ -55,9 +56,7 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 				this.ajouterMessageErreur(request, "Veuillez soit saisir une URL de repository, soit ajouter un fichier.");
 			}
 			
-		} catch (IllegalArgumentException e) {
-			this.ajouterMessageErreur(request, e.getMessage());
-		} catch (LearningsException e) {
+		} catch (IllegalArgumentException | LearningsException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
 		}
 

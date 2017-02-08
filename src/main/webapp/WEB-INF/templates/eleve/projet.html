@@ -1,35 +1,26 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<title>Projet</title>
-		<c:import url="../includes/htmlheader.jsp" />
-		<link href="../css/projet.css" rel="stylesheet">
-		<!-- script src="../js/projet.js"></script-->
+		<th:block th:replace="fragments/htmlheader" />
+		<link th:href="@{/css/projet.css}" rel="stylesheet">
 	</head>
 	<body>
-		<c:import url="../includes/menuprincipal.jsp">
-			<c:param name="pageSelectionnee" value="projet"/>
-		</c:import>		
+		<nav th:replace="fragments/menu :: principal('projet')"></nav>
 		<div class="container">
-			<c:import url="../includes/messages.jsp" />
-			<header class="page-header"><h1>${projet.titre}</h1></header>
+			<div th:replace="fragments/messages"></div>
+			<header class="page-header"><h1 th:text="${projet.titre}"></h1></header>
 			
 			<section class="row-fluid description">
 				<article class="col-md-9">
-						<div class="text-justify">${projet.description}</div>
+					<div class="text-justify" th:utext="${projet.description}"></div>
 				</article>
 				<aside class="col-md-3">
 					<div class="panel panel-default">
 						<div class="panel-heading"><h4>Ressources à télécharger</h4></div>
 						<div class="panel-body">
 							<ul>
-								<c:forEach var="ressource" items="${projet.ressources}">
-									<li><a href="telechargerRessource?id=${ressource.id}">${ressource.titre}</a></li>	
-								</c:forEach>
+								<li th:each="ressource : ${projet.ressources}"><a th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a></li>
 							</ul>
 						</div>
 					</div>
@@ -52,7 +43,7 @@
 								</thead>
 								<tr>
 									<td><h4>Etape 1</h4></td>
-									<td><time><abbr title="Ne soyez pas en retard !"><fmt:formatDate value="${projet.dateLimiteRenduLot1}" pattern="dd/MM/yyyy à HH:mm" /></abbr></time></td>
+									<td><time><abbr title="Ne soyez pas en retard !">[[${#dates.format(projet.dateLimiteRenduLot1, 'dd/MM/yyyy à HH:mm')}]]</abbr></time></td>
 									<td>
 										<ul>
 											<li>Pages HTML</li>
@@ -63,7 +54,7 @@
 								</tr>
 								<tr>
 									<td><h4>Etape 2</h4></td>
-									<td><time><abbr title="Ne soyez pas en retard !"><fmt:formatDate value="${projet.dateLimiteRenduLot2}" pattern="dd/MM/yyyy à HH:mm" /></abbr></time></td>
+									<td><time><abbr title="Ne soyez pas en retard !">[[${#dates.format(projet.dateLimiteRenduLot2, 'dd/MM/yyyy à HH:mm')}]]</abbr></time></td>
 									<td>
 										<ul>
 											<li>Lot 1 finalisé</li>
@@ -77,7 +68,6 @@
 						</div>
 					</div>
 				</article>
-				
 			</section>
 		</div>
 	</body>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Rendre le projet</title>
+		<th:block th:replace="fragments/htmlheader" />
+	</head>
+	<body>
+		<nav th:replace="fragments/menu :: principal('remiseprojet')"></nav>
+		<div class="container">
+			<section id="sectionLot1">
+				<div th:replace="fragments/messages"></div>
+				<header class="page-header"><h1>Remise du projet</h1></header>
+				<article class="panel panel-default">
+					<header class="panel-heading">
+						<h2>Projet transversal personnel
+					</header>
+					<section class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<h3>Dates de rendu</h3>
+									<ul>
+										<li>Le lot 1 du projet doit être rendu avant le <strong><time th:text="${#dates.format(projetAvecTravail.projet.dateLimiteRenduLot1, 'dd/MM/yyyy')}"></time></strong> à [[${#dates.format(projetAvecTravail.projet.dateLimiteRenduLot1, 'HH:mm')}]]. Il vous reste <strong th:text="${projetAvecTravail.nbJoursRestantsLot1}"></strong> jours.</li>
+										<li>Le lot 2 du projet doit être rendu avant le <strong><time th:text="${#dates.format(projetAvecTravail.projet.dateLimiteRenduLot2, 'dd/MM/yyyy')}"></time></strong> à [[${#dates.format(projetAvecTravail.projet.dateLimiteRenduLot2, 'HH:mm')}]]. Il vous reste <strong th:text="${projetAvecTravail.nbJoursRestantsLot2}"></strong> jours.</li>
+									</ul>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-md-12">
+								<h3>Projet actuellement soumis :</h3>
+								<p th:if="${projetAvecTravail.travail == null}">Vous n'avez encore rien rendu pour le projet.</p>
+								<p th:if="${projetAvecTravail.travail != null && projetAvecTravail.travail.chemin != null}">
+									Fichier ayant le nom [[${projetAvecTravail.travail.nomFichier}]] rendu le <small><em th:text="${#dates.format(projetAvecTravail.travail.dateRendu, 'dd/MM/yyyy')}"></em> à <em th:text="${#dates.format(projetAvecTravail.travail.dateRendu, 'HH:mm')}"></em></small>
+								</p>
+								<p th:if="${projetAvecTravail.travail != null && projetAvecTravail.travail.urlRepository != null}">
+									Url de repository : [[${projetAvecTravail.travail.urlRepository}]] rendu le <small><em th:text="${#dates.format(projetAvecTravail.travail.dateRendu, 'dd/MM/yyyy')}"></em> à <em th:text="${#dates.format(projetAvecTravail.travail.dateRendu, 'HH:mm')}"></em></small>
+								</p>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-md-12">
+								<h3>Envoyer un fichier ou renseigner un repository :</h3>
+								<p>Si vous soumettez un projet, il remplacera le projet actuel.</p>
+								<form role="form" method="post" enctype="multipart/form-data">
+									<div class="row">
+										<div class="form-group col-md-5">
+											<label for="fichierprojet">Fichier zip de votre projet :</label>
+											<input type="file" id="fichierprojet" name="fichierprojet">
+											<p class="help-block">Attention à ne pas dépasser les 10 Mo.</p>
+										</div>
+										<div class="col-md-2">
+											<strong>OU</strong>
+										</div>
+										<div class="form-group col-md-5">
+											<label for="urlRepo">URL du repository GIT de votre projet :</label>
+											<input type="url" class="form-control" id="urlRepo" name="urlRepo">
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-12">
+											<label for="commentaire">Commentaire éventuel :</label>
+											<textarea id="commentaire" name="commentaire" rows="5" class="form-control"></textarea>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-12">
+											<input type="hidden" name="idprojet" th:value="${projetAvecTravail.projet.id}" />
+											<button type="submit" class="btn btn-default">Envoyer</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</section>
+				</article>
+			</section>
+			
+		</div>
+	</body>
+</html>

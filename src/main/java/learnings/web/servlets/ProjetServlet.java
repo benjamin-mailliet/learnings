@@ -1,15 +1,15 @@
 package learnings.web.servlets;
 
-import java.io.IOException;
+import learnings.managers.ProjetManager;
+import learnings.model.Projet;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import learnings.managers.ProjetManager;
-import learnings.model.Projet;
+import java.io.IOException;
 
 @WebServlet(urlPatterns = { "/eleve/projet" })
 public class ProjetServlet extends GenericLearningsServlet {
@@ -20,9 +20,10 @@ public class ProjetServlet extends GenericLearningsServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Projet projet = ProjetManager.getInstance().getLastProjetAvecRessources();
 
-		request.setAttribute("projet", projet);
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/projet.jsp");
-		view.forward(request, response);
+		TemplateEngine engine = this.createTemplateEngine(request);
+		WebContext context = new WebContext(request, response, getServletContext());
+		context.setVariable("projet", projet);
+		engine.process("eleve/projet", context, response.getWriter());
 
 	}
 }
