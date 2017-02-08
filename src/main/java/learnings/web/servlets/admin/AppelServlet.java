@@ -6,11 +6,11 @@ import learnings.managers.SeanceManager;
 import learnings.model.Appel;
 import learnings.model.Seance;
 import learnings.web.servlets.GenericLearningsServlet;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,17 +31,29 @@ public class AppelServlet extends GenericLearningsServlet {
         }
 
         Seance seance = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
-        request.setAttribute("seance", seance);
         List<Appel> appels = AppelManager.getInstance().listerAppels(idSeance);
-        request.setAttribute("appels", appels);
 
-        RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/appel.jsp");
-        view.forward(request, response);
+        TemplateEngine engine = this.createTemplateEngine(request);
+        WebContext context = new WebContext(request, response, getServletContext());
+        context.setVariable("seance", seance);
+        context.setVariable("appels", appels);
+        context.setVariable("cssClasses", getCssClasses());
+        engine.process("admin/appel", context, response.getWriter());
+    }
+
+    private Map<StatutAppel, String> getCssClasses() {
+        Map<StatutAppel, String> cssClasses = new HashMap<>();
+        cssClasses.put(StatutAppel.PRESENT, "success");
+        cssClasses.put(StatutAppel.RETARD, "warning");
+        cssClasses.put(StatutAppel.EXCUSE, "info");
+        cssClasses.put(StatutAppel.ABSENT, "danger");
+
+        return cssClasses;
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long idSeance = null;
+        Long idSeance;
         try {
             idSeance = Long.parseLong(request.getParameter("idSeance"));
         } catch (NumberFormatException e) {

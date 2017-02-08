@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Travaux rendus</title>
+	<th:block th:replace="fragments/htmlheader" />
+	<script th:src="@{/js/travail.js}"></script>
+
+</head>
+<body>
+	<nav th:replace="fragments/menu :: admin('travailtp')"></nav>
+
+	<div th:replace="fragments/popup :: note"></div>
+
+	<div class="container">
+		<div th:replace="fragments/messages"></div>
+		<header class="page-header">
+			<h1>Travaux rendus</h1>
+		</header>
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4">
+				<form method="get" class="form-inline text-center well">
+					<div class="form-group">
+						<label class="sr-only" for="idSeance">Sélectionner une séance :</label>
+						<select class="form-control" id="idSeance" name="idSeance">
+							<option th:each="seance : ${seances}" th:value="${seance.id}" th:selected="${seanceSelectionnee && seance.id == seanceSelectionnee.id}">[[${seance.titre}]]</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-primary">Valider</button>
+				</form>
+			</div>
+		</div>
+		<section th:if="${seanceSelectionnee && #lists.size(seanceSelectionnee.travauxRendus) > 0}">
+			<p>Travaux rendu pour la séance « [[${seanceSelectionnee.titre}]] » :</p>
+			<table class="table table-bordered">
+				<tr>
+					<th>Fichier</th>
+					<th>Élèves</th>
+					<th>Commentaire</th>
+					<th>Note</th>
+					<th>Actions</th>
+				</tr>
+				<tr th:each="travail : ${seanceSelectionnee.travauxRendus}" th:class="${travail.note && travail.note != ''} ? 'success'" th:id="'ligneTravail'+${travail.id}">
+					<td>
+						<p>
+							<a th:href="'telechargerTravail?id='+${travail.id}" th:text="${travail.nomFichier}"></a><br>
+							<small>Rendu à [[${#dates.format(travail.dateRendu, 'HH:mm')}]] le [[${#dates.format(travail.dateRendu, 'dd/MM/yyyy')}]]</small>
+						</p>
+					</td>
+					<td>
+						<ul th:id="'mailTravail'+${travail.id}">
+							<li th:each="utilisateur : ${travail.utilisateurs}">[[${utilisateur.email}]]</li>
+						</ul>
+					</td>
+					<td th:text="${travail.commentaire}"></td>
+					<td><h4 th:id="'noteActuelle'+${travail.id}" th:text="${travail.note}"></h4></td>
+					<td>
+						<button th:id="'noterTravail'+${travail.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" th:data-travail="${travail.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
+					</td>
+				</tr>
+			</table>
+		</section>
+		<p th:if="${seanceSelectionnee && #lists.size(seanceSelectionnee.travauxRendus) == 0}">Aucun travail n'a encore été rendu pour la séance « [[${seanceSelectionnee.titre}]] ».
+	</div>
+</body>
+</html>

@@ -1,20 +1,20 @@
 package learnings.web.servlets.admin;
 
+import learnings.managers.ProjetManager;
+import learnings.model.Projet;
+import learnings.web.servlets.GenericLearningsServlet;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import learnings.managers.ProjetManager;
-import learnings.model.Projet;
-import learnings.web.servlets.GenericLearningsServlet;
 
 @WebServlet(urlPatterns = { "/admin/projet" })
 public class ProjetServlet extends GenericLearningsServlet {
@@ -30,16 +30,17 @@ public class ProjetServlet extends GenericLearningsServlet {
 		} catch (NumberFormatException e) {
 			// Ne rien faire
 		}
-		if (idProjet == null) {
-			request.setAttribute("mode", "creation");
-		} else {
-			request.setAttribute("mode", "modification");
-			Projet projet = ProjetManager.getInstance().getProjetAvecRessources(idProjet);
-			request.setAttribute("projet", projet);
-		}
 
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/projet.jsp");
-		view.forward(request, response);
+		TemplateEngine engine = this.createTemplateEngine(request);
+		WebContext context = new WebContext(request, response, getServletContext());
+		if (idProjet == null) {
+			context.setVariable("mode", "creation");
+		} else {
+			context.setVariable("mode", "modification");
+			Projet projet = ProjetManager.getInstance().getProjetAvecRessources(idProjet);
+			context.setVariable("projet", projet);
+		}
+		engine.process("admin/projet", context, response.getWriter());
 	}
 
 	@Override
@@ -48,6 +49,7 @@ public class ProjetServlet extends GenericLearningsServlet {
 		try {
 			idProjet = Long.parseLong(request.getParameter("id"));
 		} catch (NumberFormatException e) {
+			// Ne rien faire
 		}
 		Date dateLimiteRenduLot1 = null;
 		Date dateLimiteRenduLot2 = null;
@@ -55,6 +57,7 @@ public class ProjetServlet extends GenericLearningsServlet {
 			dateLimiteRenduLot1 = formatJourHeure.parse(request.getParameter("dateLimiteRenduLot1"));
 			dateLimiteRenduLot2 = formatJourHeure.parse(request.getParameter("dateLimiteRenduLot2"));
 		} catch (ParseException e) {
+			// Ne rien faire
 		}
 
 		Projet projet = new Projet(idProjet, request.getParameter("titre"), request.getParameter("description"), dateLimiteRenduLot1, dateLimiteRenduLot2);
