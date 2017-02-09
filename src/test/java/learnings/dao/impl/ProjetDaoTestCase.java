@@ -1,109 +1,107 @@
 package learnings.dao.impl;
 
+import learnings.AbstractDaoTestCase;
+import learnings.dao.ProjetDao;
+import learnings.model.Projet;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
-import learnings.dao.ProjetDao;
-import learnings.model.Projet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+public class ProjetDaoTestCase extends AbstractDaoTestCase {
+    private ProjetDao projetDao = new ProjetDaoImpl();
 
-public class ProjetDaoTestCase {
-	private ProjetDao projetDao = new ProjetDaoImpl();
+    @Before
+    public void init() throws Exception {
+        super.purgeBaseDeDonnees();
 
-	@Before
-	public void init() throws Exception {
-		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-		Statement stmt = connection.createStatement();
-		stmt.executeUpdate("DELETE FROM ressource");
-		stmt.executeUpdate("DELETE FROM travailutilisateur");
-		stmt.executeUpdate("DELETE FROM travail");
-		stmt.executeUpdate("DELETE FROM seance");
-		stmt.executeUpdate("DELETE FROM projettransversal");
-		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(1,'projet1','description 1','2014-09-16 18:00:00','2014-10-16 18:00:00')");
-		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(2,'projet2','description 2','2014-09-16 18:00:00','2014-10-10 18:00:00')");
-		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(3,'projet3','description 3','2014-09-17 18:00:00','2014-09-26 18:00:00')");
-		stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(4,'projet4','description 4','2014-09-19 18:00:00','2014-10-20 18:00:00')");
-		stmt.close();
-		connection.close();
-	}
+        try (Connection connection = this.getConnection();
+             Statement stmt = connection.createStatement()
+        ) {
+            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(1,'projet1','description 1','2014-09-16 18:00:00','2014-10-16 18:00:00')");
+            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(2,'projet2','description 2','2014-09-16 18:00:00','2014-10-10 18:00:00')");
+            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(3,'projet3','description 3','2014-09-17 18:00:00','2014-09-26 18:00:00')");
+            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(4,'projet4','description 4','2014-09-19 18:00:00','2014-10-20 18:00:00')");
+        }
+    }
 
-	@Test
-	public void testListerProjets() {
-		List<Projet> listeProjets = projetDao.listerProjets();
+    @Test
+    public void shouldListerProjets() {
+        // WHEN
+        List<Projet> listeProjets = projetDao.listerProjets();
+        // THEN
+        assertThat(listeProjets).hasSize(4);
+        assertThat(listeProjets).extracting("id", "titre").containsExactly(
+                tuple(2L, "projet2"),
+                tuple(1L, "projet1"),
+                tuple(3L, "projet3"),
+                tuple(4L, "projet4")
+        );
 
-		Assert.assertEquals(4, listeProjets.size());
+    }
 
-		Assert.assertEquals(2L, listeProjets.get(0).getId().longValue());
-		Assert.assertEquals(1L, listeProjets.get(1).getId().longValue());
-		Assert.assertEquals(3L, listeProjets.get(2).getId().longValue());
-		Assert.assertEquals(4L, listeProjets.get(3).getId().longValue());
-	}
+    @Test
+    public void shouldGetProjet() {
+        // WHEN
+        Projet projet = projetDao.getProjet(1L);
+        //THEN
+        assertThat(projet).isNotNull();
+        assertThat(projet.getId()).isEqualTo(1L);
+        assertThat(projet.getTitre()).isEqualTo("projet1");
+        assertThat(projet.getDescription()).isEqualTo("description 1");
+        assertThat(projet.getDateLimiteRenduLot1()).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 16, 18, 0, 0));
+        assertThat(projet.getDateLimiteRenduLot2()).isEqualToIgnoringMillis(getDate(2014, Calendar.OCTOBER, 16, 18, 0, 0));
+    }
 
-	@Test
-	public void testGetProjet() {
-		Projet projet = projetDao.getProjet(1L);
-		Assert.assertNotNull(projet);
-		Assert.assertEquals(1L, projet.getId().longValue());
-		Assert.assertEquals("projet1", projet.getTitre());
-		Assert.assertEquals("description 1", projet.getDescription());
-		Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 16, 18, 0).getTime(), projet.getDateLimiteRenduLot1());
-		Assert.assertEquals(new GregorianCalendar(2014, Calendar.OCTOBER, 16, 18, 0).getTime(), projet.getDateLimiteRenduLot2());
-	}
+    @Test
+    public void shouldAjouterProjetComplet() throws Exception {
+        // GIVEN
+        Projet projet = new Projet(null, "monTitre", "maDescription", getDate(2014, Calendar.SEPTEMBER, 16, 13, 47, 0), getDate(2014, Calendar.SEPTEMBER, 17, 13, 47, 0));
+        // WHEN
+        Projet projetCree = projetDao.ajouterProjet(projet);
+        // THEN
+        assertThat(projetCree).isNotNull();
+        assertThat(projetCree.getId()).isNotNull();
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM projettransversal WHERE id=?")
+        ) {
+            stmt.setLong(1, projetCree.getId());
+            try (ResultSet results = stmt.executeQuery()) {
+                assertThat(results.next()).isTrue();
+                assertThat(results.getLong("id")).isEqualTo(projetCree.getId());
+                assertThat(results.getString("titre")).isEqualTo("monTitre");
+                assertThat(results.getString("description")).isEqualTo("maDescription");
+                assertThat(results.getTimestamp("datelimiterendulot1")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 16, 13, 47, 0));
+                assertThat(results.getTimestamp("datelimiterendulot2")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 17, 13, 47, 0));
+            }
+        }
+    }
 
-	@Test
-	public void testAjouterProjetComplet() throws Exception {
-		Projet projet = new Projet(null, "monTitre", "maDescription", new GregorianCalendar(2014, Calendar.SEPTEMBER, 16, 13, 47).getTime(),
-				new GregorianCalendar(2014, Calendar.SEPTEMBER, 17, 13, 47).getTime());
-
-		Projet projetCree = projetDao.ajouterProjet(projet);
-
-		Assert.assertNotNull(projetCree.getId());
-
-		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-		PreparedStatement stmt = connection.prepareStatement("SELECT * FROM projettransversal WHERE id=?");
-		stmt.setLong(1, projetCree.getId());
-		ResultSet results = stmt.executeQuery();
-		if (results.next()) {
-			Assert.assertEquals(projetCree.getId().longValue(), results.getLong("id"));
-			Assert.assertEquals("monTitre", results.getString("titre"));
-			Assert.assertEquals("maDescription", results.getString("description"));
-			Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 16, 13, 47).getTime(), results.getTimestamp("datelimiterendulot1"));
-			Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 17, 13, 47).getTime(), results.getTimestamp("datelimiterendulot2"));
-		} else {
-			Assert.fail();
-		}
-		stmt.close();
-		connection.close();
-	}
-
-	@Test
-	public void testModifierProjet() throws Exception {
-		Projet projet = new Projet(1L, "monTitre", "maDescription", new GregorianCalendar(2014, Calendar.SEPTEMBER, 16, 13, 47).getTime(),
-				new GregorianCalendar(2014, Calendar.SEPTEMBER, 17, 13, 47).getTime());
-
-		projetDao.modifierProjet(projet);
-
-		Connection connection = DataSourceProvider.getInstance().getDataSource().getConnection();
-		Statement stmt = connection.createStatement();
-		ResultSet results = stmt.executeQuery("SELECT * FROM projettransversal WHERE id=1");
-		if (results.next()) {
-			Assert.assertEquals(1L, results.getLong("id"));
-			Assert.assertEquals("monTitre", results.getString("titre"));
-			Assert.assertEquals("maDescription", results.getString("description"));
-			Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 16, 13, 47).getTime(), results.getTimestamp("datelimiterendulot1"));
-			Assert.assertEquals(new GregorianCalendar(2014, Calendar.SEPTEMBER, 17, 13, 47).getTime(), results.getTimestamp("datelimiterendulot2"));
-		} else {
-			Assert.fail();
-		}
-		stmt.close();
-		connection.close();
-	}
+    @Test
+    public void shouldModifierProjet() throws Exception {
+        // GIVEN
+        Projet projet = new Projet(1L, "monTitre", "maDescription", getDate(2014, Calendar.SEPTEMBER, 16, 13, 47, 0), getDate(2014, Calendar.SEPTEMBER, 17, 13, 47, 0));
+        // WHEN
+        projetDao.modifierProjet(projet);
+        // THEN
+        try (Connection connection = getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet results = stmt.executeQuery("SELECT * FROM projettransversal WHERE id=1")
+        ) {
+            assertThat(results.next()).isTrue();
+            assertThat(results.getLong("id")).isEqualTo(1L);
+            assertThat(results.getString("titre")).isEqualTo("monTitre");
+            assertThat(results.getString("description")).isEqualTo("maDescription");
+            assertThat(results.getTimestamp("datelimiterendulot1")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 16, 13, 47, 0));
+            assertThat(results.getTimestamp("datelimiterendulot2")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 17, 13, 47, 0));
+        }
+    }
 }

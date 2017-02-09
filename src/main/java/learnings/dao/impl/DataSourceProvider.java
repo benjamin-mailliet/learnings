@@ -10,16 +10,15 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class DataSourceProvider {
 
-	private MysqlDataSource dataSource;
-	
-	private static DataSourceProvider instance;
+	private static class DataSourceProviderHolder {
+		private final static DataSourceProvider instance = new DataSourceProvider();
+	}
 	
 	public static DataSourceProvider getInstance() {
-		if(instance == null){
-			instance = new DataSourceProvider();
-		}
-		return instance;
+		return DataSourceProviderHolder.instance;
 	}
+
+	private MysqlDataSource dataSource;
 
 	private DataSourceProvider() {
 		initDataSource();

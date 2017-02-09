@@ -1,12 +1,13 @@
 package learnings.web.servlets;
 
-import java.io.IOException;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @WebServlet("/eleve/liensutiles")
 public class LiensUtilesServlet extends GenericLearningsServlet {
@@ -15,8 +16,8 @@ public class LiensUtilesServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/liensutiles.jsp");
-		view.forward(request, response);
+		TemplateEngine engine = this.createTemplateEngine(request);
+		engine.process("eleve/liensutiles",  new WebContext(request, response, getServletContext()), response.getWriter());
 	}
 
 }

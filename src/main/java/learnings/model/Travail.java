@@ -1,19 +1,22 @@
 package learnings.model;
 
+import learnings.utils.FichierUtils;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import learnings.utils.FichierUtils;
-
 public class Travail implements Serializable {
 	private static final long serialVersionUID = 5229784210182658252L;
+
+	public static int COEFF_PROJET = 4;
 
 	private Long id;
 
 	private Enseignement enseignement;
 	private BigDecimal note;
+	private String commentaireNote;
 	private Date dateRendu;
 	private String chemin;
 	private String commentaire;
@@ -21,6 +24,18 @@ public class Travail implements Serializable {
 	private String urlRepository;
 
 	public Travail() {
+	}
+
+	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire, String urlRepository, String commentaireNote) {
+		super();
+		this.id = id;
+		this.enseignement = enseignement;
+		this.note = note;
+		this.commentaireNote=commentaireNote;
+		this.dateRendu = dateRendu;
+		this.chemin = chemin;
+		this.commentaire = commentaire;
+		this.urlRepository = urlRepository;
 	}
 
 	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire, String urlRepository) {
@@ -48,6 +63,14 @@ public class Travail implements Serializable {
 
 	public void setNote(BigDecimal note) {
 		this.note = note;
+	}
+
+	public String getCommentaireNote() {
+		return commentaireNote;
+	}
+
+	public void setCommentaireNote(String commentaireNote) {
+		this.commentaireNote = commentaireNote;
 	}
 
 	public Date getDateRendu() {

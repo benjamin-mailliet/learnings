@@ -1,10 +1,12 @@
 package learnings.model;
 
+import learnings.enums.TypeSeance;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
-
-import learnings.enums.TypeSeance;
 
 public class Seance extends Enseignement implements Serializable {
 	private static final long serialVersionUID = 4961204598561923877L;
@@ -14,6 +16,9 @@ public class Seance extends Enseignement implements Serializable {
 	private Date date;
 	private TypeSeance type;
 	private List<Travail> travauxRendus;
+	private BigDecimal sommeNotes;
+	private int nbNotes;
+	private BigDecimal moyenne;
 
 	public Seance(Long id, String titre, String description, Date date, Boolean isNote, Date dateLimiteRendu, TypeSeance type) {
 		super(id, titre, description);
@@ -21,6 +26,7 @@ public class Seance extends Enseignement implements Serializable {
 		this.dateLimiteRendu = dateLimiteRendu;
 		this.date = date;
 		this.type = type;
+		this.nbNotes = 0;
 	}
 
 	public TypeSeance getType() {
@@ -72,4 +78,43 @@ public class Seance extends Enseignement implements Serializable {
 		this.travauxRendus = travauxRendus;
 	}
 
+	public BigDecimal getSommeNotes() {
+		return sommeNotes;
+	}
+
+	public void setSommeNotes(BigDecimal sommeNotes) {
+		this.sommeNotes = sommeNotes;
+	}
+
+	public int getNbNotes() {
+		return nbNotes;
+	}
+
+	public void setNbNotes(int nbNotes) {
+		this.nbNotes = nbNotes;
+	}
+
+	public BigDecimal getMoyenne() {
+		return moyenne;
+	}
+
+	public void setMoyenne(BigDecimal moyenne) {
+		this.moyenne = moyenne;
+	}
+
+	public void addNote(BigDecimal note){
+		this.nbNotes++;
+		if(this.sommeNotes!=null) {
+			this.sommeNotes = this.sommeNotes.add(note);
+		}else{
+			this.sommeNotes=note;
+		}
+		this.calculerMoyenne();
+	}
+
+	private void calculerMoyenne() {
+		if(this.sommeNotes!=null && this.nbNotes>0){
+			this.moyenne = this.sommeNotes.divide(new BigDecimal(this.nbNotes),2, RoundingMode.HALF_EVEN);
+		}
+	}
 }

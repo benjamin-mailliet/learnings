@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Gestion des utilisateurs</title>
+		<th:block th:replace="fragments/htmlheader" />
+		<script th:src="@{/js/utilisateur.js}"></script>
+		<link th:href="@{/css/utilisateur.css}" rel="stylesheet">
+	</head>
+	<body>
+		<nav th:replace="fragments/menu :: admin('utilisateur')"></nav>
+		<div class="container">
+			<div th:replace="fragments/messages"></div>
+			<header class="page-header">
+				<h1>
+					Gestion des utilisateurs
+					<a href="importutilisateurs" class="btn btn-success"><i class="fa fa-cloud-upload"></i> Importer utilisateurs</a>
+					<button id="boutonEnvoiMails" class="btn btn-default pull-right"><i class="fa fa-envelope" ></i> Envoyer Email</button>
+				</h1>
+			</header>
+			<table id="listeUtilisateurs" class="table table-striped">
+				<tr>
+					<th>#</th>
+					<th>Nom</th>
+					<th>Prenom</th>
+					<th>Email</th>
+					<th>Groupe</th>
+					<th>Admin</th>
+					<th style="width:20%">Actions</th>
+				</tr>
+				<tr th:id="'utilisateur'+${utilisateur.id}" th:each="utilisateur : ${utilisateurs}">
+					<td th:text="${utilisateur.id}"></td>
+					<td th:text="${utilisateur.nom}"></td>
+					<td th:text="${utilisateur.prenom}"></td>
+					<td th:text="${utilisateur.email}"></td>
+					<td th:text="${utilisateur.groupe} ? ${utilisateur.groupe.libelle}"></td>
+					<td class="isAdminCell" th:text="${utilisateur.admin ? 'Oui' : 'Non'}"></td>
+					<td>
+						<th:block th:if="${utilisateur.id != session.utilisateur.id}">
+							<button type="button" class="btn btn-primary btn-xs reinitMdpUtilisateurAction" title="Réinitialiser le mot de passe"><span class="glyphicon glyphicon-repeat"></span></button>
+							<button type="button" class="btn btn-danger btn-xs supprimerUtilisateurAction" title="Supprimer l'utilisateur"><span class="glyphicon glyphicon-trash"></span></button>
+							<button th:style="${utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-success btn-xs donnerAdminUtilisateurAction" title="Donner l'admin"><span class="glyphicon glyphicon-chevron-up"></span></button>
+							<button th:style="${!utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-warning btn-xs enleverAdminUtilisateurAction" title="Enlever l'admin"><span class="glyphicon glyphicon-chevron-down"></span></button>
+						</th:block>
+					</td>
+				</tr>
+				<tr id="nouvelUtilisateurRow">
+					<td></td>
+					<td><input type="text" class="form-control input-sm" id="nomNouvelUtilisateur" name="nomNouvelUtilisateur" placeholder="Nom"></td>
+					<td><input type="text" class="form-control input-sm" id="prenomNouvelUtilisateur" name="prenomNouvelUtilisateur" placeholder="Prénom"></td>
+					<td>
+						<div class="input-group">
+			   	 			<div class="input-group-addon">@</div>
+							<input type="email" class="form-control input-sm" id="emailNouvelUtilisateur" name="emailNouvelUtilisateur" placeholder="Email">
+						</div>
+					</td>
+					<td>
+						<select class="form-control input-sm" id="groupeNouvelUtilisateur" name="groupeNouvelUtilisateur">
+							<option value=""></option>
+							<option th:each="groupe : ${groupes}" th:value="${groupe}" th:text="${groupe.libelle}"></option>
+						</select>
+					</td>
+					<td><input type="checkbox" id="adminNouvelUtilisateur" name="adminNouvelUtilisateur" ></td>
+					<td><button type="button" class="btn btn-info btn-xs" id="nouvelUtilisateurAction"><span class="glyphicon glyphicon-plus"></span></button></td>				
+				</tr>
+			</table>
+		</div>
+
+		<div id="listeEmailsContainer" style="display: none">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+						<div id="listeEmailsModal" class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">Voici la liste des adresses email des élèves :</h3>
+							</div>
+							<div class="panel-body">
+								<p id="listeEmailsData"><textarea class="form-control"></textarea></p>
+							</div>
+							<div class="panel-footer">
+								<button class="btn btn-primary" id="boutonOuvrirClientMail">Ouvrir un client mail</button>
+								<button class="btn btn-default" id="boutonFermerModal">Fermer</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

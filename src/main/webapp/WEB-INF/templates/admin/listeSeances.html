@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Gestion des séances</title>
+		<th:block th:replace="fragments/htmlheader" />
+	</head>
+	<body>
+		<nav th:replace="fragments/menu :: admin('seance')"></nav>
+	
+		<div class="container">
+			<div th:replace="fragments/messages"></div>
+			<header class="page-header">
+				<h1>Séances <a href="seance" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Ajouter</a></h1>
+			</header>
+			<table id="listeSeances" class="table table-striped">
+				<tr>
+					<th>#</th>
+					<th>Titre</th>
+					<th>Date</th>
+					<th>Noté</th>
+					<th>Date limite de rendu</th>
+					<th>Actions</th>
+				</tr>
+				<tr th:each="seance : ${seances}" th:id="'seance'+${seance.id}">
+					<td th:text="${seance.id}"></td>
+					<td th:text="${seance.titre}"></td>
+					<td th:text="${#dates.format(seance.date, 'dd/MM/yyyy')}"></td>
+					<td>
+						<span th:if="${seance.isNote}" class="label label-danger">Oui</span>
+						<span th:unless="${seance.isNote}" class="label label-success">Non</span>
+					</td>
+					<td th:text="${#dates.format(seance.dateLimiteRendu, 'dd/MM/yyyy HH:mm')}"></td>
+					<td>
+						<a class="btn btn-xs btn-info" th:href="'seance?id='+${seance.id}" title="Modifier"><span class="glyphicon glyphicon-edit"></span></a>
+						<a class="btn btn-xs btn-warning" th:href="'ressource?idSeance='+${seance.id}" title="Gérer les ressources"><span class="glyphicon glyphicon-list-alt"></span></a>
+						<a class="btn btn-xs btn-success" th:href="'appel?idSeance='+${seance.id}" title="Faire l'appel"><i class="fa fa-users" aria-hidden="true"></i></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

@@ -1,6 +1,9 @@
 CREATE  TABLE `utilisateur` (
   `id` INT NOT NULL AUTO_INCREMENT ,
+  `nom` VARCHAR(50) NOT NULL,
+  `prenom` VARCHAR(50) NOT NULL,
   `email` VARCHAR(100) NOT NULL ,
+  `groupe` VARCHAR(10) NULL,
   `motdepasse` VARCHAR(100) NOT NULL ,
   `admin` BIT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) ,
@@ -47,6 +50,7 @@ CREATE TABLE `travail` (
   `seance_id` INT,
   `projettransversal_id` INT,
   `commentaire` VARCHAR(5000) NULL,
+  commentaireNote TEXT DEFAULT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`seance_id`) REFERENCES seance(`id`),
   FOREIGN KEY (`projettransversal_id`) REFERENCES projettransversal(`id`)
@@ -64,3 +68,12 @@ CREATE TABLE `travailutilisateur` (
 );
 
 
+CREATE TABLE `appel` (
+  `idseance` INT(11) NOT NULL,
+  `ideleve` INT(11) NOT NULL,
+  `statut` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`idseance`, `ideleve`),
+  INDEX `fk_appel_eleve_idx` (`ideleve` ASC),
+  CONSTRAINT `fk_appel_seance` FOREIGN KEY (`idseance`) REFERENCES `seance` (`id`),
+  CONSTRAINT `fk_appel_eleve` FOREIGN KEY (`ideleve`) REFERENCES `utilisateur` (`id`)
+);

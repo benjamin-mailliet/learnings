@@ -1,14 +1,14 @@
 package learnings.managers;
 
-import java.io.InputStream;
-
 import learnings.exceptions.LearningsException;
+
+import java.io.InputStream;
 
 public interface FichierManager {
 
-	public void ajouterFichier(String path, InputStream fichier) throws LearningsException;
+	void ajouterFichier(String path, InputStream fichier) throws LearningsException;
 
-	public InputStream getFichier(String path) throws LearningsException;
+	InputStream getFichier(String path) throws LearningsException;
 
-	public void supprimerFichier(String path) throws LearningsException;
+	void supprimerFichier(String path) throws LearningsException;
 }

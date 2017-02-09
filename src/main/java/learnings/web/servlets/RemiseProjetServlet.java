@@ -1,25 +1,19 @@
 package learnings.web.servlets;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import learnings.exceptions.LearningsException;
+import learnings.managers.ProjetManager;
+import learnings.managers.TravailManager;
+import learnings.pojos.ProjetAvecTravail;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
-import com.mysql.fabric.xmlrpc.base.Data;
-
-import learnings.exceptions.LearningsException;
-import learnings.managers.ProjetManager;
-import learnings.managers.TravailManager;
-import learnings.pojos.ProjetAvecTravail;
+import java.io.IOException;
 
 @WebServlet(urlPatterns = { "/eleve/remiseprojet" })
 @MultipartConfig
@@ -31,16 +25,17 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		ProjetAvecTravail projetAvecTravail = ProjetManager.getInstance().getProjetAvecTravail(this.getUtilisateurCourant(request).getId());
-		request.setAttribute("projetAvecTravail", projetAvecTravail);
 
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/remiseprojet.jsp");
-		view.forward(request, response);
-
+		TemplateEngine engine = this.createTemplateEngine(request);
+		WebContext context = new WebContext(request, response, getServletContext());
+		if(projetAvecTravail!=null) {
+			context.setVariable("projetAvecTravail", projetAvecTravail);
+		}
+		engine.process("eleve/remiseprojet", context, response.getWriter());
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		try {
 			Long projetId = Long.parseLong(request.getParameter("idprojet"));
 			Long utilisateur1Id = this.getUtilisateurCourant(request).getId();
@@ -54,17 +49,14 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 				TravailManager.getInstance().rendreProjetWithRepo(projetId, utilisateur1Id, commentaire, urlRepository);
 				this.ajouterMessageSucces(request, "Le projet a bien été enregistré.");
 			}else if(fichier.getSize() > 0L){
-				String nomFichier = this.getNomDuFichier(fichier);
-				TravailManager.getInstance().rendreProjetWithFichier(projetId, utilisateur1Id, commentaire, nomFichier, fichier.getInputStream(),
+				TravailManager.getInstance().rendreProjetWithFichier(projetId, utilisateur1Id, commentaire, fichier.getSubmittedFileName(), fichier.getInputStream(),
 						fichier.getSize());
 				this.ajouterMessageSucces(request, "Le projet a bien été enregistré.");
 			}else{
 				this.ajouterMessageErreur(request, "Veuillez soit saisir une URL de repository, soit ajouter un fichier.");
 			}
 			
-		} catch (IllegalArgumentException e) {
-			this.ajouterMessageErreur(request, e.getMessage());
-		} catch (LearningsException e) {
+		} catch (IllegalArgumentException | LearningsException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
 		}
 

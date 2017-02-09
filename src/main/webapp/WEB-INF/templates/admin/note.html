@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tableau des notes</title>
+    <th:block th:replace="fragments/htmlheader"/>
+</head>
+<body>
+    <nav th:replace="fragments/menu :: admin('note')"></nav>
+
+    <div class="container">
+        <div th:replace="fragments/messages"></div>
+        <header class="page-header">
+            <h1>
+                Notes des élèves
+            </h1>
+            <form th:action="@{/admin/note}" method="post">
+                <button name="export-csv" type="submit" class="btn btn-success pull-right" id="export-csv"
+                        value="Export CSV"><i class="fa fa-file-excel-o"></i> Exporter
+                </button>
+            </form>
+        </header>
+
+        <table id="listeNotes" class="table table-striped">
+            <tr>
+                <th>Eleve</th>
+                <th th:each="seance : ${seancesNotees}">
+                    <div th:text="${seance.titre}"></div>
+                    <div>
+                        <small>([[${seance.date}]])</small>
+                    </div>
+                </th>
+                <th>Projet</th>
+                <th>Moyenne</th>
+            </tr>
+            <tr th:each="eleve : ${eleves}" th:id="'eleve'+${eleve.id}">
+                <td th:text="${eleve.email}"></td>
+                <td th:each="seance : ${seancesNotees}">[[${eleve.mapSeanceIdTravail[seance.id]} ? ${eleve.mapSeanceIdTravail[seance.id].note}]]</td>
+                <td th:text="${eleve.projet} ? ${eleve.projet.note}"></td>
+                <td th:text="${eleve.moyenne}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td th:each="seance : ${seancesNotees}" th:text="${seance.moyenne}"></td>
+                <td th:text="${moyenneProjet}"></td>
+                <td th:text="${moyenneClasse}"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

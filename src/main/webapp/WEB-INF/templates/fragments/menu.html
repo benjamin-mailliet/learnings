@@ -1,0 +1,54 @@
+<html xmlns:th="http://www.thymeleaf.org">
+	<nav class="navbar navbar-default navbar-static-top" role="navigation" th:fragment="principal(pageSelectionnee)">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="./">Learnings</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li th:class="${pageSelectionnee == 'seances'} ? 'active'"><a href="seances">Séances</a></li>
+				<li th:class="${pageSelectionnee == 'liensutiles'} ? 'active'"><a href="liensutiles">Liens utiles</a></li>
+				<li th:class="${pageSelectionnee == 'remisetp'} ? 'active'"><a href="remisetp">Rendre un TP</a></li>
+				<li th:class="${pageSelectionnee == 'projet'} ? 'active'"><a href="projet">Projet</a></li>
+				<li th:class="${pageSelectionnee == 'remiseprojet'} ? 'active'"><a href="remiseprojet">Rendre le projet</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right ">
+				<li th:if="${session.utilisateur.admin}"><a href="../admin/">Administration</a></li>
+				<li class="dropdown active">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">[[${session.utilisateur.prenom}]] [[${session.utilisateur.nom}]] <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">
+						<li><a th:href="@{/eleve/compte}">Mon compte</a></li>
+						<li class="divider"></li>
+						<li><a th:href="@{/deconnexion}">Déconnexion</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<nav class="navbar navbar-default navbar-static-top" role="navigation" th:fragment="admin(pageSelectionnee)">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="./">Administration</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li th:class="${pageSelectionnee == 'utilisateur'} ? 'active'"><a href="utilisateur">Gestion des utilisateurs</a></li>
+				<li th:class="${pageSelectionnee == 'seance'} ? 'active'"><a href="listeseances">Gestion des séances</a></li>
+				<li th:class="${pageSelectionnee == 'projet'} ? 'active'"><a href="listeprojets">Gestion des projets</a></li>
+				<li th:class="${pageSelectionnee == 'travailtp'} ? 'active'"><a href="travailtp">Travaux rendus</a></li>
+				<li th:class="${pageSelectionnee == 'travailprojet'} ? 'active'"><a href="travailprojet">Projets rendus</a></li>
+				<li th:class="${pageSelectionnee == 'note'} ? 'active'"><a href="note">Notes</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="../eleve/">Site principal</a></li>
+				<li class="dropdown active">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">[[${session.utilisateur.prenom}]] [[${session.utilisateur.nom}]] <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">
+						<li><a th:href="@{/eleve/compte}">Mon compte</a></li>
+						<li class="divider"></li>
+						<li><a th:href="@{/deconnexion}">Déconnexion</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</html>

@@ -1,16 +1,16 @@
 package learnings.web.servlets;
 
-import java.io.IOException;
+import learnings.exceptions.LearningsSecuriteException;
+import learnings.managers.UtilisateurManager;
+import learnings.model.Utilisateur;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import learnings.exceptions.LearningsSecuriteException;
-import learnings.managers.UtilisateurManager;
-import learnings.model.Utilisateur;
+import java.io.IOException;
 
 @WebServlet("/eleve/compte")
 public class CompteServlet extends GenericLearningsServlet {
@@ -19,13 +19,12 @@ public class CompteServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/compte.jsp");
-		view.forward(request, response);
+		TemplateEngine engine = this.createTemplateEngine(request);
+		engine.process("eleve/compte", new WebContext(request, response, getServletContext()), response.getWriter());
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		String motDePasse = request.getParameter("motDePasse");
 		String motDePasseConfirmation = request.getParameter("motDePasseConfirm");
 		try {

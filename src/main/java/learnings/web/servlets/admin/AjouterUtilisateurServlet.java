@@ -1,16 +1,18 @@
 package learnings.web.servlets.admin;
 
-import java.io.IOException;
+import learnings.enums.Groupe;
+import learnings.exceptions.LearningsSecuriteException;
+import learnings.managers.UtilisateurManager;
+import learnings.model.Utilisateur;
+import learnings.web.servlets.GenericLearningsServlet;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import learnings.exceptions.LearningsSecuriteException;
-import learnings.managers.UtilisateurManager;
-import learnings.web.servlets.GenericLearningsServlet;
+import java.io.IOException;
 
 @WebServlet("/admin/ajouterutilisateur")
 public class AjouterUtilisateurServlet extends GenericLearningsServlet {
@@ -19,13 +21,22 @@ public class AjouterUtilisateurServlet extends GenericLearningsServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
+		String nom = request.getParameter("nom");
+		String prenom = request.getParameter("prenom");
 		String email = request.getParameter("email");
+		Groupe groupe = null;
+		try {
+			groupe = Groupe.valueOf(request.getParameter("groupe"));
+		} catch (IllegalArgumentException e) {
+			// Ne rien faire
+		}
 		boolean admin = Boolean.parseBoolean(request.getParameter("admin"));
 		try {
-			request.setAttribute("utilisateur", UtilisateurManager.getInstance().ajouterUtilisateur(email, admin));
-			RequestDispatcher view = request.getRequestDispatcher("/WEB-INF/pages/admin/nouvelUtilisateur.jsp");
-			view.forward(request, response);
+			Utilisateur nouvelUtilisateur = new Utilisateur(null, nom, prenom, email, groupe, admin);
+			TemplateEngine engine = this.createTemplateEngine(request);
+			WebContext context = new WebContext(request, response, getServletContext());
+			context.setVariable("utilisateur", UtilisateurManager.getInstance().ajouterUtilisateur(nouvelUtilisateur));
+			engine.process("admin/nouvelUtilisateur", context, response.getWriter());
 		} catch (IllegalArgumentException e) {
 			response.sendError(400);
 		} catch (LearningsSecuriteException e) {

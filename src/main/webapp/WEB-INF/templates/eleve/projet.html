@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Projet</title>
+		<th:block th:replace="fragments/htmlheader" />
+		<link th:href="@{/css/projet.css}" rel="stylesheet">
+	</head>
+	<body>
+		<nav th:replace="fragments/menu :: principal('projet')"></nav>
+		<div class="container">
+			<div th:replace="fragments/messages"></div>
+			<header class="page-header"><h1 th:text="${projet.titre}"></h1></header>
+			
+			<section class="row-fluid description">
+				<article class="col-md-9">
+					<div class="text-justify" th:utext="${projet.description}"></div>
+				</article>
+				<aside class="col-md-3">
+					<div class="panel panel-default">
+						<div class="panel-heading"><h4>Ressources à télécharger</h4></div>
+						<div class="panel-body">
+							<ul>
+								<li th:each="ressource : ${projet.ressources}"><a th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a></li>
+							</ul>
+						</div>
+					</div>
+				</aside>
+			</section>
+			<section class="row-fluid">
+				<article class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading"><h4>Travaux à rendre</h4></div>
+						<div class="panel-body">
+							<p>Pour nous rendre le projet, vous pouvez utiliser la page spécifique de rendu de projet. Il y a deux étapes et donc deux travaux à rendre pour ce projet.</p>
+						
+							<table class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Date limite de rendu</th>
+										<th>Contenu du lot</th>
+									</tr>
+								</thead>
+								<tr>
+									<td><h4>Etape 1</h4></td>
+									<td><time><abbr title="Ne soyez pas en retard !">[[${#dates.format(projet.dateLimiteRenduLot1, 'dd/MM/yyyy à HH:mm')}]]</abbr></time></td>
+									<td>
+										<ul>
+											<li>Pages HTML</li>
+											<li>Styles CSS (sans utilisation de framework)</li>
+											<li>Schéma de la BDD</li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td><h4>Etape 2</h4></td>
+									<td><time><abbr title="Ne soyez pas en retard !">[[${#dates.format(projet.dateLimiteRenduLot2, 'dd/MM/yyyy à HH:mm')}]]</abbr></time></td>
+									<td>
+										<ul>
+											<li>Lot 1 finalisé</li>
+											<li>Dynamisation avec Javascript</li>
+											<li>Gestion du stockage des données</li>
+											<li>Code métier J2E</li>
+										</ul>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</article>
+			</section>
+		</div>
+	</body>
+</html>
