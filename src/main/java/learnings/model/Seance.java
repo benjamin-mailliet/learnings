@@ -15,7 +15,7 @@ public class Seance extends Enseignement implements Serializable {
 	private Date dateLimiteRendu;
 	private Date date;
 	private TypeSeance type;
-	private List<Travail> travauxRendus;
+	private List<RenduTp> travauxRendus;
 	private BigDecimal sommeNotes;
 	private int nbNotes;
 	private BigDecimal moyenne;
@@ -70,11 +70,11 @@ public class Seance extends Enseignement implements Serializable {
 		this.dateLimiteRendu = dateLimiteRendu;
 	}
 
-	public List<Travail> getTravauxRendus() {
+	public List<RenduTp> getTravauxRendus() {
 		return travauxRendus;
 	}
 
-	public void setTravauxRendus(List<Travail> travauxRendus) {
+	public void setTravauxRendus(List<RenduTp> travauxRendus) {
 		this.travauxRendus = travauxRendus;
 	}
 

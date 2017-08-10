@@ -2,6 +2,7 @@ package learnings.web.servlets.admin;
 
 import learnings.managers.ProjetManager;
 import learnings.model.Projet;
+import learnings.pojos.ProjetAvecRendus;
 import learnings.web.servlets.GenericLearningsServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -26,7 +27,7 @@ public class TravailProjetServlet extends GenericLearningsServlet {
 		WebContext context = new WebContext(request, response, getServletContext());
 		context.setVariable("projets", projets);
 		if (request.getParameter("idProjet") != null && !"".equals(request.getParameter("idProjet"))) {
-			Projet projetSelectionne = ProjetManager.getInstance().getProjetAvecTravaux(Long.parseLong(request.getParameter("idProjet")));
+			ProjetAvecRendus projetSelectionne = ProjetManager.getInstance().getProjetAvecRendus(Long.parseLong(request.getParameter("idProjet")));
 			context.setVariable("projetSelectionne", projetSelectionne);
 		}
 		engine.process("admin/travailprojet", context, response.getWriter());

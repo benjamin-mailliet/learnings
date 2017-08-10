@@ -20,7 +20,7 @@ public class ProjetDaoImpl extends GenericDaoImpl implements ProjetDao {
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement();
              ResultSet results = stmt
-                     .executeQuery("SELECT id, titre, description, datelimiterendulot1, datelimiterendulot2 FROM projettransversal ORDER BY datelimiterendulot1, datelimiterendulot2")
+                     .executeQuery("SELECT id, titre, description, datelimiterendulot1, datelimiterendulot2 FROM projet ORDER BY datelimiterendulot1, datelimiterendulot2")
         ) {
             while (results.next()) {
                 listeProjets.add(new Projet(results.getLong("id"), results.getString("titre"), results.getString("description"), results
@@ -37,7 +37,7 @@ public class ProjetDaoImpl extends GenericDaoImpl implements ProjetDao {
         Long lastId = null;
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement();
-             ResultSet results = stmt.executeQuery("SELECT id FROM projettransversal ORDER BY datelimiterendulot2 DESC LIMIT 1")
+             ResultSet results = stmt.executeQuery("SELECT id FROM projet ORDER BY datelimiterendulot2 DESC LIMIT 1")
         ) {
             if (results.next()) {
                 lastId = results.getLong("id");
@@ -52,7 +52,7 @@ public class ProjetDaoImpl extends GenericDaoImpl implements ProjetDao {
     public Projet getProjet(Long id) {
         Projet projet = null;
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM projettransversal WHERE id=?")
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM projet WHERE id=?")
         ) {
             stmt.setLong(1, id);
             try (ResultSet results = stmt.executeQuery()) {
@@ -71,7 +71,7 @@ public class ProjetDaoImpl extends GenericDaoImpl implements ProjetDao {
     public Projet ajouterProjet(Projet projet) {
         try( Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(
-                     "INSERT INTO projettransversal(titre, description, datelimiterendulot1, datelimiterendulot2) VALUES(?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS)
+                     "INSERT INTO projet(titre, description, datelimiterendulot1, datelimiterendulot2) VALUES(?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setString(1, projet.getTitre());
             if (projet.getDescription() == null) {
@@ -99,7 +99,7 @@ public class ProjetDaoImpl extends GenericDaoImpl implements ProjetDao {
     public void modifierProjet(Projet projet) {
         try(Connection connection = getConnection();
             PreparedStatement stmt = connection
-                    .prepareStatement("UPDATE projettransversal SET titre=?, description=?, datelimiterendulot1=?, datelimiterendulot2=? WHERE id=?")
+                    .prepareStatement("UPDATE projet SET titre=?, description=?, datelimiterendulot1=?, datelimiterendulot2=? WHERE id=?")
         ) {
             stmt.setString(1, projet.getTitre());
             if (projet.getDescription() == null) {

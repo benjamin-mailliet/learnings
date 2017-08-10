@@ -17,54 +17,55 @@
 		</header>
 		<div class="row">
 			<div class="col-md-4 col-md-offset-4">
-				<form method="get" class="form-inline text-center well">
+				<form class="form-inline text-center well">
 					<div class="form-group">
 						<label class="sr-only" for="idProjet">Sélectionner un projet :</label>
 						<select class="form-control" id="idProjet" name="idProjet">
-							<option th:each="projet : ${projets}" th:value="${projet.id}" th:selected="${projetSelectionne && projet.id == projetSelectionne.id}">[[${projet.titre}]]</option>
+							<option th:each="projet : ${projets}" th:value="${projet.id}" th:selected="${projetSelectionne && projet.id == projetSelectionne.projet.id}">[[${projet.titre}]]</option>
 						</select>
 					</div>
 					<button type="submit" class="btn btn-primary">Valider</button>
 				</form>
 			</div>
 		</div>
-		<section th:if="${projetSelectionne && #lists.size(projetSelectionne.travauxRendus) > 0}">
-			<p>Travaux rendus pour le projet « [[${projetSelectionne.titre}]] » :</p>
+		<section th:if="${projetSelectionne && #maps.size(projetSelectionne.rendus) > 0}">
+			<p>Travaux rendus pour le projet « [[${projetSelectionne.projet.titre}]] » :</p>
 			<table class="table table-bordered">
 				<tr>
-					<th>Fichier ou Repository</th>
 					<th>Élève</th>
+					<th>Fichier ou Repository</th>
 					<th>Commentaire</th>
 					<th>Note</th>
 					<th>Actions</th>
 				</tr>
-				<tr th:each="travail : ${projetSelectionne.travauxRendus}"  th:class="${travail.note && travail.note != ''} ? 'success'" th:id="'ligneTravail'+${travail.id}">
-					<td>
-						<p>
-							<th:block th:if="${travail.chemin}">
-								<a th:href="'telechargerTravail?id='+${travail.id}" th:text="${travail.nomFichier}"></a>
-							</th:block>
-							<th:block th:if="${travail.urlRepository}">
-								[[${travail.urlRepository}]]
-							</th:block>
-							<br />
-							<small>Rendu à [[${#dates.format(travail.dateRendu, 'HH:mm')}]] le [[${#dates.format(travail.dateRendu, 'dd/MM/yyyy')}]]</small>
-						</p>
-					</td>
-					<td>
-						<ul th:id="'mailTravail'+${travail.id}">
-							<li th:each="utilisateur : ${travail.utilisateurs}" th:text="${utilisateur.email}"></li>
-						</ul>
-					</td>
-					<td th:text="${travail.commentaire}"></td>
-					<td><h4 th:id="'noteActuelle'+${travail.id}" th:text="${travail.note}"></h4></td>
-					<td>
-						<button th:id="'noterTravail'+${travail.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" th:data-travail="${travail.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
-					</td>
-				</tr>
+				<th:block th:each="eleveAvecRendus : ${projetSelectionne.rendus}"  class="${travail.note && travail.note != ''} ? 'success'" id="'ligneTravail'+${travail.id}"
+						  th:with="eleve=${eleveAvecRendus.key},rendus=${eleveAvecRendus.value}">
+					<tr th:each="rendu,iterStat : ${rendus}">
+						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
+							[[${eleve.prenom}]] [[${eleve.nom}]]
+						</td>
+						<td>
+							<p>
+								<th:block th:if="${rendu.chemin}">
+									<a th:href="'telechargerTravail?id='+${rendu.id}" th:text="${rendu.nomFichier}"></a>
+								</th:block>
+								<th:block th:if="${rendu.urlRepository}">
+									[[${rendu.urlRepository}]]
+								</th:block>
+								<br />
+								<small>Rendu à [[${#temporals.format(rendu.dateRendu, 'HH:mm')}]] le [[${#temporals.format(rendu.dateRendu, 'dd/MM/yyyy')}]]</small>
+							</p>
+						</td>
+						<td th:text="${rendu.commentaire}"></td>
+						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}"><!--h4 th:id="'noteActuelle'+${travail.id}" th:text="${travail.note}"></h4--></td>
+						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
+							<button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" th:data-travail="${eleve.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
+						</td>
+					</tr>
+				</th:block>
 			</table>
 		</section>
-		<p th:if="${projetSelectionne && #lists.size(projetSelectionne.travauxRendus) == 0}">Aucun travail n'a encore été rendu pour le projet « [[${projetSelectionne.titre}]] ».
+		<p th:if="${projetSelectionne && #maps.size(projetSelectionne.rendus) == 0}">Aucun travail n'a encore été rendu pour le projet « [[${projetSelectionne.titre}]] ».
 	</div>
 </body>
 </html>

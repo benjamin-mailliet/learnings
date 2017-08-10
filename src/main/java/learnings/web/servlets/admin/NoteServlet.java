@@ -37,9 +37,11 @@ public class NoteServlet extends GenericLearningsServlet {
         if(eleves.size()>0) {
             SeanceManager.getInstance().calculerMoyenneSeance(seancesNotees, eleves);
             context.setVariable("seancesNotees", seancesNotees);
-            OptionalDouble moyenneOptionnel = eleves.stream()
-                    .filter(e -> e.getProjet() != null && e.getProjet().getNote() != null)
-                    .mapToDouble(e -> e.getProjet().getNote().doubleValue()).average();
+            //L TODO
+//            OptionalDouble moyenneOptionnel = eleves.stream()
+//                    .filter(e -> e.getProjet() != null && e.getProjet().getNote() != null)
+//                    .mapToDouble(e -> e.getProjet().getNote().doubleValue()).average();
+            OptionalDouble moyenneOptionnel = OptionalDouble.of(0.0);
             if(moyenneOptionnel.isPresent()){
                 Double moyenneProjet = moyenneOptionnel.getAsDouble();
                 context.setVariable("moyenneProjet", new DecimalFormat("####0.00").format(moyenneProjet));

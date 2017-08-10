@@ -1,7 +1,8 @@
 package learnings.web.webservices;
 
 import com.google.gson.Gson;
-import learnings.managers.TravailManager;
+import learnings.managers.RenduProjetManager;
+import learnings.managers.RenduTpManager;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -15,20 +16,37 @@ import java.math.BigDecimal;
 @Path("/note")
 public class NoteWebservice{
 
-    @Path("/{idTravail}")
+    @Path("/tp/{idRendu}")
     @Produces("application/json;charset=UTF-8")
     @GET
-    public String getTravailForNote(@PathParam("idTravail") Long idTravail)
+    public String getRenduTpForNote(@PathParam("idRendu") Long idRendu)
     {
         Gson gsonParser = new Gson();
-        return gsonParser.toJson(TravailManager.getInstance().getTravail(idTravail));
+        return gsonParser.toJson(RenduTpManager.getInstance().getRenduTp(idRendu));
     }
 
-    @Path("/")
-    @POST
-    public Response enregistrerNote(@FormParam("idTravail") Long idTravail, @FormParam("note") BigDecimal note, @FormParam("commentaireNote") String commentaire)
+    @Path("/projet/{idRendu}")
+    @Produces("application/json;charset=UTF-8")
+    @GET
+    public String getRenduProjetForNote(@PathParam("idRendu") Long idRendu)
     {
-        TravailManager.getInstance().enregistrerNoteTravail(idTravail, note, commentaire);
+        Gson gsonParser = new Gson();
+        return gsonParser.toJson(RenduProjetManager.getInstance().getRenduProjet(idRendu));
+    }
+
+    @Path("/tp/")
+    @POST
+    public Response enregistrerNoteTp(@FormParam("idTravail") Long idTravail, @FormParam("note") BigDecimal note, @FormParam("commentaireNote") String commentaire)
+    {
+        RenduTpManager.getInstance().enregistrerNoteTp(idTravail, note, commentaire);
+        return Response.status(200).entity("OK").build();
+    }
+
+    @Path("/projet/")
+    @POST
+    public Response enregistrerNoteProjet(@FormParam("idTravail") Long idTravail, @FormParam("note") BigDecimal note, @FormParam("commentaireNote") String commentaire)
+    {
+        RenduProjetManager.getInstance().enregistrerNoteProjet(idTravail, note, commentaire);
         return Response.status(200).entity("OK").build();
     }
 }

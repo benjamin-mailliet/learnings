@@ -22,44 +22,46 @@
 					<div class="form-group">
 						<label class="sr-only" for="idSeance">Sélectionner une séance :</label>
 						<select class="form-control" id="idSeance" name="idSeance">
-							<option th:each="seance : ${seances}" th:value="${seance.id}" th:selected="${seanceSelectionnee && seance.id == seanceSelectionnee.id}">[[${seance.titre}]]</option>
+							<option th:each="seance : ${seances}" th:value="${seance.id}" th:selected="${seanceSelectionnee && seance.id == seanceSelectionnee.seance.id}">[[${seance.titre}]]</option>
 						</select>
 					</div>
 					<button type="submit" class="btn btn-primary">Valider</button>
 				</form>
 			</div>
 		</div>
-		<section th:if="${seanceSelectionnee && #lists.size(seanceSelectionnee.travauxRendus) > 0}">
-			<p>Travaux rendu pour la séance « [[${seanceSelectionnee.titre}]] » :</p>
+		<section th:if="${seanceSelectionnee && #maps.size(seanceSelectionnee.rendus) > 0}">
+			<p>Travaux rendu pour la séance « [[${seanceSelectionnee.seance.titre}]] » :</p>
 			<table class="table table-bordered">
 				<tr>
+					<th>Binôme</th>
 					<th>Fichier</th>
-					<th>Élèves</th>
 					<th>Commentaire</th>
 					<th>Note</th>
 					<th>Actions</th>
 				</tr>
-				<tr th:each="travail : ${seanceSelectionnee.travauxRendus}" th:class="${travail.note && travail.note != ''} ? 'success'" th:id="'ligneTravail'+${travail.id}">
-					<td>
-						<p>
-							<a th:href="'telechargerTravail?id='+${travail.id}" th:text="${travail.nomFichier}"></a><br>
-							<small>Rendu à [[${#dates.format(travail.dateRendu, 'HH:mm')}]] le [[${#dates.format(travail.dateRendu, 'dd/MM/yyyy')}]]</small>
-						</p>
-					</td>
-					<td>
-						<ul th:id="'mailTravail'+${travail.id}">
-							<li th:each="utilisateur : ${travail.utilisateurs}">[[${utilisateur.email}]]</li>
-						</ul>
-					</td>
-					<td th:text="${travail.commentaire}"></td>
-					<td><h4 th:id="'noteActuelle'+${travail.id}" th:text="${travail.note}"></h4></td>
-					<td>
-						<button th:id="'noterTravail'+${travail.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" th:data-travail="${travail.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
-					</td>
-				</tr>
+				<th:block th:each="binomeAvecRendus : ${seanceSelectionnee.rendus}" class="travail.note and travail.note neq ''  'success'"
+					th:with="binome=${binomeAvecRendus.key},rendus=${binomeAvecRendus.value}">
+					<tr th:each="rendu,iterStat : ${rendus}">
+						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
+							<ul th:id="'binome'+${binome.id}">
+								<li>[[${binome.eleve1.prenom}]] [[${binome.eleve1.nom}]]</li>
+								<li th:if="${binome.eleve2 != null}">[[${binome.eleve2.prenom}]] [[${binome.eleve2.nom}]]</li>
+							</ul>
+						</td>
+						<td>
+									<a th:href="'telechargerTravail?id='+${rendu.id}" th:text="${rendu.nomFichier}"></a><br>
+									<small>Rendu à [[${#temporals.format(rendu.dateRendu, 'HH:mm')}]] le [[${#temporals.format(rendu.dateRendu, 'dd/MM/yyyy')}]]</small>
+						</td>
+						<td th:text="${rendu.commentaire}"></td>
+						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}"><!--h4 th:id="'noteActuelle'+${travail.id}" th:text="${travail.note}"></h4--></td>
+						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
+							<button th:id="'noterTravail'+${binome.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" th:data-travail="${binome.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
+						</td>
+					</tr>
+				</th:block>
 			</table>
 		</section>
-		<p th:if="${seanceSelectionnee && #lists.size(seanceSelectionnee.travauxRendus) == 0}">Aucun travail n'a encore été rendu pour la séance « [[${seanceSelectionnee.titre}]] ».
+		<p th:if="${seanceSelectionnee && #maps.size(seanceSelectionnee.rendus) == 0}">Aucun travail n'a encore été rendu pour la séance « [[${seanceSelectionnee.titre}]] ».
 	</div>
 </body>
 </html>

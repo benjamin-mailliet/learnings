@@ -46,23 +46,24 @@ public class CsvUtils {
     private static void ecrireLigneEleve(Writer writer, List<Long> listeIdsSeances, EleveAvecTravauxEtProjet eleve) throws IOException {
         List<String> ligneEleve = new ArrayList<>();
         ligneEleve.add(eleve.getNom() + " " + eleve.getPrenom());
-        final Map<Long, Travail> mapTravaux = eleve.getMapSeanceIdTravail();
-        for (Long idSeance : listeIdsSeances) {
-            String noteString = "";
-            final Travail travail = mapTravaux.get(idSeance);
-            if (travail != null) {
-                if (travail.getNote() != null) {
-                    noteString = travail.getNote().toString();
-                }
-            }
-            ligneEleve.add(noteString);
-        }
-        if (eleve.getProjet() != null){
-            ajouterNoteIfNoNull(eleve.getProjet().getNote(),ligneEleve);
-        }else{
-            ligneEleve.add("");
-        }
-        ligneEleve = ajouterNoteIfNoNull(eleve.getMoyenne(), ligneEleve);
+        // TODO
+//        final Map<Long, Travail> mapTravaux = eleve.getMapSeanceIdTravail();
+//        for (Long idSeance : listeIdsSeances) {
+//            String noteString = "";
+//            final Travail travail = mapTravaux.get(idSeance);
+//            if (travail != null) {
+//                if (travail.getNote() != null) {
+//                    noteString = travail.getNote().toString();
+//                }
+//            }
+//            ligneEleve.add(noteString);
+//        }
+//        if (eleve.getProjet() != null){
+//            ajouterNoteIfNoNull(eleve.getProjet().getNote(),ligneEleve);
+//        }else{
+//            ligneEleve.add("");
+//        }
+//        ligneEleve = ajouterNoteIfNoNull(eleve.getMoyenne(), ligneEleve);
         ecrireLigne(writer, ligneEleve);
     }
 

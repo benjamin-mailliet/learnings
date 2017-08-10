@@ -2,6 +2,7 @@ package learnings.web.servlets.admin;
 
 import learnings.managers.SeanceManager;
 import learnings.model.Seance;
+import learnings.pojos.SeanceAvecRendus;
 import learnings.web.servlets.GenericLearningsServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -26,7 +27,7 @@ public class TravailTPServlet extends GenericLearningsServlet {
 		WebContext context = new WebContext(request, response, getServletContext());
 		context.setVariable("seances", seances);
 		if (request.getParameter("idSeance") != null && !"".equals(request.getParameter("idSeance"))) {
-			Seance seanceSelectionnee = SeanceManager.getInstance().getSeanceAvecTravaux(Long.parseLong(request.getParameter("idSeance")));
+			SeanceAvecRendus seanceSelectionnee = SeanceManager.getInstance().getSeanceAvecTravaux(Long.parseLong(request.getParameter("idSeance")));
 			context.setVariable("seanceSelectionnee", seanceSelectionnee);
 		}
 		engine.process("admin/travailtp", context, response.getWriter());

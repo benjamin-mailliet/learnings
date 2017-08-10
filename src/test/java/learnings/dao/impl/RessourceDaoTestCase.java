@@ -30,12 +30,12 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement()
         ) {
-            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`, `datelimiterendulot2`) VALUES(1,'Projet','Projet','2014-08-26 10:00', '2014-09-26 10:00')");
+            stmt.executeUpdate("INSERT INTO `projet`(`id`,`titre`,`description`,`datelimiterendulot1`, `datelimiterendulot2`) VALUES(1,'Projet','Projet','2014-08-26 10:00', '2014-09-26 10:00')");
             stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`, `type`) VALUES(1,'cours1','cours de debuggage','2014-08-26', 'COURS')");
             stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(1,'ressource1','chemin ressource de cours 1',1)");
             stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(2,'ressource2','chemin ressource de cours 2',1)");
             stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(3,'ressource3','ressource de tp',1)");
-            stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`projettransversal_id`) VALUES(4,'ressourceProjet','ressource de projet',1)");
+            stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`projet_id`) VALUES(4,'ressourceProjet','ressource de projet',1)");
         }
     }
 
@@ -83,7 +83,7 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
                 assertThat(results.getString("titre")).isEqualTo("monTitre");
                 assertThat(results.getString("chemin")).isEqualTo("/chemin/monFichier.zip");
                 assertThat(results.getLong("seance_id")).isEqualTo(1L);
-                assertThat(results.getString("projettransversal_id")).isNull();
+                assertThat(results.getString("projet_id")).isNull();
             }
         }
     }
