@@ -9,19 +9,16 @@ import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.model.Binome;
+import learnings.model.Note;
 import learnings.model.RenduTp;
 import learnings.model.Seance;
-import learnings.model.Travail;
-import learnings.model.Utilisateur;
-import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.pojos.EleveAvecNotes;
 import learnings.pojos.SeanceAvecRendus;
 import learnings.pojos.TpAvecTravaux;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SeanceManager {
@@ -150,15 +147,14 @@ public class SeanceManager {
 
         seanceDao.modifierSeance(seance);
     }
-    public void calculerMoyenneSeance(List<Seance> seancesNotees, List<EleveAvecTravauxEtProjet> eleves) {
-//        for(EleveAvecTravauxEtProjet eleve : eleves){
-//            for(Seance seance  : seancesNotees) {
-//                Travail travailSeance = eleve.getMapSeanceIdTravail().get(seance.getId());
-//                if (travailSeance!=null && travailSeance.getNote()!=null){
-//                    seance.addNote(travailSeance.getNote());
-//                }
-//            }
-//        }
-        //TODO
+    public void calculerMoyenneSeance(List<Seance> seancesNotees, List<EleveAvecNotes> eleves) {
+        for(EleveAvecNotes eleve : eleves){
+            for(Seance seance  : seancesNotees) {
+                Note noteSeance = eleve.getMapSeanceNote().get(seance.getId());
+                if (noteSeance!=null){
+                    seance.addNote(noteSeance.getValeur());
+                }
+            }
+        }
     }
 }
