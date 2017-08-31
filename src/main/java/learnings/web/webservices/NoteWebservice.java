@@ -36,17 +36,17 @@ public class NoteWebservice{
 
     @Path("/tp/")
     @POST
-    public Response enregistrerNoteTp(@FormParam("idTravail") Long idTravail, @FormParam("note") BigDecimal note, @FormParam("commentaireNote") String commentaire)
+    public Response enregistrerNoteTp(@FormParam("idSeance") Long idSeance, @FormParam("idEleve") Long idEleve, @FormParam("note") BigDecimal note, @FormParam("commentaireNote") String commentaire)
     {
-        RenduTpManager.getInstance().enregistrerNoteTp(idTravail, note, commentaire);
+        RenduTpManager.getInstance().enregistrerNoteTp(idSeance, idEleve, note, commentaire);
         return Response.status(200).entity("OK").build();
     }
 
     @Path("/projet/")
     @POST
-    public Response enregistrerNoteProjet(@FormParam("idTravail") Long idTravail, @FormParam("note") BigDecimal note, @FormParam("commentaireNote") String commentaire)
+    public Response enregistrerNoteProjet(@FormParam("idProjet") Long idProjet, @FormParam("idEleve") Long idEleve, @FormParam("note") BigDecimal note, @FormParam("commentaireNote") String commentaire)
     {
-        RenduProjetManager.getInstance().enregistrerNoteProjet(idTravail, note, commentaire);
+        RenduProjetManager.getInstance().enregistrerNoteProjet(idProjet, idEleve, note, commentaire);
         return Response.status(200).entity("OK").build();
     }
 }

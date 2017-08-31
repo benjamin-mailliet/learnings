@@ -93,7 +93,7 @@ public class RenduProjetDaoImpl extends GenericDaoImpl implements RenduProjetDao
     public RenduProjet getRenduProjet(Long idRendu) {
         RenduProjet rendu = null;
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM rendu_projet r JOIN binome b  ON b.id = r.binome_id  WHERE r.id = ?")
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM rendu_projet r WHERE r.id = ?")
         ) {
             stmt.setLong(1, idRendu);
             try (ResultSet results = stmt.executeQuery()) {

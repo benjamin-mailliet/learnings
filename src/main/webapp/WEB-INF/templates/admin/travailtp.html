@@ -61,7 +61,7 @@
 				</th:block>
 			</table>
 		</section>
-		<p th:if="${seanceSelectionnee && #maps.size(seanceSelectionnee.rendus) == 0}">Aucun travail n'a encore été rendu pour la séance « [[${seanceSelectionnee.titre}]] ».
+		<p th:if="${seanceSelectionnee && #maps.size(seanceSelectionnee.rendus) == 0}">Aucun travail n'a encore été rendu pour la séance « [[${seanceSelectionnee.seance.titre}]] ».
 	</div>
 </body>
 </html>

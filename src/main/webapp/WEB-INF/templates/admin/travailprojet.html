@@ -47,7 +47,7 @@
 						<td>
 							<p>
 								<th:block th:if="${rendu.chemin}">
-									<a th:href="'telechargerTravail?id='+${rendu.id}" th:text="${rendu.nomFichier}"></a>
+									<a th:href="'telechargerTravail?type=projet&id='+${rendu.id}" th:text="${rendu.nomFichier}"></a>
 								</th:block>
 								<th:block th:if="${rendu.urlRepository}">
 									[[${rendu.urlRepository}]]
@@ -65,7 +65,7 @@
 				</th:block>
 			</table>
 		</section>
-		<p th:if="${projetSelectionne && #maps.size(projetSelectionne.rendus) == 0}">Aucun travail n'a encore été rendu pour le projet « [[${projetSelectionne.titre}]] ».
+		<p th:if="${projetSelectionne && #maps.size(projetSelectionne.rendus) == 0}">Aucun travail n'a encore été rendu pour le projet « [[${projetSelectionne.projet.titre}]] ».
 	</div>
 </body>
 </html>

@@ -1,22 +1,19 @@
 package learnings.managers;
 
 import learnings.dao.BinomeDao;
-import learnings.dao.ProjetDao;
-import learnings.dao.RenduProjetDao;
+import learnings.dao.NoteDao;
 import learnings.dao.RenduTpDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.UtilisateurDao;
 import learnings.dao.impl.BinomeDaoImpl;
-import learnings.dao.impl.ProjetDaoImpl;
-import learnings.dao.impl.RenduProjetDaoImpl;
+import learnings.dao.impl.NoteDaoImpl;
 import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.enums.TypeSeance;
 import learnings.exceptions.LearningsException;
 import learnings.model.Binome;
-import learnings.model.Projet;
-import learnings.model.RenduProjet;
+import learnings.model.Note;
 import learnings.model.RenduTp;
 import learnings.model.Seance;
 import learnings.model.Travail;
@@ -50,6 +47,7 @@ public class RenduTpManager {
     private RenduTpDao renduTpDao = new RenduTpDaoImpl();
     private BinomeDao binomeDao = new BinomeDaoImpl();
     private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
+    private NoteDao noteDao = new NoteDaoImpl();
 
     private FichierManager fichierManager = new StockageLocalFichierManagerImpl();
 
@@ -94,12 +92,28 @@ public class RenduTpManager {
         LOGGER.info(String.format("ajouterBinome|binome=%d|tp=%d", binome.getId(), idSeance));
     }
 
-    public void enregistrerNoteTp(Long idRenduTp, BigDecimal note, String commentaire) {
-        if (idRenduTp == null) {
-            throw new IllegalArgumentException("L'identifiant du rendu de tp ne peut être null");
+    public void enregistrerNoteTp(Long idSeance, Long idEleve, BigDecimal valeur, String commentaire) {
+        if (idSeance == null) {
+            throw new IllegalArgumentException("L'identifiant de la séance ne peut être null");
         }
-        renduTpDao.enregistrerNote(idRenduTp, note, commentaire);
-        LOGGER.info(String.format("enregistrerNote|idRenduTp=%d", idRenduTp));
+        Seance seance = seanceDao.getSeance(idSeance);
+        if (seance == null) {
+            throw new IllegalArgumentException("La séance n'existe pas.");
+        }
+        if (idEleve == null) {
+            throw new IllegalArgumentException("L'identifiant de l'élève ne peut être null");
+        }
+        Utilisateur eleve = utilisateurDao.getUtilisateur(idEleve);
+        if (eleve == null) {
+            throw new IllegalArgumentException("L'élève n'existe pas.");
+        }
+        Note note = new Note();
+        note.setEleve(eleve);
+        note.setEnseignement(seance);
+        note.setValeur(valeur);
+        note.setCommentaire(commentaire);
+        noteDao.ajouterNote(note);
+        LOGGER.info(String.format("enregistrerNoteTp|idSeance=%d|idEleve=%d", idSeance, idEleve));
     }
 
     public RenduTp getRenduTp(Long idRenduTp) {

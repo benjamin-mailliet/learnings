@@ -1,7 +1,9 @@
 package learnings.web.servlets.admin;
 
 import learnings.exceptions.LearningsException;
+import learnings.managers.RenduProjetManager;
 import learnings.managers.RenduTpManager;
+import learnings.model.RenduProjet;
 import learnings.pojos.FichierComplet;
 import learnings.web.servlets.GenericLearningsServlet;
 
@@ -24,7 +26,7 @@ public class TelechargerTravail extends GenericLearningsServlet {
 			response.sendRedirect("travailtp");
 		} else {
 			try {
-				FichierComplet fichier = RenduTpManager.getInstance().getFichierRenduTp(Long.parseLong(request.getParameter("id")));
+				FichierComplet fichier = getFichierComplet(request);
 
 				response.setHeader("Content-disposition", "attachment; filename=" + fichier.getNom());
 
@@ -46,5 +48,13 @@ public class TelechargerTravail extends GenericLearningsServlet {
 				response.sendRedirect("travailtp");
 			}
 		}
+	}
+
+	private FichierComplet getFichierComplet(HttpServletRequest request) throws LearningsException {
+		String typeTravail = request.getParameter("type");
+		if ("projet".equals(typeTravail)) {
+			return RenduProjetManager.getInstance().getFichierRenduProjet(Long.parseLong(request.getParameter("id")));
+		}
+		return RenduTpManager.getInstance().getFichierRenduTp(Long.parseLong(request.getParameter("id")));
 	}
 }

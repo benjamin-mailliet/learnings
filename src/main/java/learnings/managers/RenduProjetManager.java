@@ -1,22 +1,17 @@
 package learnings.managers;
 
+import learnings.dao.NoteDao;
 import learnings.dao.ProjetDao;
 import learnings.dao.RenduProjetDao;
-import learnings.dao.RenduTpDao;
-import learnings.dao.SeanceDao;
 import learnings.dao.UtilisateurDao;
+import learnings.dao.impl.NoteDaoImpl;
 import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.RenduProjetDaoImpl;
-import learnings.dao.impl.RenduTpDaoImpl;
-import learnings.dao.impl.SeanceDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
-import learnings.enums.TypeSeance;
 import learnings.exceptions.LearningsException;
-import learnings.model.Binome;
+import learnings.model.Note;
 import learnings.model.Projet;
 import learnings.model.RenduProjet;
-import learnings.model.RenduTp;
-import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.FichierComplet;
@@ -25,7 +20,6 @@ import learnings.utils.FichierUtils;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.logging.Logger;
 
 public class RenduProjetManager {
@@ -47,6 +41,7 @@ public class RenduProjetManager {
     private ProjetDao projetDao = new ProjetDaoImpl();
     private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
     private RenduProjetDao renduProjetDao = new RenduProjetDaoImpl();
+    private NoteDao noteDao = new NoteDaoImpl();
 
     private FichierManager fichierManager = new StockageLocalFichierManagerImpl();
 
@@ -77,12 +72,28 @@ public class RenduProjetManager {
         LOGGER.info(String.format("rendreProjet|utilisateur=%d|fichier=%s", utilisateurId, nomFichier));
     }
 
-    public void enregistrerNoteProjet(Long idRenduProjet, BigDecimal note, String commentaire) {
-        if (idRenduProjet == null) {
-            throw new IllegalArgumentException("L'identifiant du rendu de projet ne peut être null");
+    public void enregistrerNoteProjet(Long idProjet, Long idEleve, BigDecimal valeur, String commentaire) {
+        if (idProjet == null) {
+            throw new IllegalArgumentException("L'identifiant du projet ne peut être null");
         }
-        renduProjetDao.enregistrerNote(idRenduProjet, note, commentaire);
-        LOGGER.info(String.format("enregistrerNote|idRenduProjet=%d", idRenduProjet));
+        Projet projet = projetDao.getProjet(idProjet);
+        if (projet == null) {
+            throw new IllegalArgumentException("Le projet n'existe pas.");
+        }
+        if (idEleve == null) {
+            throw new IllegalArgumentException("L'identifiant de l'élève ne peut être null");
+        }
+        Utilisateur eleve = utilisateurDao.getUtilisateur(idEleve);
+        if (eleve == null) {
+            throw new IllegalArgumentException("L'élève n'existe pas.");
+        }
+        Note note = new Note();
+        note.setEleve(eleve);
+        note.setEnseignement(projet);
+        note.setValeur(valeur);
+        note.setCommentaire(commentaire);
+        noteDao.ajouterNote(note);
+        LOGGER.info(String.format("enregistrerNoteProjet|idProjet=%d|idEleve=%d", idProjet, idEleve));
     }
 
     public RenduProjet getRenduProjet(Long idRenduProjet) {

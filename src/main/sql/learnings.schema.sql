@@ -96,3 +96,19 @@ CREATE TABLE ressource (
   CONSTRAINT ressource_ibfk_1 FOREIGN KEY (seance_id) REFERENCES seance (id),
   CONSTRAINT ressource_ibfk_2 FOREIGN KEY (projet_id) REFERENCES projet (id)
 );
+
+CREATE TABLE note (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  eleve_id int(11) NOT NULL,
+  seance_id int(11) DEFAULT NULL,
+  projet_id int(11) DEFAULT NULL,
+  valeur decimal(4,2) DEFAULT NULL,
+  commentaire mediumtext,
+  PRIMARY KEY (id),
+  KEY note_eleve_fk_idx (eleve_id),
+  KEY note_seance_fk_idx (seance_id),
+  KEY note_projet_fk_idx (projet_id),
+  CONSTRAINT note_eleve_fk FOREIGN KEY (eleve_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT note_projet_fk FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT note_seance_fk FOREIGN KEY (seance_id) REFERENCES seance (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
