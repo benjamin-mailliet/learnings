@@ -15,11 +15,11 @@ public class Binome {
         this.seance = seance;
     }
 
-    public Binome(Long id, Seance seance, Utilisateur eleve1, Utilisateur eleves2) {
+    public Binome(Long id, Seance seance, Utilisateur eleve1, Utilisateur eleve2) {
         this.id = id;
         this.seance = seance;
         this.eleve1 = eleve1;
-        this.eleve2 = eleves2;
+        this.eleve2 = eleve2;
     }
 
     public Long getId() {

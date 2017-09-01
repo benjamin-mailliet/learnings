@@ -11,4 +11,6 @@ public interface NoteDao {
     List<Note> listerNotesParUtilisateur(Long idUtilisateur);
 
     List<Note> listerNotesParBinome(Long idBinome);
+
+    List<Note> listerNotesParSeance(Long idSeance);
 }

@@ -2,21 +2,43 @@ $(document).ready(function(){
     var showError = function(erreurTexte) {
         $("erreurNote").text(erreurTexte);
         $("#erreurNote").show();
+
     };
+
+    $('#activerNoteParEleve').click(function(){
+        if ($(this).is(':checked')) {
+            $('#noteParEleve').show();
+            $('#noteBinome').hide();
+            $('.modal-dialog').css({width: '900px'});
+        } else {
+            $('#noteParEleve').hide();
+            $('#noteBinome').show();
+            $('.modal-dialog').css({width: '600px'});
+        }
+    });
 
     $('#popupNote').on('show.bs.modal', function (event) {
         $("#erreurNote").hide();
         var button = $(event.relatedTarget); // Button that triggered the modal
-        var idTravail = button.data('travail');
+        var idRendu = button.data('travail');
         $("#formNote").hide();
         $("#ajaxLoading").show();
         $.ajax({
             method: "GET",
-            url: "ws/note/" + idTravail
+            url: "ws/note/tp/" + idRendu
         }).done(function (data) {
             $("#noteValue").val(data.note);
             $("#noteComment").val(data.commentaireNote);
-            $("#idTravail").val(idTravail);
+            $("#idSeanceNote").val(data.binome.seance.id);
+            $("#idEleve1").val(data.binome.eleve1.id);
+            $("#idBinome").val(data.binome.id);
+
+            $('#activerNoteParEleve').attr('checked',false);
+            $('#contentActiveNoteParEleve').hide();
+            if(data.binome.eleve2){
+                $('#contentActiveNoteParEleve').show();
+                $("#idEleve2").val(data.binome.eleve2.id);
+            }
             $("#ajaxLoading").hide();
             $("#formNote").show();
             setTimeout(function () {  $("#noteValue").focus(); }, 500);
@@ -40,17 +62,17 @@ $(document).ready(function(){
         }
     };
 
-    var enregistrerNote = function(travailId, valeur, commentaire){
+    var enregistrerNote = function(idSeance, idEleve, valeur, commentaire){
         $("#erreurNote").hide();
         $.ajax({
             method: "POST",
-            url: "ws/note",
-            data: {idTravail: travailId, note: valeur, commentaireNote: commentaire}
+            url: "ws/note/tp",
+            data: {idSeance: idSeance, idEleve:idEleve, note: valeur, commentaire: commentaire}
         })
             .done(function () {
                 console.log("Enregistrement de la note OK");
-                actualiserNote(travailId, valeur);
-                actualiserLigneTableau(travailId);
+                actualiserNote(idBinome, valeur);
+                actualiserLigneTableau(idBinome);
                 $('#popupNote').modal('hide');
             })
             .fail(function () {
@@ -60,11 +82,22 @@ $(document).ready(function(){
     };
 
 
+
+
     $("#validerNote").click(function(){
-        enregistrerNote($("#idTravail").val(), $("#noteValue").val(),$("#noteComment").val());
+        var idSeance = $("#idSeanceNote").val();
+        if($('#activerNoteParEleve').is(':checked')){
+            var noteCommune = $("#note").val();
+            var commentCommun = $("#noteComment").val();
+            enregistrerNote(idSeance, $("#idEleve1").val(), noteCommune,commentCommun);
+            enregistrerNote(idSeance, $("#idEleve2").val(), noteCommune,commentCommun);
+        }else{
+            enregistrerNote(idSeance, $("#idEleve1").val(), $("#noteEleve1").val(),$("#noteCommentEleve1").val());
+            enregistrerNote(idSeance, $("#idEleve2").val(), $("#noteEleve2").val(),$("#noteCommentEleve2").val());
+        }
     });
 
-    var getBodyMail = function(){
+    /*var getBodyMail = function(){
         return encodeURI($("#noteComment").val().replace("[[note]]",$("#noteValue").val()));
     };
 
@@ -89,7 +122,7 @@ $(document).ready(function(){
 
     $("#mailNote").click(function(){
         window.location = "mailto:"+getEmailEleves($("#idTravail").val())+"?subject="+getObjectMail()+"&body="+getBodyMail();
-    });
+    });*/
 
 
 });

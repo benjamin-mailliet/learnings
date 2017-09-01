@@ -115,14 +115,17 @@ public class RenduTpDaoImpl extends GenericDaoImpl implements RenduTpDao{
     public RenduTp getRendu(Long idRendu) {
         RenduTp rendu = null;
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM rendu_tp r JOIN binome b  ON b.id = r.binome_id  WHERE r.id = ?")
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM rendu_tp r JOIN binome b  ON b.id = r.binome_id " +
+                     "JOIN utilisateur e1 ON b.eleve1_id = e1.id LEFT JOIN utilisateur e2 ON b.eleve2_id = e2.id " +
+                     " WHERE r.id = ?")
         ) {
             stmt.setLong(1, idRendu);
             try (ResultSet results = stmt.executeQuery()) {
                 if (results.next()) {
                     rendu = new RenduTp(results.getLong("r.id"), results.getBigDecimal("r.note"), results.getTimestamp("r.dateRendu").toLocalDateTime(),
                             results.getString("r.chemin"), results.getString("r.commentaire"), new Binome(results.getLong("b.id"),
-                            new Seance(results.getLong("b.seance_id"), null, null, null)));
+                            new Seance(results.getLong("b.seance_id"), null, null, null),JdbcMapperUtils.mapperVersUtilisateur(results, "e1"),
+                            JdbcMapperUtils.mapperVersUtilisateur(results, "e2")));
                 }
             }
         } catch (SQLException e) {

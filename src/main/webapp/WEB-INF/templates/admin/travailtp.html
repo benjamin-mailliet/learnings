@@ -41,7 +41,7 @@
 				</tr>
 				<th:block th:each="binomeAvecRendus : ${seanceSelectionnee.rendus}" class="travail.note and travail.note neq ''  'success'"
 					th:with="binome=${binomeAvecRendus.key},rendus=${binomeAvecRendus.value}">
-					<tr th:each="rendu,iterStat : ${rendus}">
+					<tr th:each="rendu,iterStat : ${rendus}" class="ligneRendu"+>
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
 							<ul th:id="'binome'+${binome.id}">
 								<li>[[${binome.eleve1.prenom}]] [[${binome.eleve1.nom}]]</li>
@@ -53,9 +53,15 @@
 									<small>Rendu à [[${#temporals.format(rendu.dateRendu, 'HH:mm')}]] le [[${#temporals.format(rendu.dateRendu, 'dd/MM/yyyy')}]]</small>
 						</td>
 						<td th:text="${rendu.commentaire}"></td>
-						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}"><!--h4 th:id="'noteActuelle'+${travail.id}" th:text="${travail.note}"></h4--></td>
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
-							<button th:id="'noterTravail'+${binome.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" th:data-travail="${binome.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
+							<ul th:id="'noteBinome'+${binome.id}">
+								<li>[[${binome.eleve1.prenom}]] [[${binome.eleve1.nom}]]</li>
+								<li th:if="${binome.eleve2 != null}">[[${binome.eleve2.prenom}]] [[${binome.eleve2.nom}]]</li>
+							</ul>
+							<!--h4 th:id="'noteActuelle'+${travail.id}" th:text="${travail.note}"></h4-->
+						</td>
+						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
+							<button th:id="'noterTravail'+${binome.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" th:data-travail="${rendu.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
 						</td>
 					</tr>
 				</th:block>

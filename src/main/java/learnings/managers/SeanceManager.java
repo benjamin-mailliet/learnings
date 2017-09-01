@@ -1,30 +1,31 @@
 package learnings.managers;
 
 import learnings.dao.BinomeDao;
+import learnings.dao.NoteDao;
 import learnings.dao.RenduTpDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.impl.BinomeDaoImpl;
+import learnings.dao.impl.NoteDaoImpl;
 import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.model.Binome;
+import learnings.model.Note;
 import learnings.model.RenduTp;
 import learnings.model.Seance;
-import learnings.model.Travail;
-import learnings.model.Utilisateur;
 import learnings.pojos.EleveAvecTravauxEtProjet;
 import learnings.pojos.SeanceAvecRendus;
 import learnings.pojos.TpAvecTravaux;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SeanceManager {
+
 
     private static class SeanceManagerHolder {
         private static SeanceManager instance = new SeanceManager();
@@ -41,6 +42,7 @@ public class SeanceManager {
     private RessourceDao ressourceDao = new RessourceDaoImpl();
     private RenduTpDao renduTpDao = new RenduTpDaoImpl();
     private BinomeDao binomeDao = new BinomeDaoImpl();
+    private NoteDao noteDao = new NoteDaoImpl();
 
 
     public List<Seance> listerSeances() {
@@ -160,5 +162,10 @@ public class SeanceManager {
 //            }
 //        }
         //TODO
+    }
+
+
+    public Map<Long, Note> getMapNoteEleve(Long idSeance) {
+        List<Note> notesSeance = noteDao.listerNotesParSeance(idSeance);
     }
 }
