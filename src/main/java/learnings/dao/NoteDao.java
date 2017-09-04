@@ -6,11 +6,13 @@ import java.util.List;
 
 public interface NoteDao {
 
-    void ajouterNote(Note note);
+    Note ajouterNote(Note note);
 
     List<Note> listerNotesParUtilisateur(Long idUtilisateur);
 
     List<Note> listerNotesParBinome(Long idBinome);
 
     List<Note> listerNotesParSeance(Long idSeance);
+
+    Note getBySeanceAndEleve(Long idSeance, Long idEleve);
 }

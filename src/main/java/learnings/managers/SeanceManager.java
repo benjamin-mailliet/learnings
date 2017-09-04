@@ -14,7 +14,7 @@ import learnings.model.Binome;
 import learnings.model.Note;
 import learnings.model.RenduTp;
 import learnings.model.Seance;
-import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.pojos.EleveAvecNotes;
 import learnings.pojos.SeanceAvecRendus;
 import learnings.pojos.TpAvecTravaux;
 
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SeanceManager {
@@ -152,20 +153,22 @@ public class SeanceManager {
 
         seanceDao.modifierSeance(seance);
     }
-    public void calculerMoyenneSeance(List<Seance> seancesNotees, List<EleveAvecTravauxEtProjet> eleves) {
-//        for(EleveAvecTravauxEtProjet eleve : eleves){
-//            for(Seance seance  : seancesNotees) {
-//                Travail travailSeance = eleve.getMapSeanceIdTravail().get(seance.getId());
-//                if (travailSeance!=null && travailSeance.getNote()!=null){
-//                    seance.addNote(travailSeance.getNote());
-//                }
-//            }
-//        }
-        //TODO
+    public void calculerMoyenneSeance(List<Seance> seancesNotees, List<EleveAvecNotes> eleves) {
+        for(EleveAvecNotes eleve : eleves){
+            for(Seance seance  : seancesNotees) {
+                Note noteSeance = eleve.getMapSeanceNote().get(seance.getId());
+                if (noteSeance!=null){
+                    seance.addNote(noteSeance.getValeur());
+                }
+            }
+        }
     }
 
 
     public Map<Long, Note> getMapNoteEleve(Long idSeance) {
         List<Note> notesSeance = noteDao.listerNotesParSeance(idSeance);
+        Map<Long, Note> mapNoteEleve = notesSeance.stream().collect(Collectors.toMap(n -> n.getEleve().getId(),
+                Function.identity()));
+        return mapNoteEleve;
     }
 }

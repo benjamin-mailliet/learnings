@@ -1,20 +1,23 @@
 package learnings.managers;
 
+import learnings.dao.NoteDao;
 import learnings.dao.ProjetDao;
 import learnings.dao.RenduProjetDao;
 import learnings.dao.RenduTpDao;
 import learnings.dao.UtilisateurDao;
+import learnings.dao.impl.NoteDaoImpl;
 import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.RenduProjetDaoImpl;
 import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.exceptions.LearningsException;
 import learnings.exceptions.LearningsSecuriteException;
+import learnings.model.Note;
+import learnings.model.Projet;
 import learnings.model.RenduProjet;
 import learnings.model.RenduTp;
-import learnings.model.Travail;
 import learnings.model.Utilisateur;
-import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.pojos.EleveAvecNotes;
 import learnings.utils.CsvUtils;
 import learnings.utils.FichierUtils;
 
@@ -48,6 +51,7 @@ public class UtilisateurManager {
     private RenduProjetDao renduProjetDao = new RenduProjetDaoImpl();
     private MotDePasseManager motDePasseManager = new MotDePasseManager();
 	private ProjetDao projetDao = new ProjetDaoImpl();
+    private NoteDao noteDao = new NoteDaoImpl();
 
 
     public List<Utilisateur> listerUtilisateurs() {
@@ -174,51 +178,46 @@ public class UtilisateurManager {
         LOGGER.info(String.format("Utilisateur|modifierMotDePasse|id=%d", id));
 	}
 
-	public List<EleveAvecTravauxEtProjet> listerElevesAvecTravauxEtProjet() {
+	public List<EleveAvecNotes> listerElevesAvecNotes() {
 		List<Utilisateur> eleves = utilisateurDao.listerEleves();
-		List<EleveAvecTravauxEtProjet> listeElevesComplets = new ArrayList<>();
+		List<EleveAvecNotes> listeElevesComplets = new ArrayList<>();
 		for(Utilisateur eleve : eleves){
-			EleveAvecTravauxEtProjet eleveComplet = new EleveAvecTravauxEtProjet(eleve);
+			EleveAvecNotes eleveComplet = new EleveAvecNotes(eleve);
 
-			List<RenduTp> travauxEleve = renduTpDao.listerRendusParUtilisateur(eleve.getId());
-			eleveComplet.setProjet(renduProjetDao.listerRendusUtilisateurParProjet(projetDao.getLastProjetId(),eleve.getId()));
-			Map<Long, List<RenduTp>> mapTravaux = new HashMap<>();
-			for(RenduTp renduTp : travauxEleve){
-                Long idSeance = renduTp.getBinome().getSeance().getId();
-                if (!mapTravaux.containsKey(idSeance)) {
-                    mapTravaux.put(idSeance, new ArrayList<>());
+            List<Note> notesEleve = noteDao.listerNotesParUtilisateur(eleve.getId());
+			Map<Long, Note> notesSeance = new HashMap<>();
+            for (Note note : notesEleve) {
+                if (note.getEnseignement() instanceof Projet) {
+                    eleveComplet.setNoteProjet(note);
+                } else {
+                    notesSeance.put(note.getEnseignement().getId(), note);
                 }
-                mapTravaux.get(idSeance).add(renduTp);
             }
-			eleveComplet.setMapSeanceIdTravail(mapTravaux);
+
+			eleveComplet.setMapSeanceNote(notesSeance);
 			eleveComplet.setMoyenne(calculMoyenneEleve(eleveComplet));
 			listeElevesComplets.add(eleveComplet);
 		}
 		return listeElevesComplets;
 	}
 
-	// TODO
-	private BigDecimal calculMoyenneEleve(EleveAvecTravauxEtProjet eleveComplet){
-//		BigDecimal somme = new BigDecimal(0);
-//		Integer quotient = 0;
-//		for(Map.Entry<Long, List<RenduTp>> travailEntry : eleveComplet.getMapSeanceIdTravail().entrySet()){
-//			BigDecimal noteTravail = travailEntry.getValue().getNote();
-//			if(noteTravail!=null) {
-//				somme = somme.add(noteTravail);
-//				quotient++;
-//			}
-//		}
-//
-//		if(eleveComplet.getProjet()!=null && eleveComplet.getProjet().getNote()!=null){
-//			somme = somme.add(eleveComplet.getProjet().getNote().multiply(new BigDecimal(Travail.COEFF_PROJET)));
-//			quotient = quotient + Travail.COEFF_PROJET;
-//		}
-//		if(quotient>0) {
-//			return somme.divide(new BigDecimal(quotient), 2, RoundingMode.HALF_EVEN);
-//		}else{
-//			return null;
-//		}
-        return null;
+	private BigDecimal calculMoyenneEleve(EleveAvecNotes eleveComplet){
+		BigDecimal somme = new BigDecimal(0);
+		Integer quotient = 0;
+        for (Note note : eleveComplet.getMapSeanceNote().values()) {
+            somme = somme.add(note.getValeur());
+            quotient++;
+        }
+
+		if(eleveComplet.getNoteProjet()!=null ){
+			somme = somme.add(eleveComplet.getNoteProjet().getValeur().multiply(new BigDecimal(Note.COEFF_PROJET)));
+			quotient += Note.COEFF_PROJET;
+		}
+		if(quotient>0) {
+			return somme.divide(new BigDecimal(quotient), 2, RoundingMode.HALF_EVEN);
+		}else{
+			return null;
+		}
     }
 
     public void importerUtilisateurs(InputStream utilisateursCsvInputStream) throws LearningsException, LearningsSecuriteException {

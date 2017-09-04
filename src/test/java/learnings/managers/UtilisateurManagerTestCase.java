@@ -584,7 +584,7 @@ public class UtilisateurManagerTestCase {
 	@Test
 	public void shouldReturnElevesAvecTravauxEtProjetEtMoyenne(){
 //		//WHEN
-//		List<EleveAvecTravauxEtProjet> elevesComplets = utilisateurManager.listerElevesAvecTravauxEtProjet();
+//		List<EleveAvecTravauxEtProjet> elevesComplets = utilisateurManager.listerElevesAvecNotes();
 //
 //		//THEN
 //		assertThat(elevesComplets).extracting("id").contains(3L,4L);

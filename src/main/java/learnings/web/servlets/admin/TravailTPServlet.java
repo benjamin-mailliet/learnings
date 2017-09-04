@@ -33,8 +33,8 @@ public class TravailTPServlet extends GenericLearningsServlet {
 			SeanceAvecRendus seanceSelectionnee = SeanceManager.getInstance().getSeanceAvecTravaux(idSeance);
 			context.setVariable("seanceSelectionnee", seanceSelectionnee);
 
-			Map<Long, Note> mapNoteElevenotesSeance = SeanceManager.getInstance().getMapNoteEleve(idSeance);
-			context.setVariable("mapNoteEleve", mapNoteElevenotesSeance);
+			Map<Long, Note> mapNoteEleveNotesSeance = SeanceManager.getInstance().getMapNoteEleve(idSeance);
+			context.setVariable("mapNoteEleve", mapNoteEleveNotesSeance);
 		}
 		engine.process("admin/travailtp", context, response.getWriter());
 	}

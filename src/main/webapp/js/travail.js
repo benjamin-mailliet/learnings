@@ -1,3 +1,14 @@
+function afficherFormNote(isNoteParEleve) {
+    if(isNoteParEleve) {
+        $('#noteParEleve').show();
+        $('#noteBinome').hide();
+        $('.modal-dialog').css({width: '900px'});
+    }else{
+        $('#noteParEleve').hide();
+        $('#noteBinome').show();
+        $('.modal-dialog').css({width: '600px'});
+    }
+}
 $(document).ready(function(){
     var showError = function(erreurTexte) {
         $("erreurNote").text(erreurTexte);
@@ -6,59 +17,89 @@ $(document).ready(function(){
     };
 
     $('#activerNoteParEleve').click(function(){
-        if ($(this).is(':checked')) {
-            $('#noteParEleve').show();
-            $('#noteBinome').hide();
-            $('.modal-dialog').css({width: '900px'});
-        } else {
-            $('#noteParEleve').hide();
-            $('#noteBinome').show();
-            $('.modal-dialog').css({width: '600px'});
-        }
+        afficherFormNote($(this).is(':checked'));
     });
 
     $('#popupNote').on('show.bs.modal', function (event) {
         $("#erreurNote").hide();
         var button = $(event.relatedTarget); // Button that triggered the modal
-        var idRendu = button.data('travail');
-        $("#formNote").hide();
-        $("#ajaxLoading").show();
-        $.ajax({
-            method: "GET",
-            url: "ws/note/tp/" + idRendu
-        }).done(function (data) {
-            $("#noteValue").val(data.note);
-            $("#noteComment").val(data.commentaireNote);
-            $("#idSeanceNote").val(data.binome.seance.id);
-            $("#idEleve1").val(data.binome.eleve1.id);
-            $("#idBinome").val(data.binome.id);
+        var idSeance = button.data('seance');
+        var idEleve1 = button.data('eleve1');
+        var idEleve2 = button.data('eleve2');
+        var prenomNomEleve1 = button.data('eleve1prenomnom');
+        var prenomNomEleve2 = button.data('eleve2prenomnom');
 
-            $('#activerNoteParEleve').attr('checked',false);
-            $('#contentActiveNoteParEleve').hide();
-            if(data.binome.eleve2){
-                $('#contentActiveNoteParEleve').show();
-                $("#idEleve2").val(data.binome.eleve2.id);
+        $("#formNote").hide();
+        $("#formNote")[0].reset();
+        $("#ajaxLoading").show();
+        var requests;
+        if(idEleve2){
+            requests = $.when(
+                $.ajax({
+                    method: "GET",
+                    url: "ws/note?seance=" + idSeance+"&eleve=" + idEleve1
+                }),
+                $.ajax({
+                    method: "GET",
+                    url: "ws/note?seance=" + idSeance+"&eleve=" + idEleve2
+                })
+            )
+        }else{
+            requests =$.when($.ajax({
+                method: "GET",
+                url: "ws/note?seance=" + idSeance+"&eleve=" + idEleve1
+            }));
+        }
+
+        $("#idSeanceNote").val(idSeance);
+        $("#idEleve1").val(idEleve1);
+        $('#contentActiveNoteParEleve').hide();
+        if (idEleve2) {
+            $('#contentActiveNoteParEleve').show();
+            $("#idEleve2").val(idEleve2);
+            $("#nomPrenomEleve1").text(prenomNomEleve1);
+            $("#nomPrenomEleve2").text(prenomNomEleve2);
+        }
+
+        requests.then(function (dataNoteEleve1, dataNoteEleve2) {
+            var noteEleve1 = dataNoteEleve1[0];
+            if(noteEleve1) {
+                var noteEleve2 = dataNoteEleve2 ? dataNoteEleve2[0] : undefined;
+                if (!noteEleve2 || noteEleve1.valeur == noteEleve2.valeur && noteEleve1.commentaire == noteEleve2.commentaire) {
+                    $('#activerNoteParEleve').attr('checked', false);
+                    $("#noteValue").val(noteEleve1.valeur);
+                    $("#noteComment").val(noteEleve1.commentaire);
+                    afficherFormNote(false);
+                } else {
+                    $('#activerNoteParEleve').attr('checked', true);
+                    $("#noteValueEleve1").val(noteEleve1.valeur);
+                    $("#noteCommentEleve1").val(noteEleve1.commentaire);
+                    $("#noteValueEleve2").val(noteEleve2.valeur);
+                    $("#noteCommentEleve2").val(noteEleve2.commentaire);
+                    afficherFormNote(true);
+                }
             }
             $("#ajaxLoading").hide();
             $("#formNote").show();
-            setTimeout(function () {  $("#noteValue").focus(); }, 500);
-        })
-        .fail(function () {
-            console.error("Erreur de chargement de la note");
+            setTimeout(function () {
+                $("#noteValue").focus();
+            }, 500);
+        }).fail(function () {
+            console.error("Erreur de chargement de la note de l'eleve 1");
             $("#loadingAjax").hide();
-                showError("Erreur lors du chargement de la note");
-            });
+            showError("Erreur lors du chargement de la note de l'eleve 1");
+        });
     });
 
-    var  actualiserNote = function(travailId, valeur) {
-        var noteActuelle = $("#noteActuelle" + travailId);
+    var  actualiserNote = function(eleveId, valeur) {
+        var noteActuelle = $("#noteEleve" + eleveId);
         noteActuelle.text(valeur);
         };
 
-    var actualiserLigneTableau = function(travailId) {
-        var ligneTravail = $("#ligneTravail" + travailId);
-        if (!ligneTravail.hasClass("success")) {
-            ligneTravail.addClass("success");
+    var actualiserLigneTableau = function(idBinome) {
+        var ligneBinome = $("#ligneRendu" + idBinome);
+        if (!ligneBinome.hasClass("success")) {
+            ligneBinome.addClass("success");
         }
     };
 
@@ -67,10 +108,11 @@ $(document).ready(function(){
         $.ajax({
             method: "POST",
             url: "ws/note/tp",
-            data: {idSeance: idSeance, idEleve:idEleve, note: valeur, commentaire: commentaire}
+            data: {idSeance: idSeance, idEleve:idEleve, note: valeur, commentaireNote: commentaire}
         })
             .done(function () {
                 console.log("Enregistrement de la note OK");
+                var idBinome = $('#idBinome').val();
                 actualiserNote(idBinome, valeur);
                 actualiserLigneTableau(idBinome);
                 $('#popupNote').modal('hide');
@@ -87,13 +129,16 @@ $(document).ready(function(){
     $("#validerNote").click(function(){
         var idSeance = $("#idSeanceNote").val();
         if($('#activerNoteParEleve').is(':checked')){
-            var noteCommune = $("#note").val();
+            enregistrerNote(idSeance, $("#idEleve1").val(), $("#noteValueEleve1").val(),$("#noteCommentEleve1").val());
+            enregistrerNote(idSeance, $("#idEleve2").val(), $("#noteValueEleve2").val(),$("#noteCommentEleve2").val());
+        }else{
+            var noteCommune = $("#noteValue").val();
             var commentCommun = $("#noteComment").val();
             enregistrerNote(idSeance, $("#idEleve1").val(), noteCommune,commentCommun);
-            enregistrerNote(idSeance, $("#idEleve2").val(), noteCommune,commentCommun);
-        }else{
-            enregistrerNote(idSeance, $("#idEleve1").val(), $("#noteEleve1").val(),$("#noteCommentEleve1").val());
-            enregistrerNote(idSeance, $("#idEleve2").val(), $("#noteEleve2").val(),$("#noteCommentEleve2").val());
+            var idEleve2 = $("#idEleve2").val();
+            if(idEleve2) {
+                enregistrerNote(idSeance, idEleve2, noteCommune, commentCommun);
+            }
         }
     });
 

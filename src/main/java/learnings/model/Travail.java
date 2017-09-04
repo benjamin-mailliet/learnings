@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 public abstract class Travail implements Serializable {
 	private static final long serialVersionUID = 5229784210182658252L;
 
-	public static int COEFF_PROJET = 4;
-
 	private Long id;
 
 	private BigDecimal note;
