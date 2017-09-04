@@ -1,0 +1,11 @@
+FROM httpd:latest
+
+ENV TMP_CONF_IN_FOLDER /tmp/conf/
+ENV TMP_CONF_OUT_FOLDER /usr/local/apache2/conf
+
+COPY ./docker/httpd/conf/* $TMP_CONF_IN_FOLDER
+
+COPY ./docker/httpd/bin/startup /usr/bin/startup
+RUN chmod 744 /usr/bin/startup
+
+CMD startup

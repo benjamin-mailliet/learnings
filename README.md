@@ -35,3 +35,13 @@ Cette application est également un exemple de développement proposé aux élè
 * [Thymeleaf](http://www.thymeleaf.org/)
 * [JDBC](http://www.oracle.com/technetwork/java/javase/jdbc/index.html) (avec le driver [ConnectorJ](https://dev.mysql.com/downloads/connector/j/)  pour se connecter à une base MySQL)
 * [JUnit](http://junit.org) et [AssertJ](http://joel-costigliola.github.io/assertj/)
+
+### Dockerisation
+#### Build
+| Image | Commande |
+| ------------- | -------------   |
+| learnings-front   | docker build -f Dockerfile-httpd  -t learnings-front:latest . |
+| learnings-middle  | docker build -f Dockerfile-tomcat -t learnings-middle:latest . |
+
+#### Lancement via docker compose
+docker-compose up

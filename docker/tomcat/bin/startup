@@ -1,0 +1,22 @@
+#!/bin/sh
+
+valoriserProperties() {
+    for fichierEntree in $TMP_CONF_IN_FOLDER/*
+    do
+        fichier=$(basename $fichierEntree)
+        fichierSortie=$TMP_CONF_OUT_FOLDER/$fichier
+        rm -f $fichierSortie
+
+        while read ligne
+        do
+           eval "echo \"$ligne\"" >> $fichierSortie
+        done < $fichierEntree
+    done
+}
+
+startTomcat() {
+    catalina.sh run
+}
+
+valoriserProperties
+startTomcat
