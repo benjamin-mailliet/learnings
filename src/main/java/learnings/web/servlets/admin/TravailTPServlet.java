@@ -1,5 +1,6 @@
 package learnings.web.servlets.admin;
 
+import learnings.managers.NoteManager;
 import learnings.managers.SeanceManager;
 import learnings.model.Note;
 import learnings.model.Seance;
@@ -33,7 +34,7 @@ public class TravailTPServlet extends GenericLearningsServlet {
 			SeanceAvecRendus seanceSelectionnee = SeanceManager.getInstance().getSeanceAvecTravaux(idSeance);
 			context.setVariable("seanceSelectionnee", seanceSelectionnee);
 
-			Map<Long, Note> mapNoteEleveNotesSeance = SeanceManager.getInstance().getMapNoteEleve(idSeance);
+			Map<Long, Note> mapNoteEleveNotesSeance = NoteManager.getInstance().getMapNoteEleve(idSeance, Seance.class);
 			context.setVariable("mapNoteEleve", mapNoteEleveNotesSeance);
 		}
 		engine.process("admin/travailtp", context, response.getWriter());

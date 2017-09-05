@@ -145,4 +145,45 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
         }
         return note;
     }
+
+    @Override
+    public List<Note> listerNotesParProjet(Long idProjet) {
+        List<Note> notes = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection
+                     .prepareStatement("SELECT * FROM note n WHERE n.projet_id = ?")
+        ) {
+            stmt.setLong(1, idProjet);
+            try (ResultSet results = stmt.executeQuery()) {
+                while (results.next()) {
+                    notes.add(new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), null, null, null, null, false),
+                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
+                }
+            }
+        } catch (SQLException e) {
+            throw new LearningsSQLException(e);
+        }
+        return notes;
+    }
+
+    @Override
+    public Note getByProjetAndEleve(Long idProjet, Long idEleve) {
+        Note note = null;
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection
+                     .prepareStatement("SELECT * FROM note n, utilisateur u WHERE n.projet_id = ? AND n.eleve_id=? AND n.eleve_id=u.id")
+        ) {
+            stmt.setLong(1, idProjet);
+            stmt.setLong(2, idEleve);
+            try (ResultSet results = stmt.executeQuery()) {
+                while (results.next()) {
+                    note = new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), results.getString("u.nom"), results.getString("u.prenom"), null, null, false),
+                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new LearningsSQLException(e);
+        }
+        return note;
+    }
 }

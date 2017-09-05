@@ -92,7 +92,11 @@ public class RenduProjetManager {
         note.setEnseignement(projet);
         note.setValeur(valeur);
         note.setCommentaire(commentaire);
-        noteDao.ajouterNote(note);
+        if(noteDao.getByProjetAndEleve(idProjet,idEleve)!=null) {
+            noteDao.modifierNote(note);
+        }else {
+            noteDao.ajouterNote(note);
+        }
         LOGGER.info(String.format("enregistrerNoteProjet|idProjet=%d|idEleve=%d", idProjet, idEleve));
     }
 

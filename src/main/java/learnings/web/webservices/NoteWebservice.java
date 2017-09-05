@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import learnings.managers.NoteManager;
 import learnings.managers.RenduProjetManager;
 import learnings.managers.RenduTpManager;
+import learnings.model.Projet;
+import learnings.model.Seance;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -36,12 +38,20 @@ public class NoteWebservice{
         return gsonParser.toJson(RenduProjetManager.getInstance().getRenduProjet(idRendu));
     }
 
-    @Path("/")
+    @Path("/seance")
     @Produces("application/json;charset=UTF-8")
     @GET
     public String getNoteBySeanceAndEleve(@QueryParam("seance") Long idSeance, @QueryParam("eleve") Long idEleve){
         Gson gsonParser = new Gson();
-        return gsonParser.toJson(NoteManager.getInstance().getNoteBySeanceAndEleve(idSeance, idEleve));
+        return gsonParser.toJson(NoteManager.getInstance().getNoteByEnseignementAndEleve(idSeance, idEleve, Seance.class));
+    }
+
+    @Path("/projet")
+    @Produces("application/json;charset=UTF-8")
+    @GET
+    public String getNoteByProjetAndEleve(@QueryParam("projet") Long idProjet, @QueryParam("eleve") Long idEleve){
+        Gson gsonParser = new Gson();
+        return gsonParser.toJson(NoteManager.getInstance().getNoteByEnseignementAndEleve(idProjet, idEleve, Projet.class));
     }
 
 

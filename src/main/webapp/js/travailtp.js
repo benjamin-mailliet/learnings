@@ -38,17 +38,17 @@ $(document).ready(function(){
             requests = $.when(
                 $.ajax({
                     method: "GET",
-                    url: "ws/note?seance=" + idSeance+"&eleve=" + idEleve1
+                    url: "ws/note/seance?seance=" + idSeance+"&eleve=" + idEleve1
                 }),
                 $.ajax({
                     method: "GET",
-                    url: "ws/note?seance=" + idSeance+"&eleve=" + idEleve2
+                    url: "ws/note/seance?seance=" + idSeance+"&eleve=" + idEleve2
                 })
             )
         }else{
             requests =$.when($.ajax({
                 method: "GET",
-                url: "ws/note?seance=" + idSeance+"&eleve=" + idEleve1
+                url: "ws/note/seance?seance=" + idSeance+"&eleve=" + idEleve1
             }));
         }
 
@@ -96,7 +96,7 @@ $(document).ready(function(){
     var  actualiserNote = function(eleveId, valeur) {
         var noteActuelle = $("#noteEleve" + eleveId);
         noteActuelle.html("<span>"+valeur+"</span>");
-        };
+    };
 
     var actualiserLigneTableau = function(idBinome) {
         var ligneBinome = $("#ligneRendu" + idBinome);

@@ -3,12 +3,12 @@
 <head>
 	<title>Projets rendus</title>
 	<th:block th:replace="fragments/htmlheader" />
-	<script th:src="@{/js/travail.js}"></script>
+	<script th:src="@{/js/travailprojet.js}"></script>
 </head>
 <body>
 	<nav th:replace="fragments/menu :: admin('travailprojet')"></nav>
 
-	<div th:replace="fragments/popup :: note"></div>
+	<div th:replace="fragments/popupnoteprojet :: note"></div>
 
 	<div class="container">
 		<div th:replace="fragments/messages"></div>
@@ -33,16 +33,20 @@
 			<table class="table table-bordered">
 				<tr>
 					<th>Élève</th>
+					<th>Note</th>
 					<th>Fichier ou Repository</th>
 					<th>Commentaire</th>
-					<th>Note</th>
+
 					<th>Actions</th>
 				</tr>
-				<th:block th:each="eleveAvecRendus : ${projetSelectionne.rendus}"  class="${travail.note && travail.note != ''} ? 'success'" id="'ligneTravail'+${travail.id}"
+				<th:block th:each="eleveAvecRendus : ${projetSelectionne.rendus}"
 						  th:with="eleve=${eleveAvecRendus.key},rendus=${eleveAvecRendus.value}">
-					<tr th:each="rendu,iterStat : ${rendus}">
+					<tr th:each="rendu,iterStat : ${rendus}" th:id="'ligneRendu'+${eleve.id}" th:class="${mapNoteEleve[eleve.id]} ? 'success'">
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
 							[[${eleve.prenom}]] [[${eleve.nom}]]
+						</td>
+						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}" th:id="'noteEleve'+${eleve.id}">
+							<span th:if="${mapNoteEleve[eleve.id] != null}" >[[${mapNoteEleve[eleve.id].valeur}]]</span>
 						</td>
 						<td>
 							<p>
@@ -57,9 +61,16 @@
 							</p>
 						</td>
 						<td th:text="${rendu.commentaire}"></td>
-						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}"><!--h4 th:id="'noteActuelle'+${travail.id}" th:text="${travail.note}"></h4--></td>
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
-							<button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-info btn-note" data-toggle="modal" data-target="#popupNote" th:data-travail="${eleve.id}" title="Gérer l'évaluation"><i class="fa fa-tags" aria-hidden="true"></i></button>
+							<button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-info btn-note"
+									data-toggle="modal"
+									data-target="#popupNote"
+									th:data-projet="${rendu.projet.id}"
+									th:data-eleve="${eleve.id}"
+									th:data-elevePrenomNom="${eleve.prenom+' '+eleve.nom}"
+									title="Gérer l'évaluation">
+								<i class="fa fa-tags" aria-hidden="true"></i>
+							</button>
 						</td>
 					</tr>
 				</th:block>

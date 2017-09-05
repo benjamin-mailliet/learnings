@@ -21,8 +21,6 @@ import learnings.pojos.TpAvecTravaux;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SeanceManager {
@@ -162,13 +160,5 @@ public class SeanceManager {
                 }
             }
         }
-    }
-
-
-    public Map<Long, Note> getMapNoteEleve(Long idSeance) {
-        List<Note> notesSeance = noteDao.listerNotesParSeance(idSeance);
-        Map<Long, Note> mapNoteEleve = notesSeance.stream().collect(Collectors.toMap(n -> n.getEleve().getId(),
-                Function.identity()));
-        return mapNoteEleve;
     }
 }

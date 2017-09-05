@@ -3,13 +3,13 @@
 <head>
 	<title>Travaux rendus</title>
 	<th:block th:replace="fragments/htmlheader" />
-	<script th:src="@{/js/travail.js}"></script>
+	<script th:src="@{/js/travailtp.js}"></script>
 
 </head>
 <body>
 	<nav th:replace="fragments/menu :: admin('travailtp')"></nav>
 
-	<div th:replace="fragments/popup :: note"></div>
+	<div th:replace="fragments/popupnotetp :: note"></div>
 
 	<div class="container">
 		<div th:replace="fragments/messages"></div>
