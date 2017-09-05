@@ -2,10 +2,11 @@ package learnings.utils;
 
 import learnings.enums.Groupe;
 import learnings.exceptions.LearningsException;
+import learnings.model.Note;
+import learnings.model.Projet;
 import learnings.model.Seance;
-import learnings.model.Travail;
 import learnings.model.Utilisateur;
-import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.pojos.EleveAvecNotes;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -149,7 +150,7 @@ public class CsvUtilsTestCase {
     @Test
     public void shouldWriteLignesElevesNotes() throws IOException {
         //GIVEN
-        List<EleveAvecTravauxEtProjet> eleves = getElevesWithTravauxAndProjet();
+        List<EleveAvecNotes> eleves = getElevesAvecNotes();
         List<Seance> seances = getSeances();
 
         //WHEN
@@ -163,34 +164,34 @@ public class CsvUtilsTestCase {
                 "3 Eleve;;18;19;13\n");
     }
 
-    private List<EleveAvecTravauxEtProjet> getElevesWithTravauxAndProjet() {
-        EleveAvecTravauxEtProjet eleve1 = new EleveAvecTravauxEtProjet();
+    private List<EleveAvecNotes> getElevesAvecNotes() {
+        EleveAvecNotes eleve1 = new EleveAvecNotes();
         eleve1.setNom("1");
         eleve1.setPrenom("Eleve");
         eleve1.setMoyenne(new BigDecimal(10));
-        eleve1.setProjet(new Travail(3L, null, new BigDecimal(13), null, null, null, null));
-        Map<Long, Travail> mapTravaux = new HashMap<>();
-        mapTravaux.put(1L, new Travail(1L, null, new BigDecimal(11), null, null, null, null));
-        mapTravaux.put(2L, new Travail(2L, null, new BigDecimal(12), null, null, null, null));
-        eleve1.setMapSeanceIdTravail(mapTravaux);
+        eleve1.setNoteProjet(new Note(1L, new Utilisateur(1L, null, null, null, null, false), new Projet(1L, null, null, null, null), new BigDecimal(13), null));
+        Map<Long, Note> mapTravaux = new HashMap<>();
+        mapTravaux.put(1L, new Note(2L, new Utilisateur(1L, null, null, null, null, false), new Seance(1L, null, null, null), new BigDecimal(11), null));
+        mapTravaux.put(2L, new Note(3L, new Utilisateur(1L, null, null, null, null, false), new Seance(2L, null, null, null), new BigDecimal(12), null));
+        eleve1.setMapSeanceNote(mapTravaux);
 
-        EleveAvecTravauxEtProjet eleve2 = new EleveAvecTravauxEtProjet();
+        EleveAvecNotes eleve2 = new EleveAvecNotes();
         eleve2.setNom("2");
         eleve2.setPrenom("Eleve");
         eleve2.setMoyenne(new BigDecimal(12));
-        Map<Long, Travail> mapTravaux2 = new HashMap<>();
-        mapTravaux2.put(1L, new Travail(4L, null, new BigDecimal(14), null, null, null, null));
-        mapTravaux2.put(2L, new Travail(5L, null, new BigDecimal(15), null, null, null, null));
-        eleve2.setMapSeanceIdTravail(mapTravaux2);
+        Map<Long, Note> mapTravaux2 = new HashMap<>();
+        mapTravaux2.put(1L, new Note(4L, new Utilisateur(2L, null, null, null, null, false), new Seance(1L, null, null, null), new BigDecimal(14), null));
+        mapTravaux2.put(2L, new Note(5L, new Utilisateur(2L, null, null, null, null, false), new Seance(2L, null, null, null), new BigDecimal(15), null));
+        eleve2.setMapSeanceNote(mapTravaux2);
 
-        EleveAvecTravauxEtProjet eleve3 = new EleveAvecTravauxEtProjet();
+        EleveAvecNotes eleve3 = new EleveAvecNotes();
         eleve3.setNom("3");
         eleve3.setPrenom("Eleve");
         eleve3.setMoyenne(new BigDecimal(13));
-        eleve3.setProjet(new Travail(9L, null, new BigDecimal(19), null, null, null, null));
-        Map<Long, Travail> mapTravaux3 = new HashMap<>();
-        mapTravaux3.put(2L, new Travail(8L, null, new BigDecimal(18), null, null, null, null));
-        eleve3.setMapSeanceIdTravail(mapTravaux3);
+        eleve3.setNoteProjet(new Note(9L, new Utilisateur(3L, null, null, null, null, false), new Projet(1L, null, null, null, null), new BigDecimal(19), null));
+        Map<Long, Note> mapTravaux3 = new HashMap<>();
+        mapTravaux3.put(2L, new Note(8L, new Utilisateur(3L, null, null, null, null, false), new Seance(2L, null, null, null), new BigDecimal(18), null));
+        eleve3.setMapSeanceNote(mapTravaux3);
 
         return Arrays.asList(eleve1, eleve3, eleve2);
     }

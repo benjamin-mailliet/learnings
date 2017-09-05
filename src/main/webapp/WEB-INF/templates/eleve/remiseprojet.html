@@ -12,7 +12,7 @@
 				<header class="page-header"><h1>Remise du projet</h1></header>
 				<article class="panel panel-default">
 					<header class="panel-heading">
-						<h2>Projet transversal personnel
+						<h2>Projet transversal personnel</h2>
 					</header>
 					<section class="panel-body">
 						<div class="row">
@@ -27,14 +27,18 @@
 						
 						<div class="row">
 							<div class="col-md-12">
-								<h3>Projet actuellement soumis :</h3>
-								<p th:if="${projetAvecTravail.travail == null}">Vous n'avez encore rien rendu pour le projet.</p>
-								<p th:if="${projetAvecTravail.travail != null && projetAvecTravail.travail.chemin != null}">
-									Fichier ayant le nom [[${projetAvecTravail.travail.nomFichier}]] rendu le <small><em th:text="${#dates.format(projetAvecTravail.travail.dateRendu, 'dd/MM/yyyy')}"></em> à <em th:text="${#dates.format(projetAvecTravail.travail.dateRendu, 'HH:mm')}"></em></small>
-								</p>
-								<p th:if="${projetAvecTravail.travail != null && projetAvecTravail.travail.urlRepository != null}">
-									Url de repository : [[${projetAvecTravail.travail.urlRepository}]] rendu le <small><em th:text="${#dates.format(projetAvecTravail.travail.dateRendu, 'dd/MM/yyyy')}"></em> à <em th:text="${#dates.format(projetAvecTravail.travail.dateRendu, 'HH:mm')}"></em></small>
-								</p>
+								<h3>Projets actuellement soumis :</h3>
+								<p th:if="${projetAvecTravail.rendus.size() == 0}">Vous n'avez encore rien rendu pour le projet.</p>
+								<ul th:if="${projetAvecTravail.rendus.size() > 0}">
+								<li th:each="rendu : ${projetAvecTravail.rendus[session.utilisateur]}">
+									<p th:if="${rendu.chemin != null}">
+										Fichier ayant le nom [[${rendu.nomFichier}]] rendu le <small><em th:text="${#temporals.format(rendu.dateRendu, 'dd/MM/yyyy')}"></em> à <em th:text="${#temporals.format(rendu.dateRendu, 'HH:mm')}"></em></small>
+									</p>
+									<p th:if="${rendu.urlRepository != null}">
+										Url de repository : [[${rendu.urlRepository}]] rendu le <small><em th:text="${#temporals.format(rendu.dateRendu, 'dd/MM/yyyy')}"></em> à <em th:text="${#temporals.format(rendu.dateRendu, 'HH:mm')}"></em></small>
+									</p>
+								</li>
+								</ul>
 							</div>
 						</div>
 						

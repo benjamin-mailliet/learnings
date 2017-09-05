@@ -1,16 +1,23 @@
 package learnings.managers;
 
+import learnings.dao.NoteDao;
 import learnings.dao.ProjetDao;
-import learnings.dao.TravailDao;
+import learnings.dao.RenduProjetDao;
+import learnings.dao.RenduTpDao;
 import learnings.dao.UtilisateurDao;
+import learnings.dao.impl.NoteDaoImpl;
 import learnings.dao.impl.ProjetDaoImpl;
-import learnings.dao.impl.TravailDaoImpl;
+import learnings.dao.impl.RenduProjetDaoImpl;
+import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.exceptions.LearningsException;
 import learnings.exceptions.LearningsSecuriteException;
-import learnings.model.Travail;
+import learnings.model.Note;
+import learnings.model.Projet;
+import learnings.model.RenduProjet;
+import learnings.model.RenduTp;
 import learnings.model.Utilisateur;
-import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.pojos.EleveAvecNotes;
 import learnings.utils.CsvUtils;
 import learnings.utils.FichierUtils;
 
@@ -40,9 +47,11 @@ public class UtilisateurManager {
     private static Logger LOGGER = Logger.getLogger(UtilisateurManager.class.getName());
 
     private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
-    private TravailDao travailDao = new TravailDaoImpl();
+    private RenduTpDao renduTpDao = new RenduTpDaoImpl();
+    private RenduProjetDao renduProjetDao = new RenduProjetDaoImpl();
     private MotDePasseManager motDePasseManager = new MotDePasseManager();
 	private ProjetDao projetDao = new ProjetDaoImpl();
+    private NoteDao noteDao = new NoteDaoImpl();
 
 
     public List<Utilisateur> listerUtilisateurs() {
@@ -85,8 +94,9 @@ public class UtilisateurManager {
         if (id == null) {
             throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas être null.");
         }
-        List<Travail> travaux = travailDao.listerTravauxParUtilisateur(id);
-        if (travaux.size() > 0) {
+        List<RenduTp> rendusTp = renduTpDao.listerRendusParUtilisateur(id);
+        List<RenduProjet> rendusProjet = renduProjetDao.listerRendusParUtilisateur(id);
+            if (rendusTp.size() > 0 || rendusProjet.size() > 0) {
             throw new IllegalArgumentException("Impossible de supprimer un utilisateur avec des travaux rendus.");
         }
         utilisateurDao.supprimerUtilisateur(id);
@@ -168,39 +178,40 @@ public class UtilisateurManager {
         LOGGER.info(String.format("Utilisateur|modifierMotDePasse|id=%d", id));
 	}
 
-	public List<EleveAvecTravauxEtProjet> listerElevesAvecTravauxEtProjet() {
+	public List<EleveAvecNotes> listerElevesAvecNotes() {
 		List<Utilisateur> eleves = utilisateurDao.listerEleves();
-		List<EleveAvecTravauxEtProjet> listeElevesComplets = new ArrayList<>();
+		List<EleveAvecNotes> listeElevesComplets = new ArrayList<>();
 		for(Utilisateur eleve : eleves){
-			EleveAvecTravauxEtProjet eleveComplet = new EleveAvecTravauxEtProjet(eleve);
+			EleveAvecNotes eleveComplet = new EleveAvecNotes(eleve);
 
-			List<Travail> travauxEleve = travailDao.listerTravauxParUtilisateur(eleve.getId());
-			eleveComplet.setProjet(travailDao.getTravailUtilisateurParProjet(projetDao.getLastProjetId(),eleve.getId()));
-			Map<Long, Travail> mapTravaux = new HashMap<>();
-			for(Travail travail : travauxEleve){
-				mapTravaux.put(travail.getEnseignement().getId(), travail);
-			}
-			eleveComplet.setMapSeanceIdTravail(mapTravaux);
+            List<Note> notesEleve = noteDao.listerNotesParUtilisateur(eleve.getId());
+			Map<Long, Note> notesSeance = new HashMap<>();
+            for (Note note : notesEleve) {
+                if (note.getEnseignement() instanceof Projet) {
+                    eleveComplet.setNoteProjet(note);
+                } else {
+                    notesSeance.put(note.getEnseignement().getId(), note);
+                }
+            }
+
+			eleveComplet.setMapSeanceNote(notesSeance);
 			eleveComplet.setMoyenne(calculMoyenneEleve(eleveComplet));
 			listeElevesComplets.add(eleveComplet);
 		}
 		return listeElevesComplets;
 	}
 
-	private BigDecimal calculMoyenneEleve(EleveAvecTravauxEtProjet eleveComplet){
+	private BigDecimal calculMoyenneEleve(EleveAvecNotes eleveComplet){
 		BigDecimal somme = new BigDecimal(0);
 		Integer quotient = 0;
-		for(Map.Entry<Long, Travail> travailEntry : eleveComplet.getMapSeanceIdTravail().entrySet()){
-			BigDecimal noteTravail = travailEntry.getValue().getNote();
-			if(noteTravail!=null) {
-				somme = somme.add(noteTravail);
-				quotient++;
-			}
-		}
+        for (Note note : eleveComplet.getMapSeanceNote().values()) {
+            somme = somme.add(note.getValeur());
+            quotient++;
+        }
 
-		if(eleveComplet.getProjet()!=null && eleveComplet.getProjet().getNote()!=null){
-			somme = somme.add(eleveComplet.getProjet().getNote().multiply(new BigDecimal(Travail.COEFF_PROJET)));
-			quotient = quotient + Travail.COEFF_PROJET;
+		if(eleveComplet.getNoteProjet()!=null ){
+			somme = somme.add(eleveComplet.getNoteProjet().getValeur().multiply(new BigDecimal(Note.COEFF_PROJET)));
+			quotient += Note.COEFF_PROJET;
 		}
 		if(quotient>0) {
 			return somme.divide(new BigDecimal(quotient), 2, RoundingMode.HALF_EVEN);

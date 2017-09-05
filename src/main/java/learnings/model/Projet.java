@@ -10,18 +10,18 @@ public class Projet extends Enseignement implements Serializable {
 
 	private Date dateLimiteRenduLot1;
 	private Date dateLimiteRenduLot2;
-	private List<Travail> travauxRendus;
+	private List<RenduProjet> travauxRendus;
 	
 
 	public Date getDateLimiteRenduLot1() {
 		return dateLimiteRenduLot1;
 	}
 
-	public List<Travail> getTravauxRendus() {
+	public List<RenduProjet> getTravauxRendus() {
 		return travauxRendus;
 	}
 
-	public void setTravauxRendus(List<Travail> travauxRendus) {
+	public void setTravauxRendus(List<RenduProjet> travauxRendus) {
 		this.travauxRendus = travauxRendus;
 	}
 

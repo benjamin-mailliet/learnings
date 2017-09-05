@@ -1,0 +1,63 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <div class="modal fade" tabindex="-1" role="dialog" id="popupNote" th:fragment="note">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Noter ce travail</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="errorNote" class="text-danger"></p>
+                    <form id="formNote">
+                        <input type="hidden" name="idSeanceNote" id="idSeanceNote"/>
+                        <input type="hidden" name="idBinome" id="idBinome"/>
+                        <div id="noteBinome">
+                            <div class="form-group">
+                                <label for="noteValue">Note</label>
+                                <input class="form-control" type="number" min="0" max="20" name="noteValue" id="noteValue" autofocus/>
+                            </div>
+                            <div class="form-group">
+                                <label for="noteComment">Commentaire</label>
+                                <textarea rows="15" class="form-control" id="noteComment" name="noteComment"></textarea>
+                            </div>
+                        </div>
+
+                        <div id="noteParEleve" style="display:none;">
+                            <div id="noteEleve1Content" class="col-md-6">
+                                <input type="hidden" name="idEleve1" id="idEleve1"/>
+                                <div class="form-group">
+                                    <label for="noteValueEleve1">Note de <span id="nomPrenomEleve1"></span></label>
+                                    <input class="form-control" type="number" min="0" max="20" name="noteValueEleve1" id="noteValueEleve1" autofocus/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="noteCommentEleve1">Commentaire</label>
+                                    <textarea rows="15" class="form-control" id="noteCommentEleve1" name="noteCommentEleve1"></textarea>
+                                </div>
+                            </div>
+                            <div id="noteEleve2Content" class="col-md-6">
+                                <input type="hidden" name="idEleve1" id="idEleve2"/>
+                                <div class="form-group">
+                                    <label for="noteValueEleve2">Note de <span id="nomPrenomEleve2"></span></label>
+                                    <input class="form-control" type="number" min="0" max="20" name="noteValueEleve2" id="noteValueEleve2" autofocus/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="noteCommentEleve2">Commentaire</label>
+                                    <textarea rows="15" class="form-control" id="noteCommentEleve2" name="noteCommentEleve2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="contentActiveNoteParEleve">
+                            <input type="checkbox" id="activerNoteParEleve" name="activerNoteParEleve"> <label for="activerNoteParEleve">Note différente par élève</label>
+                        </div>
+                    </form>
+                    <span id="ajaxLoading">Chargement des infos...</span>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" id="validerNote">Valider</button>
+                    <!--button class="btn btn-info" id="mailNote">Envoyer note</button-->
+                    <button class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>

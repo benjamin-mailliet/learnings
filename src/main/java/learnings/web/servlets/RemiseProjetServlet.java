@@ -2,8 +2,8 @@ package learnings.web.servlets;
 
 import learnings.exceptions.LearningsException;
 import learnings.managers.ProjetManager;
-import learnings.managers.TravailManager;
-import learnings.pojos.ProjetAvecTravail;
+import learnings.managers.RenduProjetManager;
+import learnings.pojos.ProjetAvecRendus;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -24,7 +24,7 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		ProjetAvecTravail projetAvecTravail = ProjetManager.getInstance().getProjetAvecTravail(this.getUtilisateurCourant(request).getId());
+		ProjetAvecRendus projetAvecTravail = ProjetManager.getInstance().getProjetAvecTravail(this.getUtilisateurCourant(request).getId());
 
 		TemplateEngine engine = this.createTemplateEngine(request);
 		WebContext context = new WebContext(request, response, getServletContext());
@@ -46,10 +46,10 @@ public class RemiseProjetServlet extends GenericLearningsServlet {
 			if(urlRepository!= null && (!"".equals(urlRepository)) && fichier.getSize() > 0L){
 				this.ajouterMessageErreur(request, "Veuillez ne renseigner qu'une méthode de rendu de projet : l'URL ou le fichier.");
 			}else if(urlRepository!= null && !"".equals(urlRepository)){
-				TravailManager.getInstance().rendreProjetWithRepo(projetId, utilisateur1Id, commentaire, urlRepository);
+				RenduProjetManager.getInstance().rendreProjetWithRepo(projetId, utilisateur1Id, commentaire, urlRepository);
 				this.ajouterMessageSucces(request, "Le projet a bien été enregistré.");
 			}else if(fichier.getSize() > 0L){
-				TravailManager.getInstance().rendreProjetWithFichier(projetId, utilisateur1Id, commentaire, fichier.getSubmittedFileName(), fichier.getInputStream(),
+				RenduProjetManager.getInstance().rendreProjetWithFichier(projetId, utilisateur1Id, commentaire, fichier.getSubmittedFileName(), fichier.getInputStream(),
 						fichier.getSize());
 				this.ajouterMessageSucces(request, "Le projet a bien été enregistré.");
 			}else{

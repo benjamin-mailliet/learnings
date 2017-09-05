@@ -3,10 +3,11 @@ package learnings.utils;
 import learnings.enums.Groupe;
 import learnings.exceptions.LearningsException;
 import learnings.model.Enseignement;
+import learnings.model.Note;
 import learnings.model.Seance;
 import learnings.model.Travail;
 import learnings.model.Utilisateur;
-import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.pojos.EleveAvecNotes;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -34,31 +35,30 @@ public class CsvUtils {
         w.append(sb.toString());
     }
 
-    public static void creerCSVElevesNotes(Writer writer, List<EleveAvecTravauxEtProjet> eleves, List<Seance> seancesNotees) throws IOException {
-        List<EleveAvecTravauxEtProjet> elevesSorted = eleves.stream().sorted((e1, e2) -> e1.getNom().compareTo(e2.getNom())).collect(Collectors.toList());
+    public static void creerCSVElevesNotes(Writer writer, List<EleveAvecNotes> eleves, List<Seance> seancesNotees) throws IOException {
+        List<EleveAvecNotes> elevesSorted = eleves.stream().sorted((e1, e2) -> e1.getNom().compareTo(e2.getNom())).collect(Collectors.toList());
         List<Long> listeIdsSeances = seancesNotees.stream().map(Enseignement::getId).sorted().collect(Collectors.toList());
         ecrireEnTeteCSVNotes(writer, seancesNotees);
-        for (EleveAvecTravauxEtProjet eleve : elevesSorted) {
+        for (EleveAvecNotes eleve : elevesSorted) {
             ecrireLigneEleve(writer, listeIdsSeances, eleve);
         }
     }
 
-    private static void ecrireLigneEleve(Writer writer, List<Long> listeIdsSeances, EleveAvecTravauxEtProjet eleve) throws IOException {
+    private static void ecrireLigneEleve(Writer writer, List<Long> listeIdsSeances, EleveAvecNotes eleve) throws IOException {
         List<String> ligneEleve = new ArrayList<>();
         ligneEleve.add(eleve.getNom() + " " + eleve.getPrenom());
-        final Map<Long, Travail> mapTravaux = eleve.getMapSeanceIdTravail();
+
+        final Map<Long, Note> mapNotes = eleve.getMapSeanceNote();
         for (Long idSeance : listeIdsSeances) {
             String noteString = "";
-            final Travail travail = mapTravaux.get(idSeance);
-            if (travail != null) {
-                if (travail.getNote() != null) {
-                    noteString = travail.getNote().toString();
-                }
+            final Note note = mapNotes.get(idSeance);
+            if (note != null) {
+                noteString = note.getValeur().toString();
             }
             ligneEleve.add(noteString);
         }
-        if (eleve.getProjet() != null){
-            ajouterNoteIfNoNull(eleve.getProjet().getNote(),ligneEleve);
+        if (eleve.getNoteProjet() != null){
+            ajouterNoteIfNoNull(eleve.getNoteProjet().getValeur(),ligneEleve);
         }else{
             ligneEleve.add("");
         }

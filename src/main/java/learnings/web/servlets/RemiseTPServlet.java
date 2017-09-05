@@ -1,11 +1,11 @@
 package learnings.web.servlets;
 
 import learnings.exceptions.LearningsException;
+import learnings.managers.RenduTpManager;
 import learnings.managers.SeanceManager;
-import learnings.managers.TravailManager;
 import learnings.managers.UtilisateurManager;
 import learnings.model.Utilisateur;
-import learnings.pojos.TpAvecTravail;
+import learnings.pojos.TpAvecTravaux;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -28,7 +28,7 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		List<Utilisateur> binomes = UtilisateurManager.getInstance().listerAutresEleves(this.getUtilisateurCourant(request).getId());
-		List<TpAvecTravail> listeTp = SeanceManager.getInstance().listerTPRenduAccessible(this.getUtilisateurCourant(request).getId());
+		List<TpAvecTravaux> listeTp = SeanceManager.getInstance().listerTPRenduAccessible(this.getUtilisateurCourant(request).getId());
 
 		TemplateEngine engine = this.createTemplateEngine(request);
 		WebContext context = new WebContext(request, response, getServletContext());
@@ -41,26 +41,18 @@ public class RemiseTPServlet extends GenericLearningsServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			Long tpId = Long.parseLong(request.getParameter("idtp"));
-			Long utilisateur1Id = this.getUtilisateurCourant(request).getId();
-			Long utilisateur2Id = null;
+			Long eleveId = this.getUtilisateurCourant(request).getId();
 			String commentaire = request.getParameter("commentaire");
-			if (request.getParameter("eleve2") != null && !"".equals(request.getParameter("eleve2"))) {
-				utilisateur2Id = Long.parseLong(request.getParameter("eleve2"));
-				// Si pas de binôme, utilisateur2Id = 0
-				if (utilisateur2Id == 0L) {
-					utilisateur2Id = null;
-				}
-				Part fichier = request.getPart("fichiertp");
-				if (fichier.getSize() == 0L) {
-					this.ajouterMessageErreur(request, "Veuillez ajouter un fichier.");
-				} else {
-					TravailManager.getInstance().rendreTP(tpId, utilisateur1Id, utilisateur2Id, commentaire, fichier.getSubmittedFileName(), fichier.getInputStream(),
-							fichier.getSize());
-					this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
-				}
+
+			Part fichier = request.getPart("fichiertp");
+			if (fichier.getSize() == 0L) {
+				this.ajouterMessageErreur(request, "Veuillez ajouter un fichier.");
 			} else {
-				this.ajouterMessageErreur(request, "Veuillez sélectionner un binôme.");
+				RenduTpManager.getInstance().rendreTP(tpId, eleveId, commentaire, fichier.getSubmittedFileName(), fichier.getInputStream(),
+						fichier.getSize());
+				this.ajouterMessageSucces(request, "Le fichier a bien été enregistré.");
 			}
+
 		} catch (IllegalArgumentException | LearningsException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
 		}

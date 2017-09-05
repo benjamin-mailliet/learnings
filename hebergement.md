@@ -61,6 +61,8 @@ Comme dit précédemment, Heroku n'a pas de support natif de MySQL, il faut donc
   `git push heroku master`
 * Exécuter le plugin maven Heroku   
  `mvn clean heroku:deploy-war`
+ > Dans le cas où apparaît l'erreur : "'mvn' n’est pas reconnu en tant que commande interne", il faut ajouter maven au path de windows. Pour cela, [télécharger Maven](https://maven.apache.org/), le dézipper et ajouter le sous-répertoire bin du répertoire d'installation au [path de windows](https://www.java.com/fr/download/help/path.xml).
+
 * Activer l'application. Voir la [documentation Heroku](https://devcenter.heroku.com/articles/getting-started-with-java#scale-the-app) pour plus d'informations et notamment les limitations de la version gratuite. 
   `heroku ps:scale web=1`
 * Se connecter à l'URL de l'application

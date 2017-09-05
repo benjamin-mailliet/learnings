@@ -7,50 +7,50 @@ $(document).ready(function(){
     $('#popupNote').on('show.bs.modal', function (event) {
         $("#erreurNote").hide();
         var button = $(event.relatedTarget); // Button that triggered the modal
-        var idTravail = button.data('travail');
+        var idProjet = button.data('projet');
+        var idEleve = button.data('eleve');
         $("#formNote").hide();
         $("#ajaxLoading").show();
+        $("#idProjetNote").val(idProjet);
+        $("#idEleveNote").val(idEleve);
         $.ajax({
             method: "GET",
-            url: "ws/note/" + idTravail
+            url: "ws/note/projet?projet=" + idProjet +"&eleve=" + idEleve
         }).done(function (data) {
-            $("#noteValue").val(data.note);
-            $("#noteComment").val(data.commentaireNote);
-            $("#idTravail").val(idTravail);
+            if(data) {
+                $("#noteValue").val(data.valeur);
+                $("#noteComment").val(data.commentaire);
+            }
             $("#ajaxLoading").hide();
             $("#formNote").show();
             setTimeout(function () {  $("#noteValue").focus(); }, 500);
         })
-        .fail(function () {
-            console.error("Erreur de chargement de la note");
-            $("#loadingAjax").hide();
+            .fail(function () {
+                console.error("Erreur de chargement de la note");
+                $("#loadingAjax").hide();
                 showError("Erreur lors du chargement de la note");
             });
     });
 
-    var  actualiserNote = function(travailId, valeur) {
-        var noteActuelle = $("#noteActuelle" + travailId);
-        noteActuelle.text(valeur);
-        };
-
-    var actualiserLigneTableau = function(travailId) {
-        var ligneTravail = $("#ligneTravail" + travailId);
-        if (!ligneTravail.hasClass("success")) {
-            ligneTravail.addClass("success");
+    var  actualiserNote = function(idEleve, valeur) {
+        var noteActuelle = $("#noteEleve" + idEleve);
+        noteActuelle.html("<span>"+valeur+"</span>");
+        var ligneEleve = $("#ligneRendu" + idEleve);
+        if (!ligneEleve.hasClass("success")) {
+            ligneEleve.addClass("success");
         }
     };
 
-    var enregistrerNote = function(travailId, valeur, commentaire){
+    var enregistrerNote = function(idProjet, idEleve, valeur, commentaire){
         $("#erreurNote").hide();
         $.ajax({
             method: "POST",
-            url: "ws/note",
-            data: {idTravail: travailId, note: valeur, commentaireNote: commentaire}
+            url: "ws/note/projet",
+            data: {idProjet: idProjet, idEleve:idEleve, note: valeur, commentaireNote: commentaire}
         })
             .done(function () {
                 console.log("Enregistrement de la note OK");
-                actualiserNote(travailId, valeur);
-                actualiserLigneTableau(travailId);
+                actualiserNote(idEleve, valeur);
                 $('#popupNote').modal('hide');
             })
             .fail(function () {
@@ -61,7 +61,7 @@ $(document).ready(function(){
 
 
     $("#validerNote").click(function(){
-        enregistrerNote($("#idTravail").val(), $("#noteValue").val(),$("#noteComment").val());
+        enregistrerNote($("#idProjetNote").val(), $("#idEleveNote").val(), $("#noteValue").val(),$("#noteComment").val());
     });
 
     var getBodyMail = function(){
@@ -71,14 +71,14 @@ $(document).ready(function(){
     var getEmailEleves = function(travailId){
         var emails = "";
         $("#mailTravail"+travailId).find("li").each(function(index, element){
-           emails = emails + ";"+element.textContent;
+            emails = emails + ";"+element.textContent;
         });
         return emails;
     };
 
     var getObjectMail = function(){
         var titreTravail = "";
-        var seance = $("#idSeance");
+        var seance = $("#idProjetNote");
         if(seance.length>0) {
             titreTravail = seance.find("option[selected]")[0].textContent;
         }else{

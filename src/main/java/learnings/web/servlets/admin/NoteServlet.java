@@ -3,7 +3,7 @@ package learnings.web.servlets.admin;
 import learnings.managers.SeanceManager;
 import learnings.managers.UtilisateurManager;
 import learnings.model.Seance;
-import learnings.pojos.EleveAvecTravauxEtProjet;
+import learnings.pojos.EleveAvecNotes;
 import learnings.utils.CsvUtils;
 import learnings.web.servlets.GenericLearningsServlet;
 import org.thymeleaf.TemplateEngine;
@@ -21,13 +21,13 @@ import java.util.OptionalDouble;
 @WebServlet(urlPatterns = { "/admin/note" })
 public class NoteServlet extends GenericLearningsServlet {
 
-    List<EleveAvecTravauxEtProjet> eleves;
+    List<EleveAvecNotes> eleves;
     List<Seance> seancesNotees;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         seancesNotees = SeanceManager.getInstance().listerSeancesNoteesWithTravaux();
-        eleves = UtilisateurManager.getInstance().listerElevesAvecTravauxEtProjet();
+        eleves = UtilisateurManager.getInstance().listerElevesAvecNotes();
 
 
         TemplateEngine engine = this.createTemplateEngine(request);
@@ -37,9 +37,8 @@ public class NoteServlet extends GenericLearningsServlet {
         if(eleves.size()>0) {
             SeanceManager.getInstance().calculerMoyenneSeance(seancesNotees, eleves);
             context.setVariable("seancesNotees", seancesNotees);
-            OptionalDouble moyenneOptionnel = eleves.stream()
-                    .filter(e -> e.getProjet() != null && e.getProjet().getNote() != null)
-                    .mapToDouble(e -> e.getProjet().getNote().doubleValue()).average();
+
+            OptionalDouble moyenneOptionnel = eleves.stream().filter(e -> e.getNoteProjet() != null).mapToDouble(e -> e.getNoteProjet().getValeur().doubleValue()).average();
             if(moyenneOptionnel.isPresent()){
                 Double moyenneProjet = moyenneOptionnel.getAsDouble();
                 context.setVariable("moyenneProjet", new DecimalFormat("####0.00").format(moyenneProjet));

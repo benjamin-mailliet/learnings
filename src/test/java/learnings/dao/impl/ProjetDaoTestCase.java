@@ -26,10 +26,10 @@ public class ProjetDaoTestCase extends AbstractDaoTestCase {
         try (Connection connection = this.getConnection();
              Statement stmt = connection.createStatement()
         ) {
-            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(1,'projet1','description 1','2014-09-16 18:00:00','2014-10-16 18:00:00')");
-            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(2,'projet2','description 2','2014-09-16 18:00:00','2014-10-10 18:00:00')");
-            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(3,'projet3','description 3','2014-09-17 18:00:00','2014-09-26 18:00:00')");
-            stmt.executeUpdate("INSERT INTO `projettransversal`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(4,'projet4','description 4','2014-09-19 18:00:00','2014-10-20 18:00:00')");
+            stmt.executeUpdate("INSERT INTO `projet`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(1,'projet1','description 1','2014-09-16 18:00:00','2014-10-16 18:00:00')");
+            stmt.executeUpdate("INSERT INTO `projet`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(2,'projet2','description 2','2014-09-16 18:00:00','2014-10-10 18:00:00')");
+            stmt.executeUpdate("INSERT INTO `projet`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(3,'projet3','description 3','2014-09-17 18:00:00','2014-09-26 18:00:00')");
+            stmt.executeUpdate("INSERT INTO `projet`(`id`,`titre`,`description`,`datelimiterendulot1`,`datelimiterendulot2`) VALUES(4,'projet4','description 4','2014-09-19 18:00:00','2014-10-20 18:00:00')");
         }
     }
 
@@ -71,7 +71,7 @@ public class ProjetDaoTestCase extends AbstractDaoTestCase {
         assertThat(projetCree).isNotNull();
         assertThat(projetCree.getId()).isNotNull();
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM projettransversal WHERE id=?")
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM projet WHERE id=?")
         ) {
             stmt.setLong(1, projetCree.getId());
             try (ResultSet results = stmt.executeQuery()) {
@@ -94,7 +94,7 @@ public class ProjetDaoTestCase extends AbstractDaoTestCase {
         // THEN
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement();
-             ResultSet results = stmt.executeQuery("SELECT * FROM projettransversal WHERE id=1")
+             ResultSet results = stmt.executeQuery("SELECT * FROM projet WHERE id=1")
         ) {
             assertThat(results.next()).isTrue();
             assertThat(results.getLong("id")).isEqualTo(1L);

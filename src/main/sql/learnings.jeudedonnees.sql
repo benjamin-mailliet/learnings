@@ -15,5 +15,5 @@ INSERT INTO ressource (id, chemin, titre, seance_id) VALUES(3, 'ressources/seanc
 INSERT INTO ressource (id, chemin, titre, seance_id) VALUES(2, 'ressources/seances/91ca9088-Cours1.zip', 'Cours 1 : HTML / CSS', 1);
 INSERT INTO ressource (id, chemin, titre, seance_id) VALUES(1, 'ressources/seances/f0465006-tp1.zip', 'TP1 : les animaux laids', 2);
 
-DELETE FROM projettransversal;
-INSERT INTO projettransversal VALUES (1, 'Projet de ouf', 'Desription du projet de ouf', '2014-11-16 23:59:00', '2015-01-18 23:59:00');
+DELETE FROM projet;
+INSERT INTO projet VALUES (1, 'Projet de ouf', 'Desription du projet de ouf', '2014-11-16 23:59:00', '2015-01-18 23:59:00');

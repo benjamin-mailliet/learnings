@@ -1,13 +1,17 @@
 package learnings.pojos;
 
 import learnings.model.Projet;
-import learnings.model.Travail;
+import learnings.model.RenduProjet;
+import learnings.model.Utilisateur;
 
-public class ProjetAvecTravail {
+import java.util.List;
+import java.util.Map;
+
+public class ProjetAvecRendus {
 
 	private Projet projet;
 
-	private Travail travail;
+	private Map<Utilisateur,List<RenduProjet>> rendus;
 	
 	private Integer nbJoursRestantsLot1;
 	
@@ -21,14 +25,14 @@ public class ProjetAvecTravail {
 		this.projet = projet;
 	}
 
-	public Travail getTravail() {
-		return travail;
+	public Map<Utilisateur,List<RenduProjet>> getRendus() {
+		return rendus;
 	}
 
-	public void setTravail(Travail travail) {
-		this.travail = travail;
+	public void setRendus(Map<Utilisateur,List<RenduProjet>> rendus) {
+		this.rendus = rendus;
 	}
-	
+
 	public Integer getNbJoursRestantsLot1() {
 		return nbJoursRestantsLot1;
 	}

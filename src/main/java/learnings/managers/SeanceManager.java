@@ -1,31 +1,30 @@
 package learnings.managers;
 
+import learnings.dao.BinomeDao;
+import learnings.dao.NoteDao;
+import learnings.dao.RenduTpDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
-import learnings.dao.TravailDao;
+import learnings.dao.impl.BinomeDaoImpl;
+import learnings.dao.impl.NoteDaoImpl;
+import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
-import learnings.dao.impl.TravailDaoImpl;
+import learnings.model.Binome;
+import learnings.model.Note;
+import learnings.model.RenduTp;
 import learnings.model.Seance;
-import learnings.model.Travail;
-import learnings.pojos.EleveAvecTravauxEtProjet;
-import learnings.pojos.TpAvecTravail;
+import learnings.pojos.EleveAvecNotes;
+import learnings.pojos.SeanceAvecRendus;
+import learnings.pojos.TpAvecTravaux;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SeanceManager {
-    public void calculerMoyenneSeance(List<Seance> seancesNotees, List<EleveAvecTravauxEtProjet> eleves) {
-        for(EleveAvecTravauxEtProjet eleve : eleves){
-            for(Seance seance  : seancesNotees) {
-                Travail travailSeance = eleve.getMapSeanceIdTravail().get(seance.getId());
-                if (travailSeance!=null && travailSeance.getNote()!=null){
-                    seance.addNote(travailSeance.getNote());
-                }
-            }
-        }
-    }
+
 
     private static class SeanceManagerHolder {
         private static SeanceManager instance = new SeanceManager();
@@ -40,7 +39,9 @@ public class SeanceManager {
 
     private SeanceDao seanceDao = new SeanceDaoImpl();
     private RessourceDao ressourceDao = new RessourceDaoImpl();
-    private TravailDao travailDao = new TravailDaoImpl();
+    private RenduTpDao renduTpDao = new RenduTpDaoImpl();
+    private BinomeDao binomeDao = new BinomeDaoImpl();
+    private NoteDao noteDao = new NoteDaoImpl();
 
 
     public List<Seance> listerSeances() {
@@ -58,29 +59,34 @@ public class SeanceManager {
 	public List<Seance> listerSeancesNoteesWithTravaux() {
 		List<Seance> listeSeancesNotees = seanceDao.listerSeancesNotees();
 		for(Seance seance : listeSeancesNotees){
-			seance.setTravauxRendus(travailDao.listerTravauxParSeance(seance.getId()));
+			seance.setTravauxRendus(renduTpDao.listerRendusParSeance(seance.getId()));
 		}
 		return listeSeancesNotees;
     }
 
 
-    public List<TpAvecTravail> listerTPRenduAccessible(Long idUtilisateur) {
+    public List<TpAvecTravaux> listerTPRenduAccessible(Long idUtilisateur) {
         if (idUtilisateur == null) {
             throw new IllegalArgumentException("L'utlisateur ne peut pas être null.");
         }
         Date aujourdhui = new Date();
         List<Seance> listeTps = seanceDao.listerTPNotesParDateRendu(aujourdhui);
-        List<TpAvecTravail> listeTpsAvecTravaux = new ArrayList<>();
+        List<TpAvecTravaux> listeTpsAvecTravaux = new ArrayList<>();
         for (Seance tp : listeTps) {
-            TpAvecTravail tpAvecTravaux = new TpAvecTravail();
+            TpAvecTravaux tpAvecTravaux = new TpAvecTravaux();
             tpAvecTravaux.setTp(tp);
-            tpAvecTravaux.setTravail(travailDao.getTravailUtilisateurParSeance(tp.getId(), idUtilisateur));
+            Binome binome = binomeDao.getBinome(tp.getId(), idUtilisateur);
+            if(binome != null) {
+                tpAvecTravaux.setBinome(binome);
+                tpAvecTravaux.setTravaux(renduTpDao.listerRendusParBinome(binome.getId()));
+            }
             listeTpsAvecTravaux.add(tpAvecTravaux);
+
         }
         return listeTpsAvecTravaux;
     }
 
-    public Seance getSeanceAvecTravaux(Long idSeance) {
+    public SeanceAvecRendus getSeanceAvecTravaux(Long idSeance) {
         if (idSeance == null) {
             throw new IllegalArgumentException("L'identifiant de la séance est incorrect.");
         }
@@ -88,12 +94,11 @@ public class SeanceManager {
         if (seance == null) {
             throw new IllegalArgumentException("L'identifiant de la séance est inconnu.");
         }
-        seance.setTravauxRendus(travailDao.listerTravauxParSeance(idSeance));
-        for (Travail travailRendu : seance.getTravauxRendus()) {
-            travailRendu.setUtilisateurs(travailDao.listerUtilisateursParTravail(travailRendu.getId()));
-        }
-
-        return seance;
+        SeanceAvecRendus seanceAvecRendus = new SeanceAvecRendus();
+        seanceAvecRendus.setSeance(seance);
+        List<RenduTp> rendus = renduTpDao.listerRendusParSeance(idSeance);
+        seanceAvecRendus.setRendus(rendus.stream().collect(Collectors.groupingBy(RenduTp::getBinome)));
+        return seanceAvecRendus;
     }
 
     public Seance getSeanceAvecRessources(Long idSeance) {
@@ -145,5 +150,15 @@ public class SeanceManager {
         }
 
         seanceDao.modifierSeance(seance);
+    }
+    public void calculerMoyenneSeance(List<Seance> seancesNotees, List<EleveAvecNotes> eleves) {
+        for(EleveAvecNotes eleve : eleves){
+            for(Seance seance  : seancesNotees) {
+                Note noteSeance = eleve.getMapSeanceNote().get(seance.getId());
+                if (noteSeance!=null){
+                    seance.addNote(noteSeance.getValeur());
+                }
+            }
+        }
     }
 }
