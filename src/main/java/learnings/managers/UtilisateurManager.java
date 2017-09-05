@@ -83,11 +83,7 @@ public class UtilisateurManager {
         if (motDePasseHashe == null) {
             throw new IllegalArgumentException("L'identifiant n'est pas connu.");
         }
-        try {
-            return motDePasseManager.validerMotDePasse(motDePasseAVerifier, motDePasseHashe);
-        } catch (GeneralSecurityException e) {
-            throw new LearningsSecuriteException("Problème dans la vérification du mot de passe.", e);
-        }
+        return motDePasseManager.validerMotDePasse(motDePasseAVerifier, motDePasseHashe);
     }
 
     public void supprimerUtilisateur(Long id) {
@@ -130,13 +126,8 @@ public class UtilisateurManager {
         if (utilisateur == null) {
             throw new IllegalArgumentException("L'utilisateur n'est pas connu.");
         }
-        try {
-            String nouveauMotDePasse = motDePasseManager.genererMotDePasse(utilisateur.getEmail());
-            utilisateurDao.modifierMotDePasse(id, nouveauMotDePasse);
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-            throw new LearningsSecuriteException("Problème dans la génération du mot de passe.", e);
-        }
+        String nouveauMotDePasse = motDePasseManager.genererMotDePasse(utilisateur.getEmail());
+        utilisateurDao.modifierMotDePasse(id, nouveauMotDePasse);
         LOGGER.info(String.format("Utilisateur|reinitialiserMotDePasse|id=%d", id));
     }
 
@@ -149,12 +140,8 @@ public class UtilisateurManager {
             throw new IllegalArgumentException("L'identifiant est déjà utilisé.");
         }
 
-        String motDePasse;
-        try {
-            motDePasse = motDePasseManager.genererMotDePasse(utilisateur.getEmail());
-        } catch (GeneralSecurityException e) {
-            throw new LearningsSecuriteException("Problème dans la génération du mot de passe.");
-        }
+        String motDePasse = motDePasseManager.genererMotDePasse(utilisateur.getEmail());
+
         Utilisateur nouvelUtilisateur = utilisateurDao.ajouterUtilisateur(utilisateur, motDePasse);
 
         LOGGER.info(String.format("Utilisateur|ajouterUtilisateur|id=%d;email=%s", nouvelUtilisateur.getId(), nouvelUtilisateur.getEmail()));
@@ -169,12 +156,8 @@ public class UtilisateurManager {
             throw new IllegalArgumentException("La confirmation du mot de passe ne correspond pas.");
         }
 
-        try {
-            String motDePasseHashe = motDePasseManager.genererMotDePasse(motDePasse);
-            utilisateurDao.modifierMotDePasse(id, motDePasseHashe);
-        } catch (GeneralSecurityException e) {
-            throw new LearningsSecuriteException("Problème dans la génération du mot de passe.", e);
-        }
+        String motDePasseHashe = motDePasseManager.genererMotDePasse(motDePasse);
+        utilisateurDao.modifierMotDePasse(id, motDePasseHashe);
         LOGGER.info(String.format("Utilisateur|modifierMotDePasse|id=%d", id));
 	}
 

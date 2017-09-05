@@ -14,16 +14,13 @@ public class MotDePasseManagerTestCase {
 		String motDePasse = motDePasseManager.genererMotDePasse("test");
 		String motDePasse2 = motDePasseManager.genererMotDePasse("test");
 		// THEN
-		assertThat(motDePasse).hasSize(97);
-		assertThat(motDePasse).contains(":");
-		assertThat(motDePasse.indexOf(":")).isEqualTo(48);
 		assertThat(motDePasse2).isNotEqualTo(motDePasse);
 	}
 
 	@Test
 	public void testVerifierMotDePasse() throws Exception {
 		// WHEN
-		boolean valide = motDePasseManager.validerMotDePasse("test", "6b411d0bccf8723d8072f45cb1ffb4f8ca62abdf2bed7516:cd22a8e992bc0404efa4d2011f6041f0679b6dd2bf2d3b81");
+		boolean valide = motDePasseManager.validerMotDePasse("test", "$argon2i$v=19$m=65536,t=2,p=1$aO9/0ITWAHgHwMgls5CYvw$HCpY/zbG4jEiF7q39o3MAfsrXcFXoLC6FI5CFJiN2Yw");
 		// THEN
 		assertThat(valide).isTrue();
 	}

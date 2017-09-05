@@ -46,6 +46,13 @@
 			<version>1.7.22</version>
 		</dependency>
 
+		<!-- Dépendance Argon2 pour hash des mots de passe -->
+		<dependency>
+			<groupId>de.mkammerer</groupId>
+			<artifactId>argon2-jvm</artifactId>
+			<version>2.2</version>
+		</dependency>
+
 		<!-- TESTS -->
 		<dependency>
 			<groupId>junit</groupId>
