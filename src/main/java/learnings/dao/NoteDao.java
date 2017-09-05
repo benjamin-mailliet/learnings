@@ -8,6 +8,8 @@ public interface NoteDao {
 
     Note ajouterNote(Note note);
 
+    Note modifierNote(Note note);
+
     List<Note> listerNotesParUtilisateur(Long idUtilisateur);
 
     List<Note> listerNotesParBinome(Long idBinome);

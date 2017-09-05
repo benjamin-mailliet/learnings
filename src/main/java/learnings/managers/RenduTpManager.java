@@ -112,7 +112,11 @@ public class RenduTpManager {
         note.setEnseignement(seance);
         note.setValeur(valeur);
         note.setCommentaire(commentaire);
-        noteDao.ajouterNote(note);
+        if(noteDao.getBySeanceAndEleve(idSeance, idEleve) != null) {
+            noteDao.modifierNote(note);
+        }else{
+            noteDao.ajouterNote(note);
+        }
         LOGGER.info(String.format("enregistrerNoteTp|idSeance=%d|idEleve=%d", idSeance, idEleve));
     }
 

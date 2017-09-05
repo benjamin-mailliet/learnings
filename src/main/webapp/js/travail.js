@@ -28,6 +28,7 @@ $(document).ready(function(){
         var idEleve2 = button.data('eleve2');
         var prenomNomEleve1 = button.data('eleve1prenomnom');
         var prenomNomEleve2 = button.data('eleve2prenomnom');
+        var idBinome = button.data('binome');
 
         $("#formNote").hide();
         $("#formNote")[0].reset();
@@ -51,6 +52,7 @@ $(document).ready(function(){
             }));
         }
 
+        $("#idBinome").val(idBinome);
         $("#idSeanceNote").val(idSeance);
         $("#idEleve1").val(idEleve1);
         $('#contentActiveNoteParEleve').hide();
@@ -62,9 +64,9 @@ $(document).ready(function(){
         }
 
         requests.then(function (dataNoteEleve1, dataNoteEleve2) {
-            var noteEleve1 = dataNoteEleve1[0];
+            var noteEleve1 = Array.isArray(dataNoteEleve1) ? dataNoteEleve1[0] : dataNoteEleve1;
             if(noteEleve1) {
-                var noteEleve2 = dataNoteEleve2 ? dataNoteEleve2[0] : undefined;
+                var noteEleve2 = Array.isArray(dataNoteEleve2) ? dataNoteEleve2[0] : undefined;
                 if (!noteEleve2 || noteEleve1.valeur == noteEleve2.valeur && noteEleve1.commentaire == noteEleve2.commentaire) {
                     $('#activerNoteParEleve').attr('checked', false);
                     $("#noteValue").val(noteEleve1.valeur);
@@ -93,7 +95,7 @@ $(document).ready(function(){
 
     var  actualiserNote = function(eleveId, valeur) {
         var noteActuelle = $("#noteEleve" + eleveId);
-        noteActuelle.text(valeur);
+        noteActuelle.html("<span>"+valeur+"</span>");
         };
 
     var actualiserLigneTableau = function(idBinome) {
@@ -113,7 +115,7 @@ $(document).ready(function(){
             .done(function () {
                 console.log("Enregistrement de la note OK");
                 var idBinome = $('#idBinome').val();
-                actualiserNote(idBinome, valeur);
+                actualiserNote(idEleve, valeur);
                 actualiserLigneTableau(idBinome);
                 $('#popupNote').modal('hide');
             })

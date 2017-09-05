@@ -39,9 +39,9 @@
 					<th>Commentaire</th>
 					<th>Actions</th>
 				</tr>
-				<th:block th:each="binomeAvecRendus : ${seanceSelectionnee.rendus}" class="travail.note and travail.note neq ''  'success'"
-					th:with="binome=${binomeAvecRendus.key},rendus=${binomeAvecRendus.value}">
-					<tr th:each="rendu,iterStat : ${rendus}" th:class="'ligneRendu'+${binome.id}">
+				<th:block th:each="binomeAvecRendus : ${seanceSelectionnee.rendus}"
+					th:with="binome=${binomeAvecRendus.key},rendus=${binomeAvecRendus.value}" >
+					<tr th:each="rendu,iterStat : ${rendus}" th:id="'ligneRendu'+${binome.id}" th:class="${mapNoteEleve[binome.eleve1.id]} ? success : ''">
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
 							<ul th:id="'binome'+${binome.id}">
 								<li>[[${binome.eleve1.prenom}]] [[${binome.eleve1.nom}]]</li>
@@ -49,9 +49,9 @@
 							</ul>
 						</td>
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
-							<ul th:id="'noteBinome'+${binome.id}">
-								<li th:if="${mapNoteEleve[binome.eleve1.id] != null}" th:class="'noteEleve'+${binome.eleve1.id}">[[${mapNoteEleve[binome.eleve1.id].valeur}]]</li>
-								<li th:if="${binome.eleve2 != null && mapNoteEleve[binome.eleve2.id] != null}" th:class="'noteEleve'+${binome.eleve2.id}">[[${mapNoteEleve[binome.eleve2.id].valeur}]]</li>
+							<ul class="list-unstyled" th:id="'noteBinome'+${binome.id}">
+								<li th:id="'noteEleve'+${binome.eleve1.id}"><span th:if="${mapNoteEleve[binome.eleve1.id] != null}" >[[${mapNoteEleve[binome.eleve1.id].valeur}]]</span></li>
+								<li th:if="${binome.eleve2 != null}" th:id="'noteEleve'+${binome.eleve2.id}"><span th:if="${mapNoteEleve[binome.eleve2.id] != null}" >[[${mapNoteEleve[binome.eleve2.id].valeur}]]</span></li>
 							</ul>
 						</td>
 						<td>
@@ -64,6 +64,7 @@
 									data-toggle="modal"
 									data-target="#popupNote"
 									th:data-seance="${rendu.binome.seance.id}"
+									th:data-binome="${rendu.binome.id}"
 									th:data-eleve1="${rendu.binome.eleve1.id}"
 									th:data-eleve1PrenomNom="${rendu.binome.eleve1.prenom+' '+rendu.binome.eleve1.nom}"
 									th:data-eleve2="${rendu.binome.eleve2 ? rendu.binome.eleve2.id:null}"

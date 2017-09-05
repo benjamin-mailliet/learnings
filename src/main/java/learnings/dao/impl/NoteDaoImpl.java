@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +22,18 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
     public Note ajouterNote(Note note) {
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(
-                     "INSERT INTO note(eleve_id, seance_id, projet_id, valeur, commentaire) VALUES(?, ?, null, ?, ?)", Statement.RETURN_GENERATED_KEYS)
+                     "INSERT INTO note(eleve_id, seance_id, projet_id, valeur, commentaire) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setLong(1, note.getEleve().getId());
-            stmt.setLong(2, note.getEnseignement().getId());
-            stmt.setBigDecimal(3, note.getValeur());
-            stmt.setString(4, note.getCommentaire());
+            if(note.getEnseignement() instanceof Seance) {
+                stmt.setLong(2, note.getEnseignement().getId());
+                stmt.setNull(3, Types.VARCHAR);
+            }else{
+                stmt.setLong(3, note.getEnseignement().getId());
+                stmt.setNull(2, Types.VARCHAR);
+            }
+            stmt.setBigDecimal(4, note.getValeur());
+            stmt.setString(5, note.getCommentaire());
 
             stmt.executeUpdate();
 
@@ -35,6 +42,26 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
                     note.setId(ids.getLong(1));
                 }
             }
+        } catch (SQLException e) {
+            throw new LearningsSQLException(e);
+        }
+        return note;
+    }
+
+    public Note modifierNote(Note note) {
+        String nomCleEnseignement = "seance_id";
+        if(note.getEnseignement() instanceof Projet) {
+            nomCleEnseignement = "projet_id";
+        }
+        try (Connection connection = getConnection();
+             PreparedStatement stmt = connection.prepareStatement(
+                     "UPDATE note SET valeur=?, commentaire=? WHERE "+nomCleEnseignement+"=? AND eleve_id=?", Statement.RETURN_GENERATED_KEYS)
+        ) {
+            stmt.setBigDecimal(1, note.getValeur());
+            stmt.setString(2, note.getCommentaire());
+            stmt.setLong(3, note.getEnseignement().getId());
+            stmt.setLong(4, note.getEleve().getId());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new LearningsSQLException(e);
         }
