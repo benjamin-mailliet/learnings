@@ -22,6 +22,9 @@ $(document).ready(function(){
             if(data) {
                 $("#noteValue").val(data.valeur);
                 $("#noteComment").val(data.commentaire);
+            } else {
+                $("#noteValue").val("");
+                $("#noteComment").val("");
             }
             $("#ajaxLoading").hide();
             $("#formNote").show();

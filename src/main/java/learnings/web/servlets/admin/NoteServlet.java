@@ -1,7 +1,9 @@
 package learnings.web.servlets.admin;
 
+import learnings.managers.ProjetManager;
 import learnings.managers.SeanceManager;
 import learnings.managers.UtilisateurManager;
+import learnings.model.Projet;
 import learnings.model.Seance;
 import learnings.pojos.EleveAvecNotes;
 import learnings.utils.CsvUtils;
@@ -28,11 +30,13 @@ public class NoteServlet extends GenericLearningsServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         seancesNotees = SeanceManager.getInstance().listerSeancesNoteesWithTravaux();
         eleves = UtilisateurManager.getInstance().listerElevesAvecNotes();
+        Projet projet = ProjetManager.getInstance().getLastProjetAvecRessources();
 
 
         TemplateEngine engine = this.createTemplateEngine(request);
         WebContext context = new WebContext(request, response, getServletContext());
         context.setVariable("eleves", eleves);
+        context.setVariable("projet", projet);
 
         if(eleves.size()>0) {
             SeanceManager.getInstance().calculerMoyenneSeance(seancesNotees, eleves);

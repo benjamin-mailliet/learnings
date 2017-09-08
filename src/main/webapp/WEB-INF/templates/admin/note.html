@@ -54,7 +54,7 @@
                     <button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-default btn-note btn-xs"
                             data-toggle="modal"
                             data-target="#popupNote"
-                            th:data-projet="1"
+                            th:data-projet="${projet.id}"
                             th:data-eleve="${eleve.id}"
                             th:data-elevePrenomNom="${eleve.prenom+' '+eleve.nom}"
                             title="Gérer l'évaluation">
