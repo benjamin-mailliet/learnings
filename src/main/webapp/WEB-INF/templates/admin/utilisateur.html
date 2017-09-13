@@ -4,6 +4,7 @@
 		<title>Gestion des utilisateurs</title>
 		<th:block th:replace="fragments/htmlheader" />
 		<script th:src="@{/js/utilisateur.js}"></script>
+		<script th:src="@{/js/filtre.js}"></script>
 		<link th:href="@{/css/utilisateur.css}" rel="stylesheet">
 	</head>
 	<body>
@@ -17,6 +18,13 @@
 					<button id="boutonEnvoiMails" class="btn btn-default pull-right"><i class="fa fa-envelope" ></i> Envoyer Email</button>
 				</h1>
 			</header>
+			<div>
+				Nom : <input type="text" class="query-filter" data-query-filter="nom" />
+			</div>
+			<div>
+				Prénom : <input type="text" class="query-filter" data-query-filter="prenom" />
+			</div>
+
 			<table id="listeUtilisateurs" class="table table-striped">
 				<tr>
 					<th>#</th>
@@ -29,10 +37,10 @@
 				</tr>
 				<tr th:id="'utilisateur'+${utilisateur.id}" th:each="utilisateur : ${utilisateurs}">
 					<td th:text="${utilisateur.id}"></td>
-					<td th:text="${utilisateur.nom}"></td>
-					<td th:text="${utilisateur.prenom}"></td>
+					<td class="filter" data-filter="nom" th:text="${utilisateur.nom}"></td>
+					<td class="filter" data-filter="prenom" th:text="${utilisateur.prenom}"></td>
 					<td th:text="${utilisateur.email}"></td>
-					<td th:text="${utilisateur.groupe} ? ${utilisateur.groupe.libelle}"></td>
+					<td class="filter" data-filter="groupe" th:text="${utilisateur.groupe} ? ${utilisateur.groupe.libelle}"></td>
 					<td class="isAdminCell" th:text="${utilisateur.admin ? 'Oui' : 'Non'}"></td>
 					<td>
 						<th:block th:if="${utilisateur.id != session.utilisateur.id}">
