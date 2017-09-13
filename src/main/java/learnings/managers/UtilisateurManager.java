@@ -165,24 +165,37 @@ public class UtilisateurManager {
 		List<Utilisateur> eleves = utilisateurDao.listerEleves();
 		List<EleveAvecNotes> listeElevesComplets = new ArrayList<>();
 		for(Utilisateur eleve : eleves){
-			EleveAvecNotes eleveComplet = new EleveAvecNotes(eleve);
-
-            List<Note> notesEleve = noteDao.listerNotesParUtilisateur(eleve.getId());
-			Map<Long, Note> notesSeance = new HashMap<>();
-            for (Note note : notesEleve) {
-                if (note.getEnseignement() instanceof Projet) {
-                    eleveComplet.setNoteProjet(note);
-                } else {
-                    notesSeance.put(note.getEnseignement().getId(), note);
-                }
-            }
-
-			eleveComplet.setMapSeanceNote(notesSeance);
-			eleveComplet.setMoyenne(calculMoyenneEleve(eleveComplet));
+            EleveAvecNotes eleveComplet = recupereNotesEleve(eleve);
 			listeElevesComplets.add(eleveComplet);
 		}
 		return listeElevesComplets;
 	}
+
+    private EleveAvecNotes recupereNotesEleve(Utilisateur eleve) {
+        EleveAvecNotes eleveComplet = new EleveAvecNotes(eleve);
+
+        List<Note> notesEleve = noteDao.listerNotesParUtilisateur(eleve.getId());
+        Map<Long, Note> notesSeance = new HashMap<>();
+        for (Note note : notesEleve) {
+            if (note.getEnseignement() instanceof Projet) {
+                eleveComplet.setNoteProjet(note);
+            } else {
+                notesSeance.put(note.getEnseignement().getId(), note);
+            }
+        }
+
+        eleveComplet.setMapSeanceNote(notesSeance);
+        eleveComplet.setMoyenne(calculMoyenneEleve(eleveComplet));
+        return eleveComplet;
+    }
+
+    public EleveAvecNotes getEleveAvecNotes(Long idEleve) {
+        Utilisateur eleve = utilisateurDao.getUtilisateur(idEleve);
+        if (eleve == null) {
+            throw new IllegalArgumentException("L'utilisateur n'a pas été trouvé.");
+        }
+        return recupereNotesEleve(eleve);
+    }
 
 	private BigDecimal calculMoyenneEleve(EleveAvecNotes eleveComplet){
 		BigDecimal somme = new BigDecimal(0);

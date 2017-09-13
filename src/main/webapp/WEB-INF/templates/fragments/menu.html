@@ -10,6 +10,7 @@
 				<li th:class="${pageSelectionnee == 'remisetp'} ? 'active'"><a href="remisetp">Rendre un TP</a></li>
 				<li th:class="${pageSelectionnee == 'projet'} ? 'active'"><a href="projet">Projet</a></li>
 				<li th:class="${pageSelectionnee == 'remiseprojet'} ? 'active'"><a href="remiseprojet">Rendre le projet</a></li>
+				<li th:class="${pageSelectionnee == 'bulletin'} ? 'active'"><a href="bulletin">Bulletin de notes</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right ">
 				<li th:if="${session.utilisateur.admin}"><a href="../admin/">Administration</a></li>
