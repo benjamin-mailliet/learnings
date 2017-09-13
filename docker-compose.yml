@@ -1,0 +1,32 @@
+version : "3"
+services:
+  front:
+    container_name: learnings-front
+    image: learnings-front:latest
+    environment:
+      PROXY_HTTP_SRC: "/learnings"
+      PROXY_HTTP_DST: "middle:8080/learnings"
+    ports:
+      - "8000:8080"
+  middle:
+    container_name: learnings-middle
+    image: learnings-middle:latest
+    environment:
+      REPERTOIRE_PRINCIPAL: "/DATA/FILES/"
+      JDBC_HOST: back
+      JDBC_PORT: 3306
+      JDBC_NAME: learnings
+      JDBC_USER: learnings
+      JDBC_PASSWORD: learnings
+    volumes:
+      - /home/docker/files:/DATA/FILES
+  back:
+    container_name: learnings-back
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: learnings
+      MYSQL_USER: learnings
+      MYSQL_PASSWORD: learnings
+    ports:
+      - "3306:3306"

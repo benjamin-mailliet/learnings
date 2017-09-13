@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>hei.iti4.devweb</groupId>
 	<artifactId>learnings</artifactId>
-	<version>2.0a</version>
+	<version>2017.0</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -44,6 +44,13 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.7.22</version>
+		</dependency>
+
+		<!-- Dépendance Argon2 pour hash des mots de passe -->
+		<dependency>
+			<groupId>de.mkammerer</groupId>
+			<artifactId>argon2-jvm</artifactId>
+			<version>2.2</version>
 		</dependency>
 
 		<!-- TESTS -->

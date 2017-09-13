@@ -1,6 +1,8 @@
 package learnings.managers;
 
 import learnings.exceptions.LearningsException;
+import learnings.pojos.FichierComplet;
+import learnings.utils.FichierUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,5 +70,13 @@ public class StockageLocalFichierManagerImpl implements FichierManager {
         } else {
             throw new LearningsException("Le fichier demandé n'existe pas.");
         }
+    }
+
+    @Override
+    public FichierComplet getFichierComplet(String path) throws LearningsException {
+        FichierComplet fichier = new FichierComplet();
+        fichier.setNom(FichierUtils.extraireNomFichier(path));
+        fichier.setDonnees(this.getFichier(path));
+        return fichier;
     }
 }

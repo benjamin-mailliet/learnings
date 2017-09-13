@@ -4,57 +4,39 @@ import learnings.utils.FichierUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
-public class Travail implements Serializable {
+public abstract class Travail implements Serializable {
 	private static final long serialVersionUID = 5229784210182658252L;
-
-	public static int COEFF_PROJET = 4;
 
 	private Long id;
 
-	private Enseignement enseignement;
 	private BigDecimal note;
 	private String commentaireNote;
-	private Date dateRendu;
+	private LocalDateTime dateRendu;
 	private String chemin;
 	private String commentaire;
-	private List<Utilisateur> utilisateurs;
-	private String urlRepository;
 
 	public Travail() {
 	}
 
-	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire, String urlRepository, String commentaireNote) {
+	public Travail(Long id, BigDecimal note, LocalDateTime dateRendu, String chemin, String commentaire, String commentaireNote) {
 		super();
 		this.id = id;
-		this.enseignement = enseignement;
 		this.note = note;
 		this.commentaireNote=commentaireNote;
 		this.dateRendu = dateRendu;
 		this.chemin = chemin;
 		this.commentaire = commentaire;
-		this.urlRepository = urlRepository;
 	}
 
-	public Travail(Long id, Enseignement enseignement, BigDecimal note, Date dateRendu, String chemin, String commentaire, String urlRepository) {
+	public Travail(Long id, BigDecimal note, LocalDateTime dateRendu, String chemin, String commentaire) {
 		super();
 		this.id = id;
-		this.enseignement = enseignement;
 		this.note = note;
 		this.dateRendu = dateRendu;
 		this.chemin = chemin;
 		this.commentaire = commentaire;
-		this.urlRepository = urlRepository;
-	}
-
-	public Enseignement getEnseignement() {
-		return enseignement;
-	}
-
-	public void setEnseignement(Enseignement enseignement) {
-		this.enseignement = enseignement;
 	}
 
 	public BigDecimal getNote() {
@@ -73,11 +55,11 @@ public class Travail implements Serializable {
 		this.commentaireNote = commentaireNote;
 	}
 
-	public Date getDateRendu() {
+	public LocalDateTime getDateRendu() {
 		return dateRendu;
 	}
 
-	public void setDateRendu(Date dateRendu) {
+	public void setDateRendu(LocalDateTime dateRendu) {
 		this.dateRendu = dateRendu;
 	}
 
@@ -108,21 +90,4 @@ public class Travail implements Serializable {
 	public void setCommentaire(String commentaire) {
 		this.commentaire = commentaire;
 	}
-
-	public List<Utilisateur> getUtilisateurs() {
-		return utilisateurs;
-	}
-
-	public void setUtilisateurs(List<Utilisateur> utilisateurs) {
-		this.utilisateurs = utilisateurs;
-	}
-	
-	public String getUrlRepository() {
-		return urlRepository;
-	}
-
-	public void setUrlRepository(String urlRepository) {
-		this.urlRepository = urlRepository;
-	}
-
 }

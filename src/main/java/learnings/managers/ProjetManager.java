@@ -1,19 +1,22 @@
 package learnings.managers;
 
 import learnings.dao.ProjetDao;
+import learnings.dao.RenduProjetDao;
 import learnings.dao.RessourceDao;
-import learnings.dao.TravailDao;
+import learnings.dao.UtilisateurDao;
 import learnings.dao.impl.ProjetDaoImpl;
+import learnings.dao.impl.RenduProjetDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
-import learnings.dao.impl.TravailDaoImpl;
+import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.model.Projet;
-import learnings.model.Travail;
-import learnings.pojos.ProjetAvecTravail;
+import learnings.model.RenduProjet;
+import learnings.pojos.ProjetAvecRendus;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProjetManager {
 
@@ -33,7 +36,8 @@ public class ProjetManager {
 
     private ProjetDao projetDao = new ProjetDaoImpl();
     private RessourceDao ressourceDao = new RessourceDaoImpl();
-    private TravailDao travailDao = new TravailDaoImpl();
+    private RenduProjetDao renduProjetDao = new RenduProjetDaoImpl();
+    private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 
     public List<Projet> listerProjets() {
         return projetDao.listerProjets();
@@ -87,17 +91,17 @@ public class ProjetManager {
         }
     }
 
-    public ProjetAvecTravail getProjetAvecTravail(Long idUtilisateur) {
+    public ProjetAvecRendus getProjetAvecTravail(Long idUtilisateur) {
         if (idUtilisateur == null) {
             throw new IllegalArgumentException("L'identifiant de l'utilisateur est incorrect.");
         }
-        ProjetAvecTravail projetAvecTravail = new ProjetAvecTravail();
+        ProjetAvecRendus projetAvecTravail = new ProjetAvecRendus();
         Long lastProjetId = projetDao.getLastProjetId();
         if(lastProjetId!=null) {
             projetAvecTravail.setProjet(projetDao.getProjet(lastProjetId));
 
-            Travail travailRendu = travailDao.getTravailUtilisateurParProjet(lastProjetId, idUtilisateur);
-            projetAvecTravail.setTravail(travailRendu);
+            List<RenduProjet> rendus = renduProjetDao.listerRendusUtilisateurParProjet(lastProjetId, idUtilisateur);
+            projetAvecTravail.setRendus(rendus.stream().collect(Collectors.groupingBy(RenduProjet::getEleve)));
 
             Map<String, Integer> mapJoursRestants = getNbJoursRestants(projetAvecTravail);
 
@@ -112,7 +116,7 @@ public class ProjetManager {
     }
 
     private Map<String, Integer> getNbJoursRestants(
-            ProjetAvecTravail projetAvecTravail) {
+            ProjetAvecRendus projetAvecTravail) {
         Date today = new Date();
 
         Long millisecondsPerDay = 86400000L;
@@ -126,7 +130,7 @@ public class ProjetManager {
         return mapNbJoursRestants;
     }
 
-    public Projet getProjetAvecTravaux(Long idProjet) {
+    public ProjetAvecRendus getProjetAvecRendus(Long idProjet) {
         if (idProjet == null) {
             throw new IllegalArgumentException("L'identifiant du projet est incorrect.");
         }
@@ -134,11 +138,12 @@ public class ProjetManager {
         if (projet == null) {
             throw new IllegalArgumentException("L'identifiant du projet est inconnu.");
         }
-        projet.setTravauxRendus(travailDao.listerTravauxParProjet(idProjet));
-        for (Travail travailRendu : projet.getTravauxRendus()) {
-            travailRendu.setUtilisateurs(travailDao.listerUtilisateursParTravail(travailRendu.getId()));
-        }
+        ProjetAvecRendus projetAvecRendus = new ProjetAvecRendus();
+        projetAvecRendus.setProjet(projet);
 
-        return projet;
+        List<RenduProjet> rendus = renduProjetDao.listerRendusParProjet(idProjet);
+        projetAvecRendus.setRendus(rendus.stream().collect(Collectors.groupingBy(RenduProjet::getEleve)));
+
+        return projetAvecRendus;
     }
 }

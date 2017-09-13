@@ -3,9 +3,12 @@
 <head>
     <title>Tableau des notes</title>
     <th:block th:replace="fragments/htmlheader"/>
+    <script th:src="@{/js/notes.js}"></script>
 </head>
 <body>
     <nav th:replace="fragments/menu :: admin('note')"></nav>
+
+    <div th:replace="fragments/popupnote :: note"></div>
 
     <div class="container">
         <div th:replace="fragments/messages"></div>
@@ -33,9 +36,31 @@
                 <th>Moyenne</th>
             </tr>
             <tr th:each="eleve : ${eleves}" th:id="'eleve'+${eleve.id}">
-                <td th:text="${eleve.email}"></td>
-                <td th:each="seance : ${seancesNotees}">[[${eleve.mapSeanceIdTravail[seance.id]} ? ${eleve.mapSeanceIdTravail[seance.id].note}]]</td>
-                <td th:text="${eleve.projet} ? ${eleve.projet.note}"></td>
+                <td th:text="${eleve.prenom + ' ' + eleve.nom}"></td>
+                <td th:each="seance : ${seancesNotees}">
+                    [[${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].valeur}]]
+                    <button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-default btn-note btn-xs"
+                            data-toggle="modal"
+                            data-target="#popupNote"
+                            th:data-seance="${seance.id}"
+                            th:data-eleve="${eleve.id}"
+                            th:data-elevePrenomNom="${eleve.prenom+' '+eleve.nom}"
+                            title="Gérer l'évaluation">
+                        <i class="fa fa-tags" aria-hidden="true"></i>
+                    </button>
+                </td>
+                <td>
+                    [[${eleve.noteProjet} ? ${eleve.noteProjet.valeur}]]
+                    <button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-default btn-note btn-xs"
+                            data-toggle="modal"
+                            data-target="#popupNote"
+                            th:data-projet="${projet.id}"
+                            th:data-eleve="${eleve.id}"
+                            th:data-elevePrenomNom="${eleve.prenom+' '+eleve.nom}"
+                            title="Gérer l'évaluation">
+                        <i class="fa fa-tags" aria-hidden="true"></i>
+                    </button>
+                </td>
                 <td th:text="${eleve.moyenne}"></td>
             </tr>
             <tr>
