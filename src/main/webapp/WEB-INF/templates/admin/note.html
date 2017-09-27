@@ -4,6 +4,7 @@
     <title>Tableau des notes</title>
     <th:block th:replace="fragments/htmlheader"/>
     <script th:src="@{/js/notes.js}"></script>
+    <script th:src="@{/js/filtre.js}"></script>
 </head>
 <body>
     <nav th:replace="fragments/menu :: admin('note')"></nav>
@@ -23,6 +24,12 @@
             </form>
         </header>
 
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="filter-eleve">Eleve : </label>
+                <input id="filter-eleve" type="text" class="query-filter form-control" data-query-filter="eleve" />
+            </div>
+        </div>
         <table id="listeNotes" class="table table-striped">
             <tr>
                 <th>Eleve</th>
@@ -36,7 +43,7 @@
                 <th>Moyenne</th>
             </tr>
             <tr th:each="eleve : ${eleves}" th:id="'eleve'+${eleve.id}">
-                <td th:text="${eleve.prenom + ' ' + eleve.nom}"></td>
+                <td data-filter="eleve" class="filter" th:text="${eleve.prenom + ' ' + eleve.nom}"></td>
                 <td th:each="seance : ${seancesNotees}">
                     [[${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].valeur}]]
                     <button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-default btn-note btn-xs"
