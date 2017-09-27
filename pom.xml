@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>hei.iti4.devweb</groupId>
 	<artifactId>learnings</artifactId>
-	<version>2017.1-SNAPSHOT</version>
+	<version>2017.1</version>
 	<packaging>war</packaging>
 
 	<properties>
