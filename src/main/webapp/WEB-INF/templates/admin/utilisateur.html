@@ -18,11 +18,23 @@
 					<button id="boutonEnvoiMails" class="btn btn-default pull-right"><i class="fa fa-envelope" ></i> Envoyer Email</button>
 				</h1>
 			</header>
-			<div>
-				Nom : <input type="text" class="query-filter" data-query-filter="nom" />
-			</div>
-			<div>
-				Prénom : <input type="text" class="query-filter" data-query-filter="prenom" />
+			<div  class="form-inline">
+				<div class="form-group">
+					<label for="filter-nom">Nom : </label>
+					<input id="filter-nom" type="text" class="query-filter form-control" data-query-filter="nom" />
+				</div>
+				<div class="form-group">
+					<label for="filter-prenom">Prénom : </label>
+					<input id="filter-prenom" type="text" class="query-filter form-control" data-query-filter="prenom" />
+				</div>
+				<div class="form-group">
+					<label for="filter-groupe">Groupe : </label>
+					<select id="filter-groupe" class="query-filter form-control" data-query-filter="groupe">
+								<option></option>
+								<option>Groupe 1</option>
+								<option>Groupe 2</option>
+							</select>
+				</div>
 			</div>
 
 			<table id="listeUtilisateurs" class="table table-striped">

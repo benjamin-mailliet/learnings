@@ -1,28 +1,34 @@
 var filter = function(elementToFilter, stringToFilter) {
-    $(".hidden").each(function (index, element) {
-        $(element).removeClass("hidden");
+    var hiddenClass = "hidden-" + elementToFilter;
+    var displayedClass = "displayed-"+elementToFilter;
+
+    $("."+hiddenClass).each(function (index, element) {
+        $(element).removeClass(hiddenClass);
     });
 
-    $(".displayed").each(function (index, element) {
-        $(element).removeClass("displayed");
+    $("."+displayedClass).each(function (index, element) {
+        $(element).removeClass(displayedClass);
     });
 
     $(".filter[data-filter='"+elementToFilter+"']").each(function (index, element) {
         var jqElement = $(element);
         var jqParent = $(jqElement.parent());
         if ($(jqElement).text().toUpperCase().indexOf(stringToFilter.toUpperCase()) > -1) {
-            jqParent.removeClass("hidden");
-            jqParent.addClass("displayed");
+            jqParent.removeClass(hiddenClass);
+            jqParent.addClass(displayedClass);
         } else {
-            if (!jqParent.hasClass("hidden") && !jqParent.hasClass("displayed")) {
-                jqParent.addClass("hidden");
+            if (!jqParent.hasClass(hiddenClass) && !jqParent.hasClass(displayedClass)) {
+                jqParent.addClass(hiddenClass);
             }
         }
     });
 };
 
 $(document).ready(function () {
-    $(".query-filter").keyup(function(){
+    $("input.query-filter").keyup(function(){
+        filter($(this).attr("data-query-filter"), $( this ).val());
+    });
+    $("select.query-filter").change(function(){
         filter($(this).attr("data-query-filter"), $( this ).val());
     });
 });

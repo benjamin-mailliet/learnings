@@ -1,3 +1,15 @@
 textarea.editeur-riche {
     height:200px;
 }
+
+[class^='hidden-'], [class*=" hidden-"]{
+    display: none;
+}
+
+div.form-inline .form-group{
+    margin-left: 10px;
+}
+
+div.form-inline{
+    margin-bottom: 10px;
+}
