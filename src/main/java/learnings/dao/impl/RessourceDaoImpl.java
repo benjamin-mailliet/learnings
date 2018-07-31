@@ -3,7 +3,6 @@ package learnings.dao.impl;
 import learnings.dao.RessourceDao;
 import learnings.exceptions.LearningsSQLException;
 import learnings.model.Enseignement;
-import learnings.model.Projet;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 
@@ -12,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +21,10 @@ public class RessourceDaoImpl extends GenericDaoImpl implements RessourceDao {
         List<Ressource> listeRessources = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
-                     .prepareStatement("SELECT r.id, r.titre, r.chemin FROM ressource r WHERE r.seance_id=? OR r.projet_id=? ORDER BY titre ASC")
+                     .prepareStatement("SELECT r.id, r.titre, r.chemin FROM ressource r WHERE r.seance_id=? ORDER BY titre ASC")
         ) {
-            if (enseignement instanceof Seance) {
-                stmt.setLong(1, enseignement.getId());
-                stmt.setNull(2, Types.INTEGER);
-            } else {
-                stmt.setNull(1, Types.INTEGER);
-                stmt.setLong(2, enseignement.getId());
-            }
+            stmt.setLong(1, enseignement.getId());
+
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     listeRessources.add(new Ressource(results.getLong("id"), results.getString("titre"), results.getString("chemin"), enseignement));
@@ -46,18 +39,13 @@ public class RessourceDaoImpl extends GenericDaoImpl implements RessourceDao {
     @Override
     public Ressource ajouterRessource(Ressource ressource) {
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement("INSERT INTO ressource(titre, chemin, seance_id, projet_id) VALUES(?, ?, ?, ?)",
+             PreparedStatement stmt = connection.prepareStatement("INSERT INTO ressource(titre, chemin, seance_id) VALUES(?, ?, ?)",
                      Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setString(1, ressource.getTitre());
             stmt.setString(2, ressource.getChemin());
-            if (ressource.getEnseignement() instanceof Seance) {
-                stmt.setLong(3, ressource.getEnseignement().getId());
-                stmt.setNull(4, Types.INTEGER);
-            } else {
-                stmt.setNull(3, Types.INTEGER);
-                stmt.setLong(4, ressource.getEnseignement().getId());
-            }
+            stmt.setLong(3, ressource.getEnseignement().getId());
+
             stmt.executeUpdate();
 
             try (ResultSet ids = stmt.getGeneratedKeys()) {
@@ -76,21 +64,17 @@ public class RessourceDaoImpl extends GenericDaoImpl implements RessourceDao {
         Ressource ressource = null;
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
-                     .prepareStatement("SELECT r.id as idRessource, r.titre as titre, r.chemin as chemin, s.id as idSeance, s.titre as titreSeance, s.description as descSeance, s.date as dateSeance, p.id as idProjet, p.titre as titreProjet, p.description as descProjet, p.datelimiterendulot1 as datelimiterendulot1Projet, p.datelimiterendulot2 as datelimiterendulot2Projet FROM ressource r LEFT JOIN seance s ON s.id = r.seance_id LEFT JOIN projet p ON p.id = r.projet_id WHERE r.id = ?")
+                     .prepareStatement("SELECT r.id as idRessource, r.titre as titre, r.chemin as chemin, s.id as idSeance, s.titre as titreSeance, s.description as descSeance, s.date as dateSeance FROM ressource r LEFT JOIN seance s ON s.id = r.seance_id WHERE r.id = ?")
         ) {
             stmt.setLong(1, idRessource);
             try (ResultSet results = stmt.executeQuery()) {
                 if (results.next()) {
-                    Enseignement enseignement = null;
                     if (results.getString("idSeance") != null) {
-                        enseignement = new Seance(results.getLong("idSeance"), results.getString("titreSeance"), results.getString("descSeance"),
+                        Enseignement enseignement = new Seance(results.getLong("idSeance"), results.getString("titreSeance"), results.getString("descSeance"),
                                 results.getDate("dateSeance"));
+                        ressource = new Ressource(results.getLong("idRessource"), results.getString("titre"), results.getString("chemin"), enseignement);
                     }
-                    if (results.getString("idProjet") != null) {
-                        enseignement = new Projet(results.getLong("idProjet"), results.getString("titreProjet"), results.getString("descProjet"),
-                                results.getTimestamp("datelimiterendulot1Projet"), results.getTimestamp("datelimiterendulot2Projet"));
-                    }
-                    ressource = new Ressource(results.getLong("idRessource"), results.getString("titre"), results.getString("chemin"), enseignement);
+
                 }
             }
         } catch (SQLException e) {

@@ -5,7 +5,6 @@ import learnings.exceptions.LearningsException;
 import learnings.model.Enseignement;
 import learnings.model.Note;
 import learnings.model.Seance;
-import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.EleveAvecNotes;
 
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public class CsvUtils {
     }
 
     public static void creerCSVElevesNotes(Writer writer, List<EleveAvecNotes> eleves, List<Seance> seancesNotees) throws IOException {
-        List<EleveAvecNotes> elevesSorted = eleves.stream().sorted((e1, e2) -> e1.getNom().compareTo(e2.getNom())).collect(Collectors.toList());
+        List<EleveAvecNotes> elevesSorted = eleves.stream().sorted(Comparator.comparing(Utilisateur::getNom)).collect(Collectors.toList());
         List<Long> listeIdsSeances = seancesNotees.stream().map(Enseignement::getId).sorted().collect(Collectors.toList());
         ecrireEnTeteCSVNotes(writer, seancesNotees);
         for (EleveAvecNotes eleve : elevesSorted) {
@@ -57,11 +57,6 @@ public class CsvUtils {
             }
             ligneEleve.add(noteString);
         }
-        if (eleve.getNoteProjet() != null){
-            ajouterNoteIfNoNull(eleve.getNoteProjet().getValeur(),ligneEleve);
-        }else{
-            ligneEleve.add("");
-        }
         ligneEleve = ajouterNoteIfNoNull(eleve.getMoyenne(), ligneEleve);
         ecrireLigne(writer, ligneEleve);
     }
@@ -78,8 +73,7 @@ public class CsvUtils {
     private static void ecrireEnTeteCSVNotes(Writer writer, List<Seance> seancesNotees) throws IOException {
         ArrayList<String> valeursPremiereLigne= new ArrayList<>();
         valeursPremiereLigne.add("Elève");
-        valeursPremiereLigne.addAll(seancesNotees.stream().sorted((s1, s2) -> s1.getId().compareTo(s2.getId())).map(Seance::getTitre).collect(Collectors.toList()));
-        valeursPremiereLigne.add("Projet");
+        valeursPremiereLigne.addAll(seancesNotees.stream().sorted(Comparator.comparing(Enseignement::getId)).map(Seance::getTitre).collect(Collectors.toList()));
         valeursPremiereLigne.add("Moyenne");
         ecrireLigne(writer, valeursPremiereLigne);
     }
@@ -110,7 +104,7 @@ public class CsvUtils {
     }
 
     public static boolean parserAdmin(int numeroLigne, String adminCsv) throws LearningsException {
-        boolean admin = false;
+        boolean admin;
         if ("1".equals(adminCsv) || "true".equalsIgnoreCase(adminCsv) || "oui".equalsIgnoreCase(adminCsv)) {
             admin = true;
         } else if ("0".equals(adminCsv) || "false".equalsIgnoreCase(adminCsv) || "non".equalsIgnoreCase(adminCsv)) {

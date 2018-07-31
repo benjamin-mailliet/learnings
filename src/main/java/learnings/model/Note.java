@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 public class Note {
 
-    public static int COEFF_PROJET = 4;
-
     private Long id;
 
     private Utilisateur eleve;

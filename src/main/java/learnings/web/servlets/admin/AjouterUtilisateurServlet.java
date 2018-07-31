@@ -39,8 +39,6 @@ public class AjouterUtilisateurServlet extends GenericLearningsServlet {
 			engine.process("admin/nouvelUtilisateur", context, response.getWriter());
 		} catch (IllegalArgumentException e) {
 			response.sendError(400);
-		} catch (LearningsSecuriteException e) {
-			response.sendError(500);
 		}
 	}
 

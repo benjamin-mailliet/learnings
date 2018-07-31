@@ -23,11 +23,6 @@
 						<td th:text="${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].commentaire}"></td>
 					</tr>
 					<tr>
-						<th>Projet individuel</th>
-						<td th:text="${eleve.noteProjet} ? ${eleve.noteProjet.valeur}"></td>
-						<td th:text="${eleve.noteProjet} ? ${eleve.noteProjet.commentaire}"></td>
-					</tr>
-					<tr>
 						<th>Moyenne</th>
 						<td colspan="2" th:text="${eleve.moyenne}"></td>
 					</tr>

@@ -1,9 +1,7 @@
 package learnings.managers;
 
-import learnings.dao.ProjetDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
-import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.exceptions.LearningAccessException;
@@ -32,20 +30,13 @@ public class RessourceManager {
 
     private FichierManager fichierManager = new StockageLocalFichierManagerImpl();
     private SeanceDao seanceDao = new SeanceDaoImpl();
-    private ProjetDao projetDao = new ProjetDaoImpl();
     private RessourceDao ressourceDao = new RessourceDaoImpl();
 
-    public void ajouterRessource(Long idSeance, Long idProjet, String titre, String nomFichier, InputStream fichier) throws LearningsException {
-        if (idSeance == null && idProjet == null) {
-            throw new IllegalArgumentException("Les idenfiants d'enseignement sont null.");
+    public void ajouterRessource(Long idSeance, String titre, String nomFichier, InputStream fichier) throws LearningsException {
+        if (idSeance == null) {
+            throw new IllegalArgumentException("L'idenfiant de la séance est null.");
         }
-        Enseignement enseignement = null;
-        if (idSeance != null) {
-            enseignement = seanceDao.getSeance(idSeance);
-        }
-        if (idProjet != null) {
-            enseignement = projetDao.getProjet(idProjet);
-        }
+        Enseignement enseignement =  seanceDao.getSeance(idSeance);
         if (enseignement == null) {
             throw new IllegalArgumentException("L'enseignement est inconnu.");
         }

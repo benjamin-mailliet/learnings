@@ -37,8 +37,6 @@ public class ConnexionServlet extends GenericLearningsServlet {
 			}
 		} catch (IllegalArgumentException e) {
 			this.ajouterMessageErreur(request, e.getMessage());
-		} catch (LearningsSecuriteException e) {
-			this.ajouterMessageErreur(request, "Problème à la vérification du mot de passe.");
 		}
 
 		response.sendRedirect("connexion");

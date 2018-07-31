@@ -2,7 +2,6 @@ package learnings.dao.impl;
 
 import learnings.AbstractDaoTestCase;
 import learnings.dao.RessourceDao;
-import learnings.model.Projet;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 import org.junit.Before;
@@ -30,12 +29,10 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement()
         ) {
-            stmt.executeUpdate("INSERT INTO `projet`(`id`,`titre`,`description`,`datelimiterendulot1`, `datelimiterendulot2`) VALUES(1,'Projet','Projet','2014-08-26 10:00', '2014-09-26 10:00')");
             stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`, `type`) VALUES(1,'cours1','cours de debuggage','2014-08-26', 'COURS')");
             stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(1,'ressource1','chemin ressource de cours 1',1)");
             stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(2,'ressource2','chemin ressource de cours 2',1)");
             stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(3,'ressource3','ressource de tp',1)");
-            stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`projet_id`) VALUES(4,'ressourceProjet','ressource de projet',1)");
         }
     }
 
@@ -49,17 +46,6 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
                 tuple(1L, "ressource1", "chemin ressource de cours 1", "titre"),
                 tuple(2L, "ressource2", "chemin ressource de cours 2", "titre"),
                 tuple(3L, "ressource3", "ressource de tp", "titre")
-        );
-    }
-
-    @Test
-    public void shouldListerRessourcesProjet() {
-        // WHEN
-        List<Ressource> listeRessources = ressourceDao.getRessources(new Projet(1L, "projet", null, null, null));
-        // THEN
-        assertThat(listeRessources).hasSize(1);
-        assertThat(listeRessources).extracting("id", "titre", "chemin", "enseignement.titre").containsOnly(
-                tuple(4L, "ressourceProjet", "ressource de projet", "projet")
         );
     }
 
@@ -83,7 +69,6 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
                 assertThat(results.getString("titre")).isEqualTo("monTitre");
                 assertThat(results.getString("chemin")).isEqualTo("/chemin/monFichier.zip");
                 assertThat(results.getLong("seance_id")).isEqualTo(1L);
-                assertThat(results.getString("projet_id")).isNull();
             }
         }
     }

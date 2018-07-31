@@ -56,8 +56,6 @@ public class GestionUtilisateurServlet extends GenericLearningsServlet {
 		} catch (IllegalArgumentException e) {
 			response.sendError(400);
 			e.printStackTrace();
-		} catch (LearningsSecuriteException e) {
-			response.sendError(500);
 		}
 
 	}
