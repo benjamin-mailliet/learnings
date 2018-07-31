@@ -1,7 +1,9 @@
 package learnings.managers;
 
+import learnings.dao.RenduTpDao;
 import learnings.dao.UtilisateurDao;
 import learnings.enums.Groupe;
+import learnings.model.RenduTp;
 import learnings.model.Utilisateur;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +14,10 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -27,23 +33,34 @@ public class UtilisateurManagerTestCase {
 	@Mock
 	private MotDePasseManager motDePasseManager;
 
+	@Mock
+	private RenduTpDao renduTpDao;
+
 	@InjectMocks
 	private UtilisateurManager utilisateurManager = UtilisateurManager.getInstance();
 
+	private Utilisateur utilisateur1 = new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false);
+	private Utilisateur utilisateur2 = new Utilisateur(2L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false);
 	private Utilisateur utilisateur3 = new Utilisateur(null, "nom3", "prenom3", "email3", null, true);
 
 	@Before
 	public void init() throws Exception {
+		when(utilisateurDao.listerEleves()).thenReturn(Arrays.asList(utilisateur1, utilisateur2));
+
 		when(utilisateurDao.getMotDePasseUtilisateurHashe(Mockito.eq("email1"))).thenReturn("motDePasseHash");
-		when(utilisateurDao.getUtilisateur(Mockito.eq(1L))).thenReturn(new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false));
-		when(utilisateurDao.getUtilisateur(Mockito.eq(2L))).thenReturn(new Utilisateur(1L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false));
-		when(utilisateurDao.getUtilisateur(Mockito.eq("email1"))).thenReturn(new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false));
+
+		when(utilisateurDao.getUtilisateur(Mockito.eq(1L))).thenReturn(utilisateur1);
+		when(utilisateurDao.getUtilisateur(Mockito.eq(2L))).thenReturn(utilisateur2);
+		when(utilisateurDao.getUtilisateur(Mockito.eq("email1"))).thenReturn(utilisateur1);
 		when(utilisateurDao.ajouterUtilisateur(Mockito.eq(utilisateur3), Mockito.eq("email3Hash"))).thenReturn(
 				new Utilisateur(3L, "nom3", "prenom3", "email3", null, true));
 
 		when(motDePasseManager.validerMotDePasse(Mockito.eq("motDePasse"), Mockito.eq("motDePasseHash"))).thenReturn(true);
 		when(motDePasseManager.genererMotDePasse(Mockito.eq("email1"))).thenReturn("email1Hash");
 		when(motDePasseManager.genererMotDePasse(Mockito.eq("email3"))).thenReturn("email3Hash");
+
+		RenduTp renduTp = new RenduTp(1L, null, LocalDateTime.of(2018, Month.AUGUST, 1, 1, 1, 1, 1), "/path/to/file.txt", "commentaire", null);
+		when(renduTpDao.listerRendusParUtilisateur(2L)).thenReturn(Collections.singletonList(renduTp));
 
 	}
 
@@ -488,7 +505,7 @@ public class UtilisateurManagerTestCase {
 		// WHEN
 		String emails = utilisateurManager.listerEmailsElevesPourEnvoi();
 		// THEN
-		assertThat(emails).matches("eleve[34]@mail.com;eleve[34]@mail.com");
+		assertThat(emails).matches("email1;email2");
 	}
 
 }
