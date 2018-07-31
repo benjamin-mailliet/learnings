@@ -7,24 +7,24 @@ public class Ressource implements Serializable {
 
 	private Long id;
 
-	private Enseignement enseignement;
+	private Seance seance;
 	private String chemin;
 	private String titre;
 
-	public Ressource(Long id, String titre, String chemin, Enseignement enseignement) {
+	public Ressource(Long id, String titre, String chemin, Seance seance) {
 		super();
 		this.id = id;
-		this.enseignement = enseignement;
+		this.seance = seance;
 		this.chemin = chemin;
 		this.titre = titre;
 	}
 
-	public Enseignement getEnseignement() {
-		return enseignement;
+	public Seance getSeance() {
+		return seance;
 	}
 
-	public void setEnseignement(Enseignement enseignement) {
-		this.enseignement = enseignement;
+	public void setSeance(Seance seance) {
+		this.seance = seance;
 	}
 
 	public String getChemin() {

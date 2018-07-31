@@ -2,7 +2,6 @@ package learnings.dao.impl;
 
 import learnings.dao.NoteDao;
 import learnings.exceptions.LearningsSQLException;
-import learnings.model.Enseignement;
 import learnings.model.Note;
 import learnings.model.Seance;
 import learnings.model.Utilisateur;
@@ -12,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +22,7 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
                      "INSERT INTO note(eleve_id, seance_id, valeur, commentaire) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setLong(1, note.getEleve().getId());
-            stmt.setLong(2, note.getEnseignement().getId());
+            stmt.setLong(2, note.getSeance().getId());
             stmt.setBigDecimal(3, note.getValeur());
             stmt.setString(4, note.getCommentaire());
 
@@ -42,14 +40,13 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
     }
 
     public Note modifierNote(Note note) {
-        String nomCleEnseignement = "seance_id";
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(
-                     "UPDATE note SET valeur=?, commentaire=? WHERE " + nomCleEnseignement + "=? AND eleve_id=?", Statement.RETURN_GENERATED_KEYS)
+                     "UPDATE note SET valeur=?, commentaire=? WHERE seance_id=? AND eleve_id=?", Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setBigDecimal(1, note.getValeur());
             stmt.setString(2, note.getCommentaire());
-            stmt.setLong(3, note.getEnseignement().getId());
+            stmt.setLong(3, note.getSeance().getId());
             stmt.setLong(4, note.getEleve().getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -58,7 +55,7 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
         return note;
     }
 
-    private Enseignement getEnseignement(ResultSet resultSet) throws SQLException {
+    private Seance getSeance(ResultSet resultSet) throws SQLException {
         Long seanceId = resultSet.getLong("n.seance_id");
         if (!resultSet.wasNull()) {
             return new Seance(seanceId, null, null, null);
@@ -77,7 +74,7 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     notes.add(new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), null, null, null, null, false),
-                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
+                            this.getSeance(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
                 }
             }
         } catch (SQLException e) {
@@ -102,7 +99,7 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     notes.add(new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), null, null, null, null, false),
-                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
+                            this.getSeance(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
                 }
             }
         } catch (SQLException e) {
@@ -123,7 +120,7 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     note = new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), results.getString("u.nom"), results.getString("u.prenom"), null, null, false),
-                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire"));
+                            this.getSeance(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire"));
                 }
             }
         } catch (SQLException e) {

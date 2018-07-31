@@ -31,7 +31,7 @@ public class NoteWebservice{
     @GET
     public String getNoteBySeanceAndEleve(@QueryParam("seance") Long idSeance, @QueryParam("eleve") Long idEleve){
         Gson gsonParser = new Gson();
-        return gsonParser.toJson(NoteManager.getInstance().getNoteByEnseignementAndEleve(idSeance, idEleve));
+        return gsonParser.toJson(NoteManager.getInstance().getNoteBySeanceAndEleve(idSeance, idEleve));
     }
 
     @Path("/tp/")

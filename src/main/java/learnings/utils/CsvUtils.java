@@ -2,7 +2,6 @@ package learnings.utils;
 
 import learnings.enums.Groupe;
 import learnings.exceptions.LearningsException;
-import learnings.model.Enseignement;
 import learnings.model.Note;
 import learnings.model.Seance;
 import learnings.model.Utilisateur;
@@ -37,7 +36,7 @@ public class CsvUtils {
 
     public static void creerCSVElevesNotes(Writer writer, List<EleveAvecNotes> eleves, List<Seance> seancesNotees) throws IOException {
         List<EleveAvecNotes> elevesSorted = eleves.stream().sorted(Comparator.comparing(Utilisateur::getNom)).collect(Collectors.toList());
-        List<Long> listeIdsSeances = seancesNotees.stream().map(Enseignement::getId).sorted().collect(Collectors.toList());
+        List<Long> listeIdsSeances = seancesNotees.stream().map(Seance::getId).sorted().collect(Collectors.toList());
         ecrireEnTeteCSVNotes(writer, seancesNotees);
         for (EleveAvecNotes eleve : elevesSorted) {
             ecrireLigneEleve(writer, listeIdsSeances, eleve);
@@ -73,7 +72,7 @@ public class CsvUtils {
     private static void ecrireEnTeteCSVNotes(Writer writer, List<Seance> seancesNotees) throws IOException {
         ArrayList<String> valeursPremiereLigne= new ArrayList<>();
         valeursPremiereLigne.add("Elève");
-        valeursPremiereLigne.addAll(seancesNotees.stream().sorted(Comparator.comparing(Enseignement::getId)).map(Seance::getTitre).collect(Collectors.toList()));
+        valeursPremiereLigne.addAll(seancesNotees.stream().sorted(Comparator.comparing(Seance::getId)).map(Seance::getTitre).collect(Collectors.toList()));
         valeursPremiereLigne.add("Moyenne");
         ecrireLigne(writer, valeursPremiereLigne);
     }

@@ -42,7 +42,7 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
         List<Ressource> listeRessources = ressourceDao.getRessources(new Seance(1L, "titre", "desc", new Date()));
         // THEN
         assertThat(listeRessources).hasSize(3);
-        assertThat(listeRessources).extracting("id", "titre", "chemin", "enseignement.titre").containsOnly(
+        assertThat(listeRessources).extracting("id", "titre", "chemin", "seance.titre").containsOnly(
                 tuple(1L, "ressource1", "chemin ressource de cours 1", "titre"),
                 tuple(2L, "ressource2", "chemin ressource de cours 2", "titre"),
                 tuple(3L, "ressource3", "ressource de tp", "titre")
@@ -81,9 +81,9 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
         assertThat(ressource.getId()).isEqualTo(1L);
         assertThat(ressource.getTitre()).isEqualTo("ressource1");
         assertThat(ressource.getChemin()).isEqualTo("chemin ressource de cours 1");
-        assertThat(ressource.getEnseignement().getId()).isEqualTo(1L);
-        assertThat(ressource.getEnseignement().getDescription()).isEqualTo("cours de debuggage");
-        assertThat(((Seance) ressource.getEnseignement()).getDate()).isEqualToIgnoringMillis(getDate(2014, Calendar.AUGUST, 26));
+        assertThat(ressource.getSeance().getId()).isEqualTo(1L);
+        assertThat(ressource.getSeance().getDescription()).isEqualTo("cours de debuggage");
+        assertThat(((Seance) ressource.getSeance()).getDate()).isEqualToIgnoringMillis(getDate(2014, Calendar.AUGUST, 26));
     }
 
     @Test

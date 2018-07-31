@@ -3,7 +3,7 @@ package learnings.web.servlets.admin;
 import learnings.exceptions.LearningsException;
 import learnings.managers.RessourceManager;
 import learnings.managers.SeanceManager;
-import learnings.model.Enseignement;
+import learnings.model.Seance;
 import learnings.web.servlets.GenericLearningsServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -35,11 +35,11 @@ public class RessourceServlet extends GenericLearningsServlet {
             this.ajouterMessageErreur(request, "Une séance doit être sélectionnée.");
             response.sendRedirect("listeseances");
         } else {
-            Enseignement enseignement = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
+            Seance seance = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
 
             TemplateEngine engine = this.createTemplateEngine(request);
             WebContext context = new WebContext(request, response, getServletContext());
-            context.setVariable("enseignement", enseignement);
+            context.setVariable("seance", seance);
             engine.process("admin/ressource", context, response.getWriter());
         }
 

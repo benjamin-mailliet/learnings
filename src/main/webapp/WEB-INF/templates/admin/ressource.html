@@ -5,13 +5,13 @@
 		<th:block th:replace="fragments/htmlheader" />
 	</head>
 	<body>
-		<nav th:replace="fragments/menu :: admin(${type})"></nav>
+		<nav th:replace="fragments/menu :: admin('seance')"></nav>
 	
 		<div class="container">
 			<div th:replace="fragments/messages"></div>
 			<header class="page-header"> 
 				<h1>
-					Ressources de la séance n°[[${enseignement.id}]]
+					Ressources de la séance n°[[${seance.id}]]
 					<small><a href="listeseances" class="label label-default">Retour à la liste</a></small>
 				</h1>
 			</header>
@@ -23,12 +23,12 @@
 						<th>Chemin</th>
 						<th></th>
 					</tr>
-					<tr th:each="ressource : ${enseignement.ressources}">
-						<td th:text="${ressource.id}">"</td>
-						<td th:text="${ressource.titre}"></td>
+					<tr th:each="ressource : ${seance.ressources}">
+						<td th:text="${seance.id}">"</td>
+						<td th:text="${seance.titre}"></td>
 						<td><a th:href="'../admin/telechargerRessource?id='+${ressource.id}" th:text="${ressource.chemin}"></a></td>
 						<td>
-							<a th:href="'supprimerressource?idSeance='+${enseignement.id}+'&idRessource='+${ressource.id}" class="btn btn-danger btn-xs" title="Supprimer la ressource"><span class="glyphicon glyphicon-trash"></span></a>
+							<a th:href="'supprimerressource?idSeance='+${seance.id}+'&idRessource='+${ressource.id}" class="btn btn-danger btn-xs" title="Supprimer la ressource"><span class="glyphicon glyphicon-trash"></span></a>
 						</td>
 					</tr>
 					<tr>
@@ -36,7 +36,7 @@
 						<td><input class="form-control" type="text" name="titre" /></td>
 						<td><input type="file" name="fichier" /></td>
 						<td>
-							<input type="hidden" name="seance" th:value="${enseignement.id}" />
+							<input type="hidden" name="seance" th:value="${seance.id}" />
 							<input class="btn btn-primary" type="submit" value="Ajouter" />
 						</td>
 					</tr>

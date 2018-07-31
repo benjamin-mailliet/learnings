@@ -166,7 +166,7 @@ public class UtilisateurManager {
         List<Note> notesEleve = noteDao.listerNotesParUtilisateur(eleve.getId());
         Map<Long, Note> notesSeance = new HashMap<>();
         for (Note note : notesEleve) {
-            notesSeance.put(note.getEnseignement().getId(), note);
+            notesSeance.put(note.getSeance().getId(), note);
         }
 
         eleveComplet.setMapSeanceNote(notesSeance);

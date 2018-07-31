@@ -25,19 +25,19 @@ public class NoteManager {
 
     private NoteDao noteDao = new NoteDaoImpl();
 
-    public Note getNoteByEnseignementAndEleve(Long idEnseignement, Long idEleve) {
-        if (idEnseignement == null) {
+    public Note getNoteBySeanceAndEleve(Long idSeance, Long idEleve) {
+        if (idSeance == null) {
             throw new IllegalArgumentException("L'identifiant de la séance est incorrect.");
         }
         if (idEleve == null) {
             throw new IllegalArgumentException("L'identifiant de l'élève est incorrect.");
         }
-        return noteDao.getBySeanceAndEleve(idEnseignement, idEleve);
+        return noteDao.getBySeanceAndEleve(idSeance, idEleve);
     }
 
 
-    public Map<Long, Note> getMapNoteEleve(Long idEnseignement) {
-        List<Note> notes = noteDao.listerNotesParSeance(idEnseignement);
+    public Map<Long, Note> getMapNoteEleve(Long idSeance) {
+        List<Note> notes = noteDao.listerNotesParSeance(idSeance);
         return notes.stream().collect(Collectors.toMap(n -> n.getEleve().getId(),
                 Function.identity()));
     }

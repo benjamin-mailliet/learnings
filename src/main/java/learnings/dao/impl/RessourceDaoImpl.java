@@ -2,7 +2,6 @@ package learnings.dao.impl;
 
 import learnings.dao.RessourceDao;
 import learnings.exceptions.LearningsSQLException;
-import learnings.model.Enseignement;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 
@@ -17,17 +16,17 @@ import java.util.List;
 public class RessourceDaoImpl extends GenericDaoImpl implements RessourceDao {
 
     @Override
-    public List<Ressource> getRessources(Enseignement enseignement) {
+    public List<Ressource> getRessources(Seance seance) {
         List<Ressource> listeRessources = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
                      .prepareStatement("SELECT r.id, r.titre, r.chemin FROM ressource r WHERE r.seance_id=? ORDER BY titre ASC")
         ) {
-            stmt.setLong(1, enseignement.getId());
+            stmt.setLong(1, seance.getId());
 
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    listeRessources.add(new Ressource(results.getLong("id"), results.getString("titre"), results.getString("chemin"), enseignement));
+                    listeRessources.add(new Ressource(results.getLong("id"), results.getString("titre"), results.getString("chemin"), seance));
                 }
             }
         } catch (SQLException e) {
@@ -44,13 +43,13 @@ public class RessourceDaoImpl extends GenericDaoImpl implements RessourceDao {
         ) {
             stmt.setString(1, ressource.getTitre());
             stmt.setString(2, ressource.getChemin());
-            stmt.setLong(3, ressource.getEnseignement().getId());
+            stmt.setLong(3, ressource.getSeance().getId());
 
             stmt.executeUpdate();
 
             try (ResultSet ids = stmt.getGeneratedKeys()) {
                 if (ids.next()) {
-                    return new Ressource(ids.getLong(1), ressource.getTitre(), ressource.getChemin(), ressource.getEnseignement());
+                    return new Ressource(ids.getLong(1), ressource.getTitre(), ressource.getChemin(), ressource.getSeance());
                 }
             }
         } catch (SQLException e) {
@@ -70,9 +69,9 @@ public class RessourceDaoImpl extends GenericDaoImpl implements RessourceDao {
             try (ResultSet results = stmt.executeQuery()) {
                 if (results.next()) {
                     if (results.getString("idSeance") != null) {
-                        Enseignement enseignement = new Seance(results.getLong("idSeance"), results.getString("titreSeance"), results.getString("descSeance"),
+                        Seance seance = new Seance(results.getLong("idSeance"), results.getString("titreSeance"), results.getString("descSeance"),
                                 results.getDate("dateSeance"));
-                        ressource = new Ressource(results.getLong("idRessource"), results.getString("titre"), results.getString("chemin"), enseignement);
+                        ressource = new Ressource(results.getLong("idRessource"), results.getString("titre"), results.getString("chemin"), seance);
                     }
 
                 }
