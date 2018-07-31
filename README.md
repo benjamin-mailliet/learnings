@@ -20,7 +20,6 @@ Principales fonctionnalités
 * Gestion des séances
   * Chargement des supports de cours
   * Appel
-* Gestion du projet individuel
 * Visualisation des rendus des élèves
 * Gestion des notes
 

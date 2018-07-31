@@ -8,8 +8,13 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
-public class Seance extends Enseignement implements Serializable {
+public class Seance implements Serializable {
 	private static final long serialVersionUID = 4961204598561923877L;
+
+	private Long id;
+	private String titre;
+	private String description;
+	private List<Ressource> ressources;
 
 	private Boolean isNote;
 	private Date dateLimiteRendu;
@@ -20,8 +25,17 @@ public class Seance extends Enseignement implements Serializable {
 	private int nbNotes;
 	private BigDecimal moyenne;
 
+	public Seance(Long id, String titre, String description, java.util.Date date) {
+		this.id = id;
+		this.titre = titre;
+		this.description = description;
+		this.date = date;
+	}
+
 	public Seance(Long id, String titre, String description, Date date, Boolean isNote, Date dateLimiteRendu, TypeSeance type) {
-		super(id, titre, description);
+		this.id = id;
+		this.titre = titre;
+		this.description = description;
 		this.isNote = isNote;
 		this.dateLimiteRendu = dateLimiteRendu;
 		this.date = date;
@@ -37,9 +51,33 @@ public class Seance extends Enseignement implements Serializable {
 		this.type = type;
 	}
 
-	public Seance(Long id, String titre, String description, java.util.Date date) {
-		super(id, titre, description);
-		this.date = date;
+
+	public String getTitre() {
+		return titre;
+	}
+
+	public void setTitre(String titre) {
+		this.titre = titre;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public List<Ressource> getRessources() {
+		return ressources;
+	}
+
+	public void setRessources(List<Ressource> ressources) {
+		this.ressources = ressources;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public Date getDate() {

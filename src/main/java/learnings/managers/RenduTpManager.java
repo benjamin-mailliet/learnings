@@ -109,7 +109,7 @@ public class RenduTpManager {
         }
         Note note = new Note();
         note.setEleve(eleve);
-        note.setEnseignement(seance);
+        note.setSeance(seance);
         note.setValeur(valeur);
         note.setCommentaire(commentaire);
         if(noteDao.getBySeanceAndEleve(idSeance, idEleve) != null) {

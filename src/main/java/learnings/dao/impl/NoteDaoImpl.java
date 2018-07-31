@@ -2,9 +2,7 @@ package learnings.dao.impl;
 
 import learnings.dao.NoteDao;
 import learnings.exceptions.LearningsSQLException;
-import learnings.model.Enseignement;
 import learnings.model.Note;
-import learnings.model.Projet;
 import learnings.model.Seance;
 import learnings.model.Utilisateur;
 
@@ -13,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,18 +19,12 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
     public Note ajouterNote(Note note) {
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(
-                     "INSERT INTO note(eleve_id, seance_id, projet_id, valeur, commentaire) VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
+                     "INSERT INTO note(eleve_id, seance_id, valeur, commentaire) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setLong(1, note.getEleve().getId());
-            if(note.getEnseignement() instanceof Seance) {
-                stmt.setLong(2, note.getEnseignement().getId());
-                stmt.setNull(3, Types.VARCHAR);
-            }else{
-                stmt.setLong(3, note.getEnseignement().getId());
-                stmt.setNull(2, Types.VARCHAR);
-            }
-            stmt.setBigDecimal(4, note.getValeur());
-            stmt.setString(5, note.getCommentaire());
+            stmt.setLong(2, note.getSeance().getId());
+            stmt.setBigDecimal(3, note.getValeur());
+            stmt.setString(4, note.getCommentaire());
 
             stmt.executeUpdate();
 
@@ -49,17 +40,13 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
     }
 
     public Note modifierNote(Note note) {
-        String nomCleEnseignement = "seance_id";
-        if(note.getEnseignement() instanceof Projet) {
-            nomCleEnseignement = "projet_id";
-        }
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(
-                     "UPDATE note SET valeur=?, commentaire=? WHERE "+nomCleEnseignement+"=? AND eleve_id=?", Statement.RETURN_GENERATED_KEYS)
+                     "UPDATE note SET valeur=?, commentaire=? WHERE seance_id=? AND eleve_id=?", Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setBigDecimal(1, note.getValeur());
             stmt.setString(2, note.getCommentaire());
-            stmt.setLong(3, note.getEnseignement().getId());
+            stmt.setLong(3, note.getSeance().getId());
             stmt.setLong(4, note.getEleve().getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -68,14 +55,10 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
         return note;
     }
 
-    private Enseignement getEnseignement(ResultSet resultSet) throws SQLException {
+    private Seance getSeance(ResultSet resultSet) throws SQLException {
         Long seanceId = resultSet.getLong("n.seance_id");
         if (!resultSet.wasNull()) {
             return new Seance(seanceId, null, null, null);
-        }
-        Long projetId = resultSet.getLong("n.projet_id");
-        if (!resultSet.wasNull()) {
-            return new Projet(projetId, null, null, null, null);
         }
         return null;
     }
@@ -91,7 +74,7 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     notes.add(new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), null, null, null, null, false),
-                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
+                            this.getSeance(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
                 }
             }
         } catch (SQLException e) {
@@ -116,7 +99,7 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     notes.add(new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), null, null, null, null, false),
-                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
+                            this.getSeance(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
                 }
             }
         } catch (SQLException e) {
@@ -137,48 +120,7 @@ public class NoteDaoImpl extends GenericDaoImpl implements NoteDao {
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     note = new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), results.getString("u.nom"), results.getString("u.prenom"), null, null, false),
-                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire"));
-                }
-            }
-        } catch (SQLException e) {
-            throw new LearningsSQLException(e);
-        }
-        return note;
-    }
-
-    @Override
-    public List<Note> listerNotesParProjet(Long idProjet) {
-        List<Note> notes = new ArrayList<>();
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection
-                     .prepareStatement("SELECT * FROM note n WHERE n.projet_id = ?")
-        ) {
-            stmt.setLong(1, idProjet);
-            try (ResultSet results = stmt.executeQuery()) {
-                while (results.next()) {
-                    notes.add(new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), null, null, null, null, false),
-                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire")));
-                }
-            }
-        } catch (SQLException e) {
-            throw new LearningsSQLException(e);
-        }
-        return notes;
-    }
-
-    @Override
-    public Note getByProjetAndEleve(Long idProjet, Long idEleve) {
-        Note note = null;
-        try (Connection connection = getConnection();
-             PreparedStatement stmt = connection
-                     .prepareStatement("SELECT * FROM note n, utilisateur u WHERE n.projet_id = ? AND n.eleve_id=? AND n.eleve_id=u.id")
-        ) {
-            stmt.setLong(1, idProjet);
-            stmt.setLong(2, idEleve);
-            try (ResultSet results = stmt.executeQuery()) {
-                while (results.next()) {
-                    note = new Note(results.getLong("n.id"), new Utilisateur(results.getLong("n.eleve_id"), results.getString("u.nom"), results.getString("u.prenom"), null, null, false),
-                            this.getEnseignement(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire"));
+                            this.getSeance(results), results.getBigDecimal("n.valeur"), results.getString("n.commentaire"));
                 }
             }
         } catch (SQLException e) {

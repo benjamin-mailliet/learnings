@@ -1,10 +1,9 @@
 package learnings.web.servlets.admin;
 
 import learnings.exceptions.LearningsException;
-import learnings.managers.ProjetManager;
 import learnings.managers.RessourceManager;
 import learnings.managers.SeanceManager;
-import learnings.model.Enseignement;
+import learnings.model.Seance;
 import learnings.web.servlets.GenericLearningsServlet;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -26,35 +25,21 @@ public class RessourceServlet extends GenericLearningsServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long idSeance = null;
-        Long idProjet = null;
-        String type = null;
-        try {
-            idProjet = Long.parseLong(request.getParameter("idProjet"));
-            type = "projet";
-        } catch (NumberFormatException e) {
-            // Ne rien faire
-        }
+
         try {
             idSeance = Long.parseLong(request.getParameter("idSeance"));
-            type = "seance";
         } catch (NumberFormatException e) {
             // Ne rien faire
         }
-        if (idSeance == null && idProjet == null) {
-            this.ajouterMessageErreur(request, "Une séance ou un projet doit être sélectionné.");
+        if (idSeance == null ) {
+            this.ajouterMessageErreur(request, "Une séance doit être sélectionnée.");
             response.sendRedirect("listeseances");
         } else {
-            Enseignement enseignement;
-            if (idSeance != null) {
-                enseignement = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
-            } else {
-                enseignement = ProjetManager.getInstance().getProjetAvecRessources(idProjet);
-            }
+            Seance seance = SeanceManager.getInstance().getSeanceAvecRessources(idSeance);
 
             TemplateEngine engine = this.createTemplateEngine(request);
             WebContext context = new WebContext(request, response, getServletContext());
-            context.setVariable("enseignement", enseignement);
-            context.setVariable("type", type);
+            context.setVariable("seance", seance);
             engine.process("admin/ressource", context, response.getWriter());
         }
 
@@ -63,12 +48,6 @@ public class RessourceServlet extends GenericLearningsServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long idSeance = null;
-        Long idProjet = null;
-        try {
-            idProjet = Long.parseLong(request.getParameter("idProjet"));
-        } catch (NumberFormatException e) {
-            // Ne rien faire
-        }
         try {
             idSeance = Long.parseLong(request.getParameter("idSeance"));
         } catch (NumberFormatException e) {
@@ -76,15 +55,13 @@ public class RessourceServlet extends GenericLearningsServlet {
         }
         try {
             Part fichier = request.getPart("fichier");
-            RessourceManager.getInstance().ajouterRessource(idSeance, idProjet, request.getParameter("titre"), fichier.getSubmittedFileName(), fichier.getInputStream());
+            RessourceManager.getInstance().ajouterRessource(idSeance, request.getParameter("titre"), fichier.getSubmittedFileName(), fichier.getInputStream());
         } catch (IllegalArgumentException | LearningsException e) {
             this.ajouterMessageErreur(request, e.getMessage());
             e.printStackTrace();
         }
         if (idSeance != null) {
             response.sendRedirect("ressource?idSeance=" + idSeance);
-        } else if (idProjet != null) {
-            response.sendRedirect("ressource?idProjet=" + idProjet);
         } else {
             response.sendRedirect("ressource");
         }

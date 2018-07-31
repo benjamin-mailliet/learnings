@@ -4,13 +4,11 @@ import java.math.BigDecimal;
 
 public class Note {
 
-    public static int COEFF_PROJET = 4;
-
     private Long id;
 
     private Utilisateur eleve;
 
-    private Enseignement enseignement;
+    private Seance seance;
 
     private BigDecimal valeur;
 
@@ -19,10 +17,10 @@ public class Note {
     public Note() {
     }
 
-    public Note(Long id, Utilisateur eleve, Enseignement enseignement, BigDecimal valeur, String commentaire) {
+    public Note(Long id, Utilisateur eleve, Seance seance, BigDecimal valeur, String commentaire) {
         this.id = id;
         this.eleve = eleve;
-        this.enseignement = enseignement;
+        this.seance = seance;
         this.valeur = valeur;
         this.commentaire = commentaire;
     }
@@ -43,12 +41,12 @@ public class Note {
         this.eleve = eleve;
     }
 
-    public Enseignement getEnseignement() {
-        return enseignement;
+    public Seance getSeance() {
+        return seance;
     }
 
-    public void setEnseignement(Enseignement enseignement) {
-        this.enseignement = enseignement;
+    public void setSeance(Seance seance) {
+        this.seance = seance;
     }
 
     public BigDecimal getValeur() {

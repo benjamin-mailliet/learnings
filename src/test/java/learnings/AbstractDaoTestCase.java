@@ -12,11 +12,8 @@ public abstract class AbstractDaoTestCase extends AbstractTestCase {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate("DELETE FROM appel");
         stmt.executeUpdate("DELETE FROM ressource");
-        stmt.executeUpdate("DELETE FROM travailutilisateur");
-        stmt.executeUpdate("DELETE FROM travail");
         stmt.executeUpdate("DELETE FROM utilisateur");
         stmt.executeUpdate("DELETE FROM seance");
-        stmt.executeUpdate("DELETE FROM projet");
 
         stmt.close();
         connection.close();

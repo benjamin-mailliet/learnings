@@ -1,9 +1,9 @@
 package learnings.managers;
 
-import learnings.dao.ProjetDao;
+import learnings.dao.RenduTpDao;
 import learnings.dao.UtilisateurDao;
 import learnings.enums.Groupe;
-import learnings.exceptions.LearningsSecuriteException;
+import learnings.model.RenduTp;
 import learnings.model.Utilisateur;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +14,10 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -27,53 +31,37 @@ public class UtilisateurManagerTestCase {
 	private UtilisateurDao utilisateurDao;
 
 	@Mock
-	private ProjetDao projetDao;
+	private MotDePasseManager motDePasseManager;
 
 	@Mock
-	private MotDePasseManager motDePasseManager;
+	private RenduTpDao renduTpDao;
 
 	@InjectMocks
 	private UtilisateurManager utilisateurManager = UtilisateurManager.getInstance();
 
+	private Utilisateur utilisateur1 = new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false);
+	private Utilisateur utilisateur2 = new Utilisateur(2L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false);
 	private Utilisateur utilisateur3 = new Utilisateur(null, "nom3", "prenom3", "email3", null, true);
 
 	@Before
 	public void init() throws Exception {
-//		List<Travail> travaux = new ArrayList<>();
-//		travaux.add(new Travail(1L, null, null, null, null, null,null));
-//
-//		List<Travail> travauxAvecNote = new ArrayList<>();
-//		travauxAvecNote.add(new Travail(2L, new Seance(1L,null,null,null), new BigDecimal(10), null, null, null,null));
-//		travauxAvecNote.add(new Travail(3L, new Seance(2L,null,null,null), new BigDecimal(8), null, null, null, null));
-//		travauxAvecNote.add(new Travail(4L, new Seance(3L,null,null,null), new BigDecimal(15), null, null, null, null));
-//
-//		Travail travailProjetAvecNote = new Travail(5L, null, new BigDecimal(13), null, null, null, null);
-//
-//		List<Utilisateur> elevesPourNotes = new ArrayList<>();
-//		when(travailDao.listerTravauxParUtilisateur(1L)).thenReturn(new ArrayList<>());
-//		when(travailDao.listerTravauxParUtilisateur(2L)).thenReturn(travaux);
+		when(utilisateurDao.listerEleves()).thenReturn(Arrays.asList(utilisateur1, utilisateur2));
+
 		when(utilisateurDao.getMotDePasseUtilisateurHashe(Mockito.eq("email1"))).thenReturn("motDePasseHash");
-		when(utilisateurDao.getUtilisateur(Mockito.eq(1L))).thenReturn(new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false));
-		when(utilisateurDao.getUtilisateur(Mockito.eq(2L))).thenReturn(new Utilisateur(1L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false));
-		when(utilisateurDao.getUtilisateur(Mockito.eq("email1"))).thenReturn(new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false));
+
+		when(utilisateurDao.getUtilisateur(Mockito.eq(1L))).thenReturn(utilisateur1);
+		when(utilisateurDao.getUtilisateur(Mockito.eq(2L))).thenReturn(utilisateur2);
+		when(utilisateurDao.getUtilisateur(Mockito.eq("email1"))).thenReturn(utilisateur1);
 		when(utilisateurDao.ajouterUtilisateur(Mockito.eq(utilisateur3), Mockito.eq("email3Hash"))).thenReturn(
 				new Utilisateur(3L, "nom3", "prenom3", "email3", null, true));
-//		elevesPourNotes.add(new Utilisateur(3L, "eleveNom3", "elevePrenom3", "eleve3@mail.com", Groupe.GROUPE_1,  false));
-//		elevesPourNotes.add(new Utilisateur(4L, "eleveNom4", "elevePrenom4", "eleve4@mail.com", Groupe.GROUPE_2,  false));
-//
-//		when(travailDao.listerTravauxParUtilisateur(3L)).thenReturn(travauxAvecNote);
-//		when(travailDao.listerTravauxParUtilisateur(4L)).thenReturn(travauxAvecNote);
-//		when(travailDao.getTravailUtilisateurParProjet(10L, 3L)).thenReturn(travailProjetAvecNote);
-//		when(travailDao.getTravailUtilisateurParProjet(10L, 4L)).thenReturn(travailProjetAvecNote);
-//		when(utilisateurDao.listerEleves()).thenReturn(elevesPourNotes);
 
 		when(motDePasseManager.validerMotDePasse(Mockito.eq("motDePasse"), Mockito.eq("motDePasseHash"))).thenReturn(true);
-		when(motDePasseManager.validerMotDePasse(Mockito.eq("hashException"), Mockito.eq("motDePasseHash"))).thenThrow(new NoSuchAlgorithmException());
 		when(motDePasseManager.genererMotDePasse(Mockito.eq("email1"))).thenReturn("email1Hash");
-		when(motDePasseManager.genererMotDePasse(Mockito.eq("email2"))).thenThrow(new NoSuchAlgorithmException());
 		when(motDePasseManager.genererMotDePasse(Mockito.eq("email3"))).thenReturn("email3Hash");
 
-		Mockito.when(projetDao.getLastProjetId()).thenReturn(10L);
+		RenduTp renduTp = new RenduTp(1L, null, LocalDateTime.of(2018, Month.AUGUST, 1, 1, 1, 1, 1), "/path/to/file.txt", "commentaire", null);
+		when(renduTpDao.listerRendusParUtilisateur(2L)).thenReturn(Collections.singletonList(renduTp));
+
 	}
 
 	@Test
@@ -312,23 +300,6 @@ public class UtilisateurManagerTestCase {
 	}
 
 	@Test
-	public void shouldNotValiderMotDePasseAvecSecurityException() throws Exception {
-		// WHEN
-		try {
-			utilisateurManager.validerMotDePasse("email1", "hashException");
-			fail("exception attendue");
-		}
-		// THEN
-		catch (LearningsSecuriteException e) {
-			assertThat(e.getMessage()).isEqualTo("Problème dans la vérification du mot de passe.");
-			verify(utilisateurDao).getMotDePasseUtilisateurHashe("email1");
-			verify(utilisateurDao).getMotDePasseUtilisateurHashe(Mockito.anyString());
-			verify(motDePasseManager).validerMotDePasse(Mockito.eq("hashException"), Mockito.eq("motDePasseHash"));
-			verify(motDePasseManager).validerMotDePasse(Mockito.anyString(), Mockito.anyString());
-		}
-	}
-
-	@Test
 	public void shouldReinitialiserMotDePasse() throws Exception {
 		// WHEN
 		utilisateurManager.reinitialiserMotDePasse(1L);
@@ -373,24 +344,6 @@ public class UtilisateurManagerTestCase {
 			verify(utilisateurDao).getUtilisateur(Mockito.eq(-1L));
 			verify(utilisateurDao).getUtilisateur(Mockito.anyLong());
 			verify(motDePasseManager, Mockito.never()).genererMotDePasse(Mockito.anyString());
-			verify(utilisateurDao, Mockito.never()).modifierMotDePasse(Mockito.anyLong(), Mockito.anyString());
-		}
-	}
-
-	@Test
-	public void shouldNotReinitialiserMotDePasseAvecExceptionSecurite() throws Exception {
-		// WHEN
-		try {
-			utilisateurManager.reinitialiserMotDePasse(2L);
-			fail("exception attendue");
-		}
-		// THEN
-		catch (LearningsSecuriteException e) {
-			assertThat(e.getMessage()).isEqualTo("Problème dans la génération du mot de passe.");
-			verify(utilisateurDao).getUtilisateur(Mockito.eq(2L));
-			verify(utilisateurDao).getUtilisateur(Mockito.anyLong());
-			verify(motDePasseManager).genererMotDePasse(Mockito.eq("email2"));
-			verify(motDePasseManager).genererMotDePasse(Mockito.anyString());
 			verify(utilisateurDao, Mockito.never()).modifierMotDePasse(Mockito.anyLong(), Mockito.anyString());
 		}
 	}
@@ -457,24 +410,6 @@ public class UtilisateurManagerTestCase {
 			verify(utilisateurDao).getUtilisateur(Mockito.eq("email1"));
 			verify(utilisateurDao).getUtilisateur(Mockito.anyString());
 			verify(motDePasseManager, Mockito.never()).genererMotDePasse(Mockito.anyString());
-			verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.any(Utilisateur.class), Mockito.anyString());
-		}
-	}
-
-	@Test
-	public void shouldNotAjouterUtilisateurAvecExceptionSecurite() throws Exception {
-		// WHEN
-		try {
-			utilisateurManager.ajouterUtilisateur(new Utilisateur(null, "nom2", "prenom2", "email2", null, true));
-			fail("exception attendue");
-		}
-		// THEN
-		catch (LearningsSecuriteException e) {
-			assertThat(e.getMessage()).isEqualTo("Problème dans la génération du mot de passe.");
-			verify(utilisateurDao).getUtilisateur(Mockito.eq("email2"));
-			verify(utilisateurDao).getUtilisateur(Mockito.anyString());
-			verify(motDePasseManager).genererMotDePasse(Mockito.eq("email2"));
-			verify(motDePasseManager).genererMotDePasse(Mockito.anyString());
 			verify(utilisateurDao, Mockito.never()).ajouterUtilisateur(Mockito.any(Utilisateur.class), Mockito.anyString());
 		}
 	}
@@ -566,44 +501,11 @@ public class UtilisateurManagerTestCase {
 	}
 
 	@Test
-	public void shouldNotModifierMotDePasseAvecExceptionSecurite() throws Exception {
-		// WHEN
-		try {
-			utilisateurManager.modifierMotDePasse(1L, "email2", "email2");
-			fail("exception attendue");
-		}
-		// THEN
-		catch (LearningsSecuriteException e) {
-			assertThat(e.getMessage()).isEqualTo("Problème dans la génération du mot de passe.");
-			verify(motDePasseManager).genererMotDePasse(Mockito.eq("email2"));
-			verify(motDePasseManager).genererMotDePasse(Mockito.anyString());
-			verify(utilisateurDao, Mockito.never()).modifierMotDePasse(Mockito.anyLong(), Mockito.anyString());
-		}
-	}
-
-	@Test
-	public void shouldReturnElevesAvecTravauxEtProjetEtMoyenne(){
-//		//WHEN
-//		List<EleveAvecTravauxEtProjet> elevesComplets = utilisateurManager.listerElevesAvecNotes();
-//
-//		//THEN
-//		assertThat(elevesComplets).extracting("id").contains(3L,4L);
-//
-//		assertThat(elevesComplets).extracting("projet.note").contains(new BigDecimal(13));
-//
-//		assertThat(elevesComplets.get(0).getMapSeanceIdTravail().get(1L).getNote()).isEqualTo(new BigDecimal(10));
-//		assertThat(elevesComplets.get(0).getMapSeanceIdTravail().get(3L).getNote()).isEqualTo(new BigDecimal(15));
-//
-//		assertThat(elevesComplets).extracting("moyenne").containsOnly(new BigDecimal(12.14).setScale(2,BigDecimal.ROUND_HALF_EVEN));
-
-	}
-
-	@Test
 	public void shouldListerEmailElevesPourEnvoi() {
 		// WHEN
 		String emails = utilisateurManager.listerEmailsElevesPourEnvoi();
 		// THEN
-		assertThat(emails).matches("eleve[34]@mail.com;eleve[34]@mail.com");
+		assertThat(emails).matches("email1;email2");
 	}
 
 }

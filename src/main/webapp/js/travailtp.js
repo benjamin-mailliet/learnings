@@ -125,9 +125,6 @@ $(document).ready(function(){
             })
     };
 
-
-
-
     $("#validerNote").click(function(){
         var idSeance = $("#idSeanceNote").val();
         if($('#activerNoteParEleve').is(':checked')){
@@ -143,33 +140,4 @@ $(document).ready(function(){
             }
         }
     });
-
-    /*var getBodyMail = function(){
-        return encodeURI($("#noteComment").val().replace("[[note]]",$("#noteValue").val()));
-    };
-
-    var getEmailEleves = function(travailId){
-        var emails = "";
-        $("#mailTravail"+travailId).find("li").each(function(index, element){
-           emails = emails + ";"+element.textContent;
-        });
-        return emails;
-    };
-
-    var getObjectMail = function(){
-        var titreTravail = "";
-        var seance = $("#idSeance");
-        if(seance.length>0) {
-            titreTravail = seance.find("option[selected]")[0].textContent;
-        }else{
-            titreTravail = $("#idProjet").find("option[selected]")[0].textContent;
-        }
-        return "Note :  ".concat(titreTravail);
-    };
-
-    $("#mailNote").click(function(){
-        window.location = "mailto:"+getEmailEleves($("#idTravail").val())+"?subject="+getObjectMail()+"&body="+getBodyMail();
-    });*/
-
-
 });

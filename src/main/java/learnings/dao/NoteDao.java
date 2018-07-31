@@ -17,8 +17,4 @@ public interface NoteDao {
     List<Note> listerNotesParSeance(Long idSeance);
 
     Note getBySeanceAndEleve(Long idSeance, Long idEleve);
-
-    List<Note> listerNotesParProjet(Long idProjet);
-
-    Note getByProjetAndEleve(Long idProjet, Long idEleve);
 }

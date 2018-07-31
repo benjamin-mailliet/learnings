@@ -1,14 +1,11 @@
 package learnings.managers;
 
-import learnings.dao.ProjetDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
-import learnings.dao.impl.ProjetDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
 import learnings.exceptions.LearningAccessException;
 import learnings.exceptions.LearningsException;
-import learnings.model.Enseignement;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 import learnings.pojos.FichierComplet;
@@ -32,22 +29,15 @@ public class RessourceManager {
 
     private FichierManager fichierManager = new StockageLocalFichierManagerImpl();
     private SeanceDao seanceDao = new SeanceDaoImpl();
-    private ProjetDao projetDao = new ProjetDaoImpl();
     private RessourceDao ressourceDao = new RessourceDaoImpl();
 
-    public void ajouterRessource(Long idSeance, Long idProjet, String titre, String nomFichier, InputStream fichier) throws LearningsException {
-        if (idSeance == null && idProjet == null) {
-            throw new IllegalArgumentException("Les idenfiants d'enseignement sont null.");
+    public void ajouterRessource(Long idSeance, String titre, String nomFichier, InputStream fichier) throws LearningsException {
+        if (idSeance == null) {
+            throw new IllegalArgumentException("L'idenfiant de la séance est null.");
         }
-        Enseignement enseignement = null;
-        if (idSeance != null) {
-            enseignement = seanceDao.getSeance(idSeance);
-        }
-        if (idProjet != null) {
-            enseignement = projetDao.getProjet(idProjet);
-        }
-        if (enseignement == null) {
-            throw new IllegalArgumentException("L'enseignement est inconnu.");
+        Seance seance =  seanceDao.getSeance(idSeance);
+        if (seance == null) {
+            throw new IllegalArgumentException("La séance est inconnue.");
         }
         String chemin = this.genererCheminRessource(idSeance, nomFichier);
         try {
@@ -56,7 +46,7 @@ public class RessourceManager {
             throw new LearningsException("Problème à l'enregistrement de la ressource.", e);
         }
 
-        Ressource ressource = new Ressource(null, titre, chemin, enseignement);
+        Ressource ressource = new Ressource(null, titre, chemin, seance);
         ressourceDao.ajouterRessource(ressource);
     }
 
@@ -70,8 +60,8 @@ public class RessourceManager {
 
     public FichierComplet getFichierRessourceEleve(Long idRessource) throws LearningsException, LearningAccessException {
         Ressource ressource = ressourceDao.getRessource(idRessource);
-        if (ressource.getEnseignement() instanceof Seance) {
-            Seance seance = (Seance) ressource.getEnseignement();
+        if (ressource.getSeance() instanceof Seance) {
+            Seance seance = (Seance) ressource.getSeance();
             if (seance.getDate().after(new Date())) {
                 throw new LearningAccessException();
             }

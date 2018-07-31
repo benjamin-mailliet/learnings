@@ -1,12 +1,12 @@
 package learnings.dao;
 
+import learnings.model.Ressource;
+import learnings.model.Seance;
+
 import java.util.List;
 
-import learnings.model.Enseignement;
-import learnings.model.Ressource;
-
 public interface RessourceDao {
-	List<Ressource> getRessources(Enseignement enseignement);
+	List<Ressource> getRessources(Seance seance);
 
 	Ressource ajouterRessource(Ressource ressource);
 
