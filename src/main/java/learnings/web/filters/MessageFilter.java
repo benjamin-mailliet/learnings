@@ -1,6 +1,7 @@
 package learnings.web.filters;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -38,11 +39,22 @@ public class MessageFilter implements Filter {
 		}
 
 		request.setAttribute("messagesErreur", container.getMessages(Niveau.ERROR));
+		request.setAttribute("nbMessagesErreur", getSize(container.getMessages(Niveau.ERROR)));
 		request.setAttribute("messagesWarn", container.getMessages(Niveau.WARN));
+		request.setAttribute("nbMessagesWarn", getSize(container.getMessages(Niveau.WARN)));
 		request.setAttribute("messagesInfo", container.getMessages(Niveau.INFO));
+		request.setAttribute("nbMessagesInfo", getSize(container.getMessages(Niveau.INFO)));
 		request.setAttribute("messagesSucces", container.getMessages(Niveau.SUCCESS));
+		request.setAttribute("nbMessagesSucces", getSize(container.getMessages(Niveau.SUCCESS)));
 
 		container.purgerMessages();
+	}
+
+	private int getSize(List<String> messages) {
+		if (messages == null) {
+			return 0;
+		}
+		return messages.size();
 	}
 
 }

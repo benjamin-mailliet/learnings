@@ -6,26 +6,31 @@
 	</head>
 	<body>
 		<nav th:replace="fragments/menu :: principal('bulletin')"></nav>
-		<div class="container">
+		<div class="container-fluid">
 			<div th:replace="fragments/messages"></div>
-			<header class="page-header"><h1>Bulletin de notes</h1></header>
-			
+			<h1 class="display-1">Bulletin de notes</h1>
+
 			<section class="panel-group">
 				<table class="table table-striped">
-					<tr>
-						<th class="col-md-4"></th>
-						<th class="col-md-2">Note</th>
-						<th class="col-md-6">Commentaire</th>
-					</tr>
-					<tr th:each="seance : ${seancesNotees}">
-						<th th:text="${seance.titre}"></th>
-						<td th:text="${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].valeur}"></td>
-						<td th:text="${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].commentaire}"></td>
-					</tr>
-					<tr>
-						<th>Moyenne</th>
-						<td colspan="2" th:text="${eleve.moyenne}"></td>
-					</tr>
+					<caption>Liste des notes et moyenne</caption>
+					<thead>
+						<tr>
+							<th scope="col" class="w-25">Séance</th>
+							<th scope="col" class="w-25">Note</th>
+							<th scope="col" class="w-50">Commentaire</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="seance : ${seancesNotees}">
+							<th scope="row" th:text="${seance.titre}"></th>
+							<td th:text="${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].valeur}"></td>
+							<td th:text="${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].commentaire}"></td>
+						</tr>
+						<tr>
+							<th scope="row">Moyenne</th>
+							<td colspan="2" th:text="${eleve.moyenne}"></td>
+						</tr>
+					</tbody>
 				</table>
 
 

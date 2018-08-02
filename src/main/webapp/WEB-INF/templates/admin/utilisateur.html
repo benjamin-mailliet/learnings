@@ -14,8 +14,8 @@
 			<header class="page-header">
 				<h1>
 					Gestion des utilisateurs
-					<a href="importutilisateurs" class="btn btn-success"><i class="fa fa-cloud-upload"></i> Importer utilisateurs</a>
-					<button id="boutonEnvoiMails" class="btn btn-default pull-right"><i class="fa fa-envelope" ></i> Envoyer Email</button>
+					<a href="importutilisateurs" class="btn btn-success"><i class="fas fa-cloud-upload-alt"></i> Importer utilisateurs</a>
+					<button id="boutonEnvoiMails" class="btn btn-default pull-right"><i class="fas fa-envelope" ></i> Envoyer Email</button>
 				</h1>
 			</header>
 			<div  class="form-inline">
@@ -56,10 +56,18 @@
 					<td class="isAdminCell" th:text="${utilisateur.admin ? 'Oui' : 'Non'}"></td>
 					<td>
 						<th:block th:if="${utilisateur.id != session.utilisateur.id}">
-							<button type="button" class="btn btn-primary btn-xs reinitMdpUtilisateurAction" title="Réinitialiser le mot de passe"><span class="glyphicon glyphicon-repeat"></span></button>
-							<button type="button" class="btn btn-danger btn-xs supprimerUtilisateurAction" title="Supprimer l'utilisateur"><span class="glyphicon glyphicon-trash"></span></button>
-							<button th:style="${utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-success btn-xs donnerAdminUtilisateurAction" title="Donner l'admin"><span class="glyphicon glyphicon-chevron-up"></span></button>
-							<button th:style="${!utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-warning btn-xs enleverAdminUtilisateurAction" title="Enlever l'admin"><span class="glyphicon glyphicon-chevron-down"></span></button>
+							<button type="button" class="btn btn-primary btn-xs reinitMdpUtilisateurAction" title="Réinitialiser le mot de passe">
+								<span class="fas fa-redo"></span>
+							</button>
+							<button type="button" class="btn btn-danger btn-xs supprimerUtilisateurAction" title="Supprimer l'utilisateur">
+								<span class="fas fa-trash"></span>
+							</button>
+							<button th:style="${utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-success btn-xs donnerAdminUtilisateurAction" title="Donner l'admin">
+								<span class="fas fa-chevron-up"></span>
+							</button>
+							<button th:style="${!utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-warning btn-xs enleverAdminUtilisateurAction" title="Enlever l'admin">
+								<span class="fas fa-chevron-down"></span>
+							</button>
 						</th:block>
 					</td>
 				</tr>
@@ -80,7 +88,11 @@
 						</select>
 					</td>
 					<td><input type="checkbox" id="adminNouvelUtilisateur" name="adminNouvelUtilisateur" ></td>
-					<td><button type="button" class="btn btn-info btn-xs" id="nouvelUtilisateurAction"><span class="glyphicon glyphicon-plus"></span></button></td>				
+					<td>
+						<button type="button" class="btn btn-info btn-xs" id="nouvelUtilisateurAction">
+							<span class="fas fa-plus"></span>
+						</button>
+					</td>
 				</tr>
 			</table>
 		</div>

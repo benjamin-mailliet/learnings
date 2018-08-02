@@ -1,51 +1,57 @@
 <html xmlns:th="http://www.thymeleaf.org">
-	<nav class="navbar navbar-default navbar-static-top" role="navigation" th:fragment="principal(pageSelectionnee)">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="./">Learnings</a>
-			</div>
-			<ul class="nav navbar-nav">
-				<li th:class="${pageSelectionnee == 'seances'} ? 'active'"><a href="seances">Séances</a></li>
-				<li th:class="${pageSelectionnee == 'liensutiles'} ? 'active'"><a href="liensutiles">Liens utiles</a></li>
-				<li th:class="${pageSelectionnee == 'remisetp'} ? 'active'"><a href="remisetp">Rendre un TP</a></li>
-				<li th:class="${pageSelectionnee == 'bulletin'} ? 'active'"><a href="bulletin">Bulletin de notes</a></li>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-secondary" role="navigation" th:fragment="principal(pageSelectionnee)">
+		<a class="navbar-brand" href="./">Learnings</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item" th:classappend="${pageSelectionnee == 'seances'} ? 'active'"><a class="nav-link" href="seances">Séances</a></li>
+				<li class="nav-item" th:classappend="${pageSelectionnee == 'liensutiles'} ? 'active'"><a class="nav-link" href="liensutiles">Liens utiles</a></li>
+				<li class="nav-item" th:classappend="${pageSelectionnee == 'remisetp'} ? 'active'"><a class="nav-link" href="remisetp">Rendre un TP</a></li>
+				<li class="nav-item" th:classappend="${pageSelectionnee == 'bulletin'} ? 'active'"><a class="nav-link" href="bulletin">Bulletin de notes</a></li>
 			</ul>
-			<ul class="nav navbar-nav navbar-right ">
-				<li th:if="${session.utilisateur.admin}"><a href="../admin/">Administration</a></li>
-				<li class="dropdown active">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">[[${session.utilisateur.prenom}]] [[${session.utilisateur.nom}]] <span class="caret"></span></a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a th:href="@{/eleve/compte}">Mon compte</a></li>
-						<li class="divider"></li>
-						<li><a th:href="@{/deconnexion}">Déconnexion</a></li>
-					</ul>
+			<ul class="navbar-nav">
+				<li class="nav-item" th:if="${session.utilisateur.admin}"><a class="nav-link" href="../admin/">Administration</a></li>
+				<li class="nav-item dropdown active mr-3">
+					<a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						[[${session.utilisateur.prenom}]] [[${session.utilisateur.nom}]] <span class="caret"></span>
+					</a>
+					<div  class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" role="menu">
+						<a class="dropdown-item" th:href="@{/eleve/compte}">Mon compte</a>
+                        <div class="dropdown-divider"></div>
+						<a class="dropdown-item" th:href="@{/deconnexion}">Déconnexion</a>
+					</div >
 				</li>
 			</ul>
 		</div>
 	</nav>
 
-	<nav class="navbar navbar-default navbar-static-top" role="navigation" th:fragment="admin(pageSelectionnee)">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="./">Administration</a>
-			</div>
-			<ul class="nav navbar-nav">
-				<li th:class="${pageSelectionnee == 'utilisateur'} ? 'active'"><a href="utilisateur">Gestion des utilisateurs</a></li>
-				<li th:class="${pageSelectionnee == 'seance'} ? 'active'"><a href="listeseances">Gestion des séances</a></li>
-				<li th:class="${pageSelectionnee == 'travailtp'} ? 'active'"><a href="travailtp">Travaux rendus</a></li>
-				<li th:class="${pageSelectionnee == 'note'} ? 'active'"><a href="note">Notes</a></li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li><a href="../eleve/">Site principal</a></li>
-				<li class="dropdown active">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">[[${session.utilisateur.prenom}]] [[${session.utilisateur.nom}]] <span class="caret"></span></a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a th:href="@{/eleve/compte}">Mon compte</a></li>
-						<li class="divider"></li>
-						<li><a th:href="@{/deconnexion}">Déconnexion</a></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation"  th:fragment="admin(pageSelectionnee)">
+			<a class="navbar-brand" href="./">Administration</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAdmin" aria-controls="navbarNavAdmin" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAdmin">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item" th:classappend="${pageSelectionnee == 'utilisateur'} ? 'active'"><a class="nav-link" href="utilisateur">Gestion des utilisateurs</a></li>
+                    <li class="nav-item" th:classappend="${pageSelectionnee == 'seance'} ? 'active'"><a class="nav-link" href="listeseances">Gestion des séances</a></li>
+                    <li class="nav-item" th:classappend="${pageSelectionnee == 'travailtp'} ? 'active'"><a class="nav-link" href="travailtp">Travaux rendus</a></li>
+                    <li class="nav-item" th:classappend="${pageSelectionnee == 'note'} ? 'active'"><a class="nav-link" href="note">Notes</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="../eleve/">Site principal</a></li>
+                    <li class="nav-item dropdown active mr-3">
+                        <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownAdminLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            [[${session.utilisateur.prenom}]] [[${session.utilisateur.nom}]] <span class="caret"></span>
+                        </a>
+                        <div  class="dropdown-menu" aria-labelledby="navbarDropdownAdminLink" role="menu">
+                            <a class="dropdown-item" th:href="@{/eleve/compte}">Mon compte</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/deconnexion}">Déconnexion</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
 	</nav>
 </html>
