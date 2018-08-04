@@ -120,16 +120,4 @@ $(document).ready(function () {
     $("#boutonOuvrirClientMail").on("click", function () {
         window.location.href = "mailto:" + $("#listeEmailsData").find("textarea").val();
     });
-
-    $("#listeEmailsContainer").on("click", function () {
-        $("#listeEmailsContainer").hide();
-    });
-
-    $("#boutonFermerModal").on("click", function () {
-        $("#listeEmailsContainer").hide();
-    });
-
-    $("#listeEmailsModal").on("click", function (event) {
-        event.stopPropagation();
-    });
 });

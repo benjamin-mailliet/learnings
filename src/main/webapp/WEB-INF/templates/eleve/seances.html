@@ -31,7 +31,7 @@
 						<p>Ressources :</p>
 						<ul>
 							<li th:each="ressource : ${seance.ressources}">
-								<a th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
+								<a th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}" class="text-warning"></a>
 							</li>
 						</ul>
 					</section>

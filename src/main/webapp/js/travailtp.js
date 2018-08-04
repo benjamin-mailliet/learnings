@@ -2,11 +2,9 @@ function afficherFormNote(isNoteParEleve) {
     if(isNoteParEleve) {
         $('#noteParEleve').show();
         $('#noteBinome').hide();
-        $('.modal-dialog').css({width: '900px'});
     }else{
         $('#noteParEleve').hide();
         $('#noteBinome').show();
-        $('.modal-dialog').css({width: '600px'});
     }
 }
 $(document).ready(function(){
@@ -100,8 +98,8 @@ $(document).ready(function(){
 
     var actualiserLigneTableau = function(idBinome) {
         var ligneBinome = $("#ligneRendu" + idBinome);
-        if (!ligneBinome.hasClass("success")) {
-            ligneBinome.addClass("success");
+        if (!ligneBinome.hasClass("table-success")) {
+            ligneBinome.addClass("table-success");
         }
     };
 

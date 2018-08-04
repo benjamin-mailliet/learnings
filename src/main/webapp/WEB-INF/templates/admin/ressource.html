@@ -7,14 +7,10 @@
 	<body>
 		<nav th:replace="fragments/menu :: admin('seance')"></nav>
 	
-		<div class="container">
+		<div class="container-fluid">
 			<div th:replace="fragments/messages"></div>
-			<header class="page-header"> 
-				<h1>
-					Ressources de la séance n°[[${seance.id}]]
-					<small><a href="listeseances" class="label label-default">Retour à la liste</a></small>
-				</h1>
-			</header>
+			<h1 class="display-1">Ressources de la séance n°[[${seance.id}]]</h1>
+			<p><a href="listeseances" class="btn btn-outline-primary">Retour à la liste</a></p>
 			<form class="form" method="post" enctype="multipart/form-data">
 				<table class="table table-striped">
 					<tr>
@@ -24,20 +20,34 @@
 						<th></th>
 					</tr>
 					<tr th:each="ressource : ${seance.ressources}">
-						<td th:text="${seance.id}">"</td>
-						<td th:text="${seance.titre}"></td>
+						<td th:text="${ressource.id}">"</td>
+						<td th:text="${ressource.titre}"></td>
 						<td><a th:href="'../admin/telechargerRessource?id='+${ressource.id}" th:text="${ressource.chemin}"></a></td>
 						<td>
-							<a th:href="'supprimerressource?idSeance='+${seance.id}+'&idRessource='+${ressource.id}" class="btn btn-danger btn-xs" title="Supprimer la ressource"><span class="glyphicon glyphicon-trash"></span></a>
+							<button th:href="'supprimerressource?idSeance='+${seance.id}+'&idRessource='+${ressource.id}" class="btn btn-danger btn-xs" th:aria-label="'Supprimer la ressource ('+ ${ressource.titre} + ')'">
+								<i class="fas fa-trash" aria-hidden="true"></i>
+								Supprimer
+							</button>
 						</td>
 					</tr>
 					<tr>
 						<td>*</td>
-						<td><input class="form-control" type="text" name="titre" /></td>
-						<td><input type="file" name="fichier" /></td>
+						<td>
+							<label class="sr-only" for="titre">Titre</label>
+							<input class="form-control" type="text" id="titre" name="titre" placeholder="Titre"/>
+						</td>
+						<td>
+							<div class="custom-file">
+								<input type="file" name="fichier" id="fichier" />
+								<label class="custom-file-label" for="fichier">Fichier</label>
+							</div>
+						</td>
 						<td>
 							<input type="hidden" name="seance" th:value="${seance.id}" />
-							<input class="btn btn-primary" type="submit" value="Ajouter" />
+							<button type="submit" class="btn btn-primary">
+								<i class="fas fa-plus" aria-hidden="true"></i>
+								Ajouter
+							</button>
 						</td>
 					</tr>
 				</table>

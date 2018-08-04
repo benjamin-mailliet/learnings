@@ -1,17 +1,17 @@
 var purgerClasses = function(element) {
-    $(element).removeClass("success");
-    $(element).removeClass("info");
-    $(element).removeClass("warning");
-    $(element).removeClass("danger");
-    $(element).removeClass("active");
+    $(element).removeClass("table-success");
+    $(element).removeClass("table-info");
+    $(element).removeClass("table-warning");
+    $(element).removeClass("table-danger");
+    $(element).removeClass("table-active");
 };
 
 
 var appliquerStyle = function(trElement, nouveauStyle) {
-    $(trElement).children("td").each(function (index, element) {
+    $(trElement).children("td,th").each(function (index, element) {
         purgerClasses(element);
         if($(element).hasClass("cellule-generale") || $(element).hasClass("text-"+nouveauStyle)) {
-            $(element).addClass(nouveauStyle);
+            $(element).addClass("table-"+nouveauStyle);
         }
     });
 

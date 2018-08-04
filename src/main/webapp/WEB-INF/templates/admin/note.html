@@ -11,49 +11,50 @@
 
     <div th:replace="fragments/popupnote :: note"></div>
 
-    <div class="container">
+    <div class="container-fluid">
         <div th:replace="fragments/messages"></div>
-        <header class="page-header">
-            <h1>
-                Notes des élèves
-            </h1>
-            <form th:action="@{/admin/note}" method="post">
-                <button name="export-csv" type="submit" class="btn btn-success pull-right" id="export-csv"
-                        value="Export CSV"><i class="fa fa-file-excel-o"></i> Exporter
+        <h1 class="display-1">Notes des élèves</h1>
+        <form th:action="@{/admin/note}" method="post">
+            <p>
+                <button name="export-csv" type="submit" class="btn btn-success pull-right" id="export-csv">
+                    <i class="fa fa-file-excel"></i>
+                    Exporter les notes en CSV
                 </button>
-            </form>
-        </header>
+            </p>
+        </form>
 
         <div class="form-inline">
             <div class="form-group">
-                <label for="filter-eleve">Eleve : </label>
-                <input id="filter-eleve" type="text" class="query-filter form-control" data-query-filter="eleve" />
+                <label for="filter-eleve">Filtrer les élèves : </label>
+                <input id="filter-eleve" type="text" class="query-filter form-control ml-2" data-query-filter="eleve" />
             </div>
         </div>
         <table id="listeNotes" class="table table-striped">
+            <caption>Liste des notes des élèves</caption>
             <tr>
-                <th>Eleve</th>
-                <th th:each="seance : ${seancesNotees}">
+                <th scope="col">Eleve</th>
+                <th scope="col" th:each="seance : ${seancesNotees}">
                     <div th:text="${seance.titre}"></div>
                     <div>
                         <small>([[${seance.date}]])</small>
                     </div>
                 </th>
-                <th>Moyenne</th>
+                <th scope="col">Moyenne</th>
             </tr>
             <tr th:each="eleve : ${eleves}" th:id="'eleve'+${eleve.id}">
-                <td data-filter="eleve" class="filter" th:text="${eleve.prenom + ' ' + eleve.nom}"></td>
+                <th scope="row" data-filter="eleve" class="filter" th:text="${eleve.prenom + ' ' + eleve.nom}"></th>
                 <td th:each="seance : ${seancesNotees}">
-                    [[${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].valeur}]]
-                    <button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-default btn-note btn-xs"
+                    <button th:id="'noterTravail'+${eleve.id}" type="button" class="btn btn-outline-secondary btn-note btn-sm"
                             data-toggle="modal"
                             data-target="#popupNote"
                             th:data-seance="${seance.id}"
                             th:data-eleve="${eleve.id}"
                             th:data-elevePrenomNom="${eleve.prenom+' '+eleve.nom}"
+                            data-tooltip="tooltip"
                             title="Gérer l'évaluation">
                         <i class="fa fa-tags" aria-hidden="true"></i>
                     </button>
+                    [[${eleve.mapSeanceNote[seance.id]} ? ${eleve.mapSeanceNote[seance.id].valeur}]]
                 </td>
                 <td th:text="${eleve.moyenne}"></td>
             </tr>
