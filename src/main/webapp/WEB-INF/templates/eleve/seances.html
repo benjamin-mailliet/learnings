@@ -8,30 +8,30 @@
 	</head>
 	<body>
 		<nav th:replace="fragments/menu :: principal('seances')"></nav>
-		<div class="container">
+		<div class="container-fluid">
 			<div th:replace="fragments/messages"></div>
-			<header class="page-header"><h1>Cours et TPs</h1></header>
+			<h1 class="display-1">Cours et TPs</h1>
 			
-			<section class="panel-group">
+			<section>
 
 				<article th:each="seance : ${seances}"
 						 th:with="typeSeance=${seance.type.name()=='COURS' ? 'cours' : (seance.type.name() == 'TP' ?'tp' : '')}"
-						 th:class="${typeSeance}+'-article panel'" th:classappend="${seance.datePassee ? 'panel-info' : 'panel-default'}">
-					<header class="panel-heading" data-toggle="collapse" th:data-target="'#'+${typeSeance}+${seance.id}">
+						 th:class="${typeSeance}+'-article card my-3'" th:classappend="${seance.datePassee ? 'text-white bg-secondary active' : 'bg-light'}">
+					<header class="card-header" data-toggle="collapse" th:data-target="'#'+${typeSeance}+${seance.id}">
 						<h4>
-							<span  class="glyphicon" th:classappend="${seance.type.name()=='TP' ? 'glyphicon-cog' : 'glyphicon-folder-close'}"></span>
+							<span class="icone fas" th:classappend="${seance.type.name()=='TP' ? 'fa-cog' : 'fa-folder'}"></span>
 							[[${seance.titre}]]
 							<small th:if="${seance.datePassee}">(cliquez pour ouvrir)</small>
 						</h4>
 						<time th:text="${#dates.format(seance.date, 'dd/MM/yyyy')}"></time>
 					</header>
 					<section th:if="${seance.datePassee}"
-							class="details panel-body collapse" th:id="${typeSeance}+${seance.id}">
+							class="details card-body collapse" th:id="${typeSeance}+${seance.id}">
 						<div th:utext="${seance.description}"></div>
 						<p>Ressources :</p>
 						<ul>
 							<li th:each="ressource : ${seance.ressources}">
-								<a th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
+								<a th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}" class="text-warning"></a>
 							</li>
 						</ul>
 					</section>

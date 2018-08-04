@@ -1,71 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<title>Gestion des séances</title>
-		<th:block th:replace="fragments/htmlheader" />
-	</head>
-	<body>
-		<nav th:replace="fragments/menu :: admin('seance')"></nav>
-	
-		<div class="container">
-			<div th:replace="fragments/messages"></div>
-			<header class="page-header">
-				<h1>
-					<th:block th:if="${mode == 'creation'}">Ajouter une séance</th:block>
-					<th:block th:if="${mode == 'modification'}">Modifier la séance n°[[${seance.id}]]</th:block>
-					<small><a href="listeseances" class="label label-default">Retour à la liste</a></small>
-				</h1>
-			</header>
-			<form class="form-horizontal" method="post" action="seance">
-				<div class="form-group">
-			    	<label for="titre" class="col-sm-2 control-label">Titre</label>
-			    	<div class="col-sm-6">
-			      		<input type="text" class="form-control" id="titre" name="titre" th:value="${seance} ? ${seance.titre}">
-		    		</div>
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="description" class="col-sm-2 control-label">Description</label>
-			    	<div class="col-sm-6">
-			      		<textarea rows="3" class="form-control editeur-riche" id="description" name="description">[[${seance} ? ${seance.description}]]</textarea>
-			    	</div>
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="date" class="col-sm-2 control-label">Date</label>
-			    	<div class="col-sm-2">
-			      		<input type="text" class="form-control" id="date" name="date" th:value="${seance} ? ${#dates.format(seance.date, 'dd/MM/yyyy')}"/>
-						(dd/MM/yyyy)
-		    		</div>
-			  	</div>
-			  	<div class="form-group">
-			    	<label class="col-sm-2 control-label">Noté</label>
-			    	<div class="col-sm-10">
-			      		<label class="checkbox-inline"><input type="radio" name="isNote" value="true" th:checked="${seance && seance.isNote}" /> Oui</label>
-			      		<label class="checkbox-inline"><input type="radio" name="isNote" value="false" th:checked="${seance && !seance.isNote}"  /> Non</label>
-		    		</div>
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="dateLimiteRendu" class="col-sm-2 control-label">Date limite de rendu</label>
-			    	<div class="col-sm-2">
-			      		<input type="text" class="form-control" id="dateLimiteRendu" name="dateLimiteRendu" th:value="${seance} ? ${#dates.format(seance.dateLimiteRendu, 'dd/MM/yyyy HH:mm')}" />
-			      		(dd/MM/yyyy HH:mm) 
-		    		</div>
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="type" class="col-sm-2 control-label">Type</label>
-			    	<div class="col-sm-2">
-			      		<select class="form-control" name="type" id="type">
-			      			<option value="COURS" th:selected="${seance && seance.type.name() == 'COURS'}">Cours</option>
-			      			<option value="TP" th:selected="${seance && seance.type.name() == 'TP'}">TP</option>
-			      		</select>
-		    		</div>
-			  	</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<input th:if="${mode == 'modification'}" type="hidden" name="id" th:value="${seance.id}" />
-						<button type="submit" class="btn btn-primary" th:text="${mode == 'creation'} ? 'Ajouter' : 'Modifier'"></button>
-				    </div>
-			  </div>
-			</form>
-		</div>
-	</body>
+<head>
+    <title>Gestion des séances</title>
+    <th:block th:replace="fragments/htmlheader"/>
+</head>
+<body>
+<nav th:replace="fragments/menu :: admin('seance')"></nav>
+
+<div class="container-fluid">
+    <div th:replace="fragments/messages"></div>
+    <h1 class="display-1">
+        <th:block th:if="${mode == 'creation'}">Ajouter une séance</th:block>
+        <th:block th:if="${mode == 'modification'}">Modifier la séance n°[[${seance.id}]]</th:block>
+    </h1>
+    <p><a href="listeseances" class="btn btn-outline-primary">Retour à la liste</a></p>
+    <form class="form-horizontal" method="post" action="seance">
+        <div class="form-group">
+            <label for="titre" class="control-label">Titre</label>
+            <input type="text" class="form-control" id="titre" name="titre" th:value="${seance} ? ${seance.titre}">
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label">Description</label>
+            <textarea rows="3" class="form-control editeur-riche" id="description" name="description">[[${seance} ? ${seance.description}]]</textarea>
+        </div>
+        <div class="form-group">
+            <label for="date" class="control-label">Date</label>
+            <input type="text" class="form-control w-25" id="date" name="date"
+                   th:value="${seance} ? ${#dates.format(seance.date, 'dd/MM/yyyy')}"/>
+            (dd/MM/yyyy)
+        </div>
+        <fieldset class="form-group">
+            <legend class="col-form-label">Séance notée</legend>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="isNote_oui" name="isNote" value="true"
+                       th:checked="${seance && seance.isNote}"/>
+                <label class="form-check-label" for="isNote_oui">Oui</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="isNote_non" name="isNote" value="false"
+                       th:checked="${seance && !seance.isNote}"/>
+                <label class="form-check-label" for="isNote_non">Non</label>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <label for="dateLimiteRendu" class="control-label">Date limite de rendu</label>
+            <input type="text" class="form-control w-25" id="dateLimiteRendu" name="dateLimiteRendu"
+                   th:value="${seance} ? ${#dates.format(seance.dateLimiteRendu, 'dd/MM/yyyy HH:mm')}"/>
+            (dd/MM/yyyy HH:mm)
+        </div>
+        <div class="form-group">
+            <label for="type" class="control-label">Type</label>
+            <select class="form-control w-25" name="type" id="type">
+                <option value="COURS" th:selected="${seance && seance.type.name() == 'COURS'}">Cours</option>
+                <option value="TP" th:selected="${seance && seance.type.name() == 'TP'}">TP</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input th:if="${mode == 'modification'}" type="hidden" name="id" th:value="${seance.id}"/>
+            <button type="submit" class="btn btn-primary"
+                    th:text="${mode == 'creation'} ? 'Ajouter' : 'Modifier'"></button>
+        </div>
+    </form>
+</div>
+</body>
 </html>

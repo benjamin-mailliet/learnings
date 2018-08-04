@@ -1,12 +1,12 @@
-.panel-info header.panel-heading{
+.card.active header.card-header{
 	cursor:pointer;
 }
 
-.panel-info header.panel-heading:hover{
-	background-color: #D3E6F0;
+.card.active header.card-header:hover{
+	background-color: #a3b6d0;
 }
 
-article.tp-article header.panel-heading span.glyphicon{
+article.tp-article header.card-header span.icone{
 	-webkit-transition: all 2s ease-out;
 	-moz-transition: all 2s ease-out;
 	-ms-transition: all 2s ease-out;
@@ -22,7 +22,7 @@ article.tp-article header.panel-heading span.glyphicon{
 	
 }
 
-article.tp-article.rotated header.panel-heading span.glyphicon{
+article.tp-article.rotated header.card-header span.icone{
 	-webkit-transition: all 2s ease-out;
 	-moz-transition: all 2s ease-out;
 	-ms-transition: all 2s ease-out;

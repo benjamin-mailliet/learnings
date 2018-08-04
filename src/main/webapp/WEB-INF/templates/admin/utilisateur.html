@@ -1,109 +1,136 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<title>Gestion des utilisateurs</title>
-		<th:block th:replace="fragments/htmlheader" />
-		<script th:src="@{/js/utilisateur.js}"></script>
-		<script th:src="@{/js/filtre.js}"></script>
-		<link th:href="@{/css/utilisateur.css}" rel="stylesheet">
-	</head>
-	<body>
-		<nav th:replace="fragments/menu :: admin('utilisateur')"></nav>
-		<div class="container">
-			<div th:replace="fragments/messages"></div>
-			<header class="page-header">
-				<h1>
-					Gestion des utilisateurs
-					<a href="importutilisateurs" class="btn btn-success"><i class="fa fa-cloud-upload"></i> Importer utilisateurs</a>
-					<button id="boutonEnvoiMails" class="btn btn-default pull-right"><i class="fa fa-envelope" ></i> Envoyer Email</button>
-				</h1>
-			</header>
-			<div  class="form-inline">
-				<div class="form-group">
-					<label for="filter-nom">Nom : </label>
-					<input id="filter-nom" type="text" class="query-filter form-control" data-query-filter="nom" />
-				</div>
-				<div class="form-group">
-					<label for="filter-prenom">Prénom : </label>
-					<input id="filter-prenom" type="text" class="query-filter form-control" data-query-filter="prenom" />
-				</div>
-				<div class="form-group">
-					<label for="filter-groupe">Groupe : </label>
-					<select id="filter-groupe" class="query-filter form-control" data-query-filter="groupe">
-								<option></option>
-								<option>Groupe 1</option>
-								<option>Groupe 2</option>
-							</select>
-				</div>
-			</div>
+<head>
+    <title>Gestion des utilisateurs</title>
+    <th:block th:replace="fragments/htmlheader"/>
+    <script th:src="@{/js/utilisateur.js}"></script>
+    <script th:src="@{/js/filtre.js}"></script>
+    <link th:href="@{/css/utilisateur.css}" rel="stylesheet">
+</head>
+<body>
+<nav th:replace="fragments/menu :: admin('utilisateur')"></nav>
+<div class="container-fluid">
+    <div th:replace="fragments/messages"></div>
+    <h1 class="display-1">Gestion des utilisateurs</h1>
 
-			<table id="listeUtilisateurs" class="table table-striped">
-				<tr>
-					<th>#</th>
-					<th>Nom</th>
-					<th>Prenom</th>
-					<th>Email</th>
-					<th>Groupe</th>
-					<th>Admin</th>
-					<th style="width:20%">Actions</th>
-				</tr>
-				<tr th:id="'utilisateur'+${utilisateur.id}" th:each="utilisateur : ${utilisateurs}">
-					<td th:text="${utilisateur.id}"></td>
-					<td class="filter" data-filter="nom" th:text="${utilisateur.nom}"></td>
-					<td class="filter" data-filter="prenom" th:text="${utilisateur.prenom}"></td>
-					<td th:text="${utilisateur.email}"></td>
-					<td class="filter" data-filter="groupe" th:text="${utilisateur.groupe} ? ${utilisateur.groupe.libelle}"></td>
-					<td class="isAdminCell" th:text="${utilisateur.admin ? 'Oui' : 'Non'}"></td>
-					<td>
-						<th:block th:if="${utilisateur.id != session.utilisateur.id}">
-							<button type="button" class="btn btn-primary btn-xs reinitMdpUtilisateurAction" title="Réinitialiser le mot de passe"><span class="glyphicon glyphicon-repeat"></span></button>
-							<button type="button" class="btn btn-danger btn-xs supprimerUtilisateurAction" title="Supprimer l'utilisateur"><span class="glyphicon glyphicon-trash"></span></button>
-							<button th:style="${utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-success btn-xs donnerAdminUtilisateurAction" title="Donner l'admin"><span class="glyphicon glyphicon-chevron-up"></span></button>
-							<button th:style="${!utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-warning btn-xs enleverAdminUtilisateurAction" title="Enlever l'admin"><span class="glyphicon glyphicon-chevron-down"></span></button>
-						</th:block>
-					</td>
-				</tr>
-				<tr id="nouvelUtilisateurRow">
-					<td></td>
-					<td><input type="text" class="form-control input-sm" id="nomNouvelUtilisateur" name="nomNouvelUtilisateur" placeholder="Nom"></td>
-					<td><input type="text" class="form-control input-sm" id="prenomNouvelUtilisateur" name="prenomNouvelUtilisateur" placeholder="Prénom"></td>
-					<td>
-						<div class="input-group">
-			   	 			<div class="input-group-addon">@</div>
-							<input type="email" class="form-control input-sm" id="emailNouvelUtilisateur" name="emailNouvelUtilisateur" placeholder="Email">
-						</div>
-					</td>
-					<td>
-						<select class="form-control input-sm" id="groupeNouvelUtilisateur" name="groupeNouvelUtilisateur">
-							<option value=""></option>
-							<option th:each="groupe : ${groupes}" th:value="${groupe}" th:text="${groupe.libelle}"></option>
-						</select>
-					</td>
-					<td><input type="checkbox" id="adminNouvelUtilisateur" name="adminNouvelUtilisateur" ></td>
-					<td><button type="button" class="btn btn-info btn-xs" id="nouvelUtilisateurAction"><span class="glyphicon glyphicon-plus"></span></button></td>				
-				</tr>
-			</table>
-		</div>
+    <div class="btn-group" role="group" aria-label="Actions globales utilisateurs">
+        <a href="importutilisateurs" class="btn btn-outline-success"><i class="fas fa-cloud-upload-alt"></i> Importer utilisateurs</a>
+        <button id="boutonEnvoiMails" class="btn btn-outline-primary" data-toggle="modal" data-target="#listeEmailsModal"><i class="fas fa-envelope"></i> Envoyer Email</button>
+    </div>
 
-		<div id="listeEmailsContainer" style="display: none">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6 col-md-offset-3">
-						<div id="listeEmailsModal" class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">Voici la liste des adresses email des élèves :</h3>
-							</div>
-							<div class="panel-body">
-								<p id="listeEmailsData"><textarea class="form-control"></textarea></p>
-							</div>
-							<div class="panel-footer">
-								<button class="btn btn-primary" id="boutonOuvrirClientMail">Ouvrir un client mail</button>
-								<button class="btn btn-default" id="boutonFermerModal">Fermer</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</body>
+    <form class="form-inline my-2">
+        <h2 class="mb-2 mr-sm-2">Filtrer la liste :</h2>
+        <label for="filter-nom" class="sr-only">Nom : </label>
+        <input id="filter-nom" type="text" class="query-filter form-control mb-2 mr-sm-2" data-query-filter="nom" placeholder="Nom"/>
+        <label for="filter-prenom" class="sr-only">Prénom : </label>
+        <input id="filter-prenom" type="text" class="query-filter form-control mb-2 mr-sm-2" data-query-filter="prenom" placeholder="Prenom"/>
+        <label for="filter-groupe" class="sr-only">Groupe : </label>
+        <select id="filter-groupe" class="query-filter form-control mb-2 mr-sm-2" data-query-filter="groupe">
+            <option></option>
+            <option>Groupe 1</option>
+            <option>Groupe 2</option>
+        </select>
+    </form>
+
+    <table id="listeUtilisateurs" class="table table-striped">
+        <caption>Liste des utilisateurs</caption>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Prenom</th>
+            <th scope="col">Email</th>
+            <th scope="col">Groupe</th>
+            <th scope="col">Admin</th>
+            <th scope="col" style="width:20%">Actions</th>
+        </tr>
+        <tr th:id="'utilisateur'+${utilisateur.id}" th:each="utilisateur : ${utilisateurs}">
+            <td th:text="${utilisateur.id}"></td>
+            <td class="filter" data-filter="nom" th:text="${utilisateur.nom}"></td>
+            <td class="filter" data-filter="prenom" th:text="${utilisateur.prenom}"></td>
+            <td th:text="${utilisateur.email}"></td>
+            <td class="filter" data-filter="groupe"
+                th:text="${utilisateur.groupe} ? ${utilisateur.groupe.libelle}"></td>
+            <td class="isAdminCell" th:text="${utilisateur.admin ? 'Oui' : 'Non'}"></td>
+            <td>
+                <th:block th:if="${utilisateur.id != session.utilisateur.id}">
+                    <button type="button" class="btn btn-info btn-sm reinitMdpUtilisateurAction" data-toggle="tooltip" title="Réinitialiser le mot de passe">
+                        <i class="fas fa-unlock"></i>
+                        <span class="sr-only">Réinitialiser le mot de passe de [[${utilisateur.prenom + ' ' + utilisateur.nom}]]"</span>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm supprimerUtilisateurAction" data-toggle="tooltip" title="Supprimer l'utilisateur">
+                        <i class="fas fa-trash"></i>
+                        <span class="sr-only">Supprimer l'utilisateur [[${utilisateur.prenom + ' ' + utilisateur.nom}]]"</span>
+                    </button>
+                    <button th:style="${utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-success btn-sm donnerAdminUtilisateurAction" data-toggle="tooltip" title="Donner l'admin">
+                        <i class="fas fa-chevron-up"></i>
+                        <span class="sr-only">Donner l'admin à [[${utilisateur.prenom + ' ' + utilisateur.nom}]]"</span>
+                    </button>
+                    <button th:style="${!utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-warning btn-sm enleverAdminUtilisateurAction" data-toggle="tooltip" title="Enlever l'admin">
+                        <i class="fas fa-chevron-down"></i>
+                        <span class="sr-only">Enlever l'admin à [[${utilisateur.prenom + ' ' + utilisateur.nom}]]"</span>
+                    </button>
+                </th:block>
+            </td>
+        </tr>
+        <tr id="nouvelUtilisateurRow">
+            <td></td>
+            <td><input type="text" class="form-control input-sm" id="nomNouvelUtilisateur" name="nomNouvelUtilisateur"
+                       placeholder="Nom"></td>
+            <td><input type="text" class="form-control input-sm" id="prenomNouvelUtilisateur"
+                       name="prenomNouvelUtilisateur" placeholder="Prénom"></td>
+            <td>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">@</div>
+                    </div>
+                    <input type="email" class="form-control input-sm" id="emailNouvelUtilisateur"
+                           name="emailNouvelUtilisateur" placeholder="Email">
+                </div>
+            </td>
+            <td>
+                <select class="form-control input-sm" id="groupeNouvelUtilisateur" name="groupeNouvelUtilisateur">
+                    <option value=""></option>
+                    <option th:each="groupe : ${groupes}" th:value="${groupe}" th:text="${groupe.libelle}"></option>
+                </select>
+            </td>
+            <td><div class="form-check"><input type="checkbox" id="adminNouvelUtilisateur" name="adminNouvelUtilisateur"></div></td>
+            <td>
+                <button type="button" class="btn btn-primary btn-sm" id="nouvelUtilisateurAction">
+                    <span class="fas fa-plus"></span>
+                    Ajouter l'utilisateur
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="listeEmailsModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Voici la liste des adresses email des élèves</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="listeEmailsData"><textarea class="form-control"></textarea></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="boutonOuvrirClientMail">Ouvrir un client mail</button>
+                <button class="btn btn-secondary" id="boutonFermerModal" data-dismiss="modal">Fermer</button>
+            </div>
+            <div class="col-md-6 col-md-offset-3">
+                <div id="" class="panel panel-default">
+                    <div class="panel-body">
+                    </div>
+                    <div class="panel-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
 </html>
