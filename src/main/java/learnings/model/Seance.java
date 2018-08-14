@@ -20,7 +20,7 @@ public class Seance implements Serializable {
 	private Date dateLimiteRendu;
 	private Date date;
 	private TypeSeance type;
-	private int nbMaxElevesParRendu;
+	private Integer nbMaxElevesParRendu;
 
 	private List<RenduTp> travauxRendus;
 	private BigDecimal sommeNotes;
@@ -34,7 +34,7 @@ public class Seance implements Serializable {
 		this.date = date;
 	}
 
-	public Seance(Long id, String titre, String description, Date date, Boolean isNote, Date dateLimiteRendu, TypeSeance type) {
+	public Seance(Long id, String titre, String description, Date date, Boolean isNote, Date dateLimiteRendu, TypeSeance type, Integer nbMaxElevesParRendu) {
 		this.id = id;
 		this.titre = titre;
 		this.description = description;
@@ -42,17 +42,17 @@ public class Seance implements Serializable {
 		this.dateLimiteRendu = dateLimiteRendu;
 		this.date = date;
 		this.type = type;
+		this.nbMaxElevesParRendu = nbMaxElevesParRendu;
 		this.nbNotes = 0;
 	}
 
-	public TypeSeance getType() {
-		return type;
+	public Long getId() {
+		return id;
 	}
 
-	public void setType(TypeSeance type) {
-		this.type = type;
+	public void setId(Long id) {
+		this.id = id;
 	}
-
 
 	public String getTitre() {
 		return titre;
@@ -78,8 +78,20 @@ public class Seance implements Serializable {
 		this.ressources = ressources;
 	}
 
-	public Long getId() {
-		return id;
+	public Boolean getIsNote() {
+		return isNote;
+	}
+
+	public void setIsNote(Boolean note) {
+		isNote = note;
+	}
+
+	public Date getDateLimiteRendu() {
+		return dateLimiteRendu;
+	}
+
+	public void setDateLimiteRendu(Date dateLimiteRendu) {
+		this.dateLimiteRendu = dateLimiteRendu;
 	}
 
 	public Date getDate() {
@@ -90,24 +102,20 @@ public class Seance implements Serializable {
 		this.date = date;
 	}
 
-	public boolean isDatePassee() {
-		return this.date.before(new Date());
+	public TypeSeance getType() {
+		return type;
 	}
 
-	public Boolean getIsNote() {
-		return isNote;
+	public void setType(TypeSeance type) {
+		this.type = type;
 	}
 
-	public void setIsNote(Boolean isNote) {
-		this.isNote = isNote;
+	public Integer getNbMaxElevesParRendu() {
+		return nbMaxElevesParRendu;
 	}
 
-	public Date getDateLimiteRendu() {
-		return dateLimiteRendu;
-	}
-
-	public void setDateLimiteRendu(Date dateLimiteRendu) {
-		this.dateLimiteRendu = dateLimiteRendu;
+	public void setNbMaxElevesParRendu(Integer nbMaxElevesParRendu) {
+		this.nbMaxElevesParRendu = nbMaxElevesParRendu;
 	}
 
 	public List<RenduTp> getTravauxRendus() {
@@ -140,6 +148,10 @@ public class Seance implements Serializable {
 
 	public void setMoyenne(BigDecimal moyenne) {
 		this.moyenne = moyenne;
+	}
+
+	public boolean isDatePassee() {
+		return this.date.before(new Date());
 	}
 
 	public void addNote(BigDecimal note){

@@ -22,11 +22,10 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
         List<Seance> listeCours = new ArrayList<>();
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement();
-             ResultSet results = stmt.executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance ORDER BY date ASC")
+             ResultSet results = stmt.executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type, nb_max_binome FROM seance ORDER BY date ASC")
         ) {
             while (results.next()) {
-                listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
-                        .getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
+                listeCours.add(mapperSeance(results));
             }
         } catch (SQLException e) {
             throw new LearningsSQLException(e);
@@ -40,11 +39,10 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement();
              ResultSet results = stmt
-                     .executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type FROM seance WHERE isnote is true ORDER BY date ASC")
+                     .executeQuery("SELECT id, titre, description, date, isnote, datelimiterendu, type, nb_max_binome FROM seance WHERE isnote is true ORDER BY date ASC")
         ) {
             while (results.next()) {
-                listeCours.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
-                        .getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
+                listeCours.add(mapperSeance(results));
             }
         } catch (SQLException e) {
             throw new LearningsSQLException(e);
@@ -62,8 +60,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
             stmt.setDate(2, new java.sql.Date(date.getTime()));
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    tpNotes.add(new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"), results
-                            .getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type"))));
+                    tpNotes.add(mapperSeance(results));
                 }
             }
         } catch (SQLException e) {
@@ -81,8 +78,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
             stmt.setLong(1, idSeance);
             try (ResultSet results = stmt.executeQuery()) {
                 if (results.next()) {
-                    seance = new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"),
-                            results.getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type")));
+                    seance = mapperSeance(results);
                 }
             }
         } catch (SQLException e) {
@@ -91,11 +87,20 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
         return seance;
     }
 
+    private Seance mapperSeance(ResultSet results) throws SQLException {
+        Integer nbMaxElevesParRendu = results.getInt("nb_max_binome");
+        if (results.wasNull()) {
+            nbMaxElevesParRendu = null;
+        }
+        return new Seance(results.getLong("id"), results.getString("titre"), results.getString("description"), results.getDate("date"),
+                results.getBoolean("isnote"), results.getTimestamp("datelimiterendu"), TypeSeance.valueOf(results.getString("type")), nbMaxElevesParRendu);
+    }
+
     @Override
     public Seance ajouterSeance(Seance seance) {
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(
-                     "INSERT INTO seance(titre, description, date, isnote, datelimiterendu, type) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
+                     "INSERT INTO seance(titre, description, date, isnote, datelimiterendu, type, nb_max_binome) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setString(1, seance.getTitre());
             if (seance.getDescription() == null) {
@@ -111,12 +116,17 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
                 stmt.setTimestamp(5, new java.sql.Timestamp(seance.getDateLimiteRendu().getTime()));
             }
             stmt.setString(6, seance.getType().toString());
+            if (seance.getNbMaxElevesParRendu() == null) {
+                stmt.setNull(7, Types.INTEGER);
+            } else {
+                stmt.setInt(7, seance.getNbMaxElevesParRendu());
+            }
             stmt.executeUpdate();
 
             try (ResultSet ids = stmt.getGeneratedKeys()) {
                 if (ids.next()) {
                     seance = new Seance(ids.getLong(1), seance.getTitre(), seance.getDescription(), seance.getDate(), seance.getIsNote(),
-                            seance.getDateLimiteRendu(), seance.getType());
+                            seance.getDateLimiteRendu(), seance.getType(), seance.getNbMaxElevesParRendu());
                 }
             }
         } catch (SQLException e) {
@@ -129,7 +139,7 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
     public void modifierSeance(Seance seance) {
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
-                     .prepareStatement("UPDATE seance SET titre=?, description=?, date=?, isnote=?, datelimiterendu=?, type=? WHERE id=?")
+                     .prepareStatement("UPDATE seance SET titre=?, description=?, date=?, isnote=?, datelimiterendu=?, type=?, nb_max_binome=? WHERE id=?")
         ) {
             stmt.setString(1, seance.getTitre());
             if (seance.getDescription() == null) {
@@ -145,7 +155,12 @@ public class SeanceDaoImpl extends GenericDaoImpl implements SeanceDao {
                 stmt.setTimestamp(5, new java.sql.Timestamp(seance.getDateLimiteRendu().getTime()));
             }
             stmt.setString(6, seance.getType().toString());
-            stmt.setLong(7, seance.getId());
+            if (seance.getNbMaxElevesParRendu() == null) {
+                stmt.setNull(7, Types.INTEGER);
+            } else {
+                stmt.setInt(7, seance.getNbMaxElevesParRendu());
+            }
+            stmt.setLong(8, seance.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new LearningsSQLException(e);

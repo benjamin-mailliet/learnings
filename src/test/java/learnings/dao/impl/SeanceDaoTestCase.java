@@ -27,10 +27,10 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement()
         ) {
-            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`) VALUES(1,'cours1','cours de debuggage','2014-07-26','COURS')");
-            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`) VALUES(2,'cours2','cours de correction','2014-08-26','COURS')");
-            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`,`datelimiterendu`,`isnote`) VALUES(3,'tp1','tp de debuggage','2014-07-29','TP','2014-07-29 18:00:00',true)");
-            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`,`type`,`datelimiterendu`,`isnote`) VALUES(4,'tp2','tp de correction','2014-08-29','TP','2014-08-29 18:00:00',true)");
+            stmt.executeUpdate("INSERT INTO seance(id,titre,description,date,type) VALUES(1,'cours1','cours de debuggage','2014-07-26','COURS')");
+            stmt.executeUpdate("INSERT INTO seance(id,titre,description,date,type) VALUES(2,'cours2','cours de correction','2014-08-26','COURS')");
+            stmt.executeUpdate("INSERT INTO seance(id,titre,description,date,type,datelimiterendu,isnote, nb_max_binome) VALUES(3,'tp1','tp de debuggage','2014-07-29','TP','2014-07-29 18:00:00',true, 3)");
+            stmt.executeUpdate("INSERT INTO seance(id,titre,description,date,type,datelimiterendu,isnote, nb_max_binome) VALUES(4,'tp2','tp de correction','2014-08-29','TP','2014-08-29 18:00:00',true, 4)");
         }
     }
 
@@ -40,11 +40,11 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
         List<Seance> listeCours = seanceDao.listerSeances();
         // THEN
         assertThat(listeCours).hasSize(4);
-        assertThat(listeCours).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote").containsExactly(
-                tuple(1L, "cours1", "cours de debuggage", getDate(2014, Calendar.JULY, 26), TypeSeance.COURS, null, false),
-                tuple(3L, "tp1", "tp de debuggage", getDate(2014, Calendar.JULY, 29), TypeSeance.TP, getDate(2014, Calendar.JULY, 29, 18, 0, 0).getTime(), true),
-                tuple(2L, "cours2", "cours de correction", getDate(2014, Calendar.AUGUST, 26), TypeSeance.COURS, null, false),
-                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true)
+        assertThat(listeCours).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote", "nbMaxElevesParRendu").containsExactly(
+                tuple(1L, "cours1", "cours de debuggage", getDate(2014, Calendar.JULY, 26), TypeSeance.COURS, null, false, null),
+                tuple(3L, "tp1", "tp de debuggage", getDate(2014, Calendar.JULY, 29), TypeSeance.TP, getDate(2014, Calendar.JULY, 29, 18, 0, 0).getTime(), true, 3),
+                tuple(2L, "cours2", "cours de correction", getDate(2014, Calendar.AUGUST, 26), TypeSeance.COURS, null, false, null),
+                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true, 4)
         );
     }
 
@@ -54,9 +54,9 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
         List<Seance> listeCours = seanceDao.listerSeancesNotees();
         // THEN
         assertThat(listeCours).hasSize(2);
-        assertThat(listeCours).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote").containsExactly(
-                tuple(3L, "tp1", "tp de debuggage", getDate(2014, Calendar.JULY, 29), TypeSeance.TP, getDate(2014, Calendar.JULY, 29, 18, 0, 0).getTime(), true),
-                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true)
+        assertThat(listeCours).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote", "nbMaxElevesParRendu").containsExactly(
+                tuple(3L, "tp1", "tp de debuggage", getDate(2014, Calendar.JULY, 29), TypeSeance.TP, getDate(2014, Calendar.JULY, 29, 18, 0, 0).getTime(), true, 3),
+                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true, 4)
         );
     }
 
@@ -66,8 +66,8 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
         List<Seance> listeTps = seanceDao.listerTPNotesParDateRendu(getDate(2014, Calendar.AUGUST, 29, 15, 27, 0));
         // THEN
         assertThat(listeTps).hasSize(1);
-        assertThat(listeTps).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote").containsExactly(
-                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true)
+        assertThat(listeTps).extracting("id", "titre", "description", "date", "type", "dateLimiteRendu.time", "isNote", "nbMaxElevesParRendu").containsExactly(
+                tuple(4L, "tp2", "tp de correction", getDate(2014, Calendar.AUGUST, 29), TypeSeance.TP, getDate(2014, Calendar.AUGUST, 29, 18, 0, 0).getTime(), true, 4)
         );
     }
 
@@ -89,7 +89,7 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
     @Test
     public void shouldAjouterSeanceComplete() throws Exception {
         // GIVEN
-        Seance seance = new Seance(null, "monTitre", "maDescription", getDate(2014, Calendar.SEPTEMBER, 6), true, getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0), TypeSeance.TP);
+        Seance seance = new Seance(null, "monTitre", "maDescription", getDate(2014, Calendar.SEPTEMBER, 6), true, getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0), TypeSeance.TP, 5);
         // WHEN
         Seance seanceCreee = seanceDao.ajouterSeance(seance);
         // THEN
@@ -108,6 +108,7 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
                 assertThat(results.getTimestamp("date")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6));
                 assertThat(results.getTimestamp("datelimiterendu")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0));
                 assertThat(results.getBoolean("isnote")).isTrue();
+                assertThat(results.getInt("nb_max_binome")).isEqualTo(5);
             }
         }
     }
@@ -115,7 +116,7 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
     @Test
     public void shouldAjouterSeanceMini() throws Exception {
         // GIVEN
-        Seance seance = new Seance(null, "monTitre", null, getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.TP);
+        Seance seance = new Seance(null, "monTitre", null, getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.TP, null);
         // WHEN
         Seance seanceCreee = seanceDao.ajouterSeance(seance);
         // THEN
@@ -134,6 +135,7 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
                 assertThat(results.getTimestamp("date")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6));
                 assertThat(results.getTimestamp("datelimiterendu")).isNull();
                 assertThat(results.getBoolean("isnote")).isFalse();
+                assertThat(results.getString("nb_max_binome")).isNull();
             }
         }
     }
@@ -141,7 +143,7 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
     @Test
     public void shouldModifierSeance() throws Exception {
         // GIVEN
-        Seance seance = new Seance(1L, "monTitre", "maDescription", getDate(2014, Calendar.SEPTEMBER, 6), true, getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0), TypeSeance.TP);
+        Seance seance = new Seance(1L, "monTitre", "maDescription", getDate(2014, Calendar.SEPTEMBER, 6), true, getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0), TypeSeance.TP, 10);
         // WHEN
         seanceDao.modifierSeance(seance);
         // THEN
@@ -157,6 +159,7 @@ public class SeanceDaoTestCase extends AbstractDaoTestCase {
             assertThat(results.getTimestamp("date")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6));
             assertThat(results.getTimestamp("datelimiterendu")).isEqualToIgnoringMillis(getDate(2014, Calendar.SEPTEMBER, 6, 18, 5, 0));
             assertThat(results.getBoolean("isnote")).isTrue();
+            assertThat(results.getInt("nb_max_binome")).isEqualTo(10);
         }
     }
 }

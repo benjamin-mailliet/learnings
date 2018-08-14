@@ -18,6 +18,7 @@ CREATE TABLE seance (
   datelimiterendu datetime DEFAULT NULL,
   date date NOT NULL,
   type varchar(50) NOT NULL,
+  nb_max_binome int(11) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 

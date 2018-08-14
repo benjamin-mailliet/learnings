@@ -99,6 +99,8 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         when(binomeDao.getBinome(Mockito.eq(3L), Mockito.eq(1L))).thenReturn(binome1);
         when(binomeDao.getBinome(Mockito.eq(3L), Mockito.eq(2L))).thenReturn(binome2);
         when(binomeDao.getBinome(Mockito.eq(3L), Mockito.eq(3L))).thenReturn(binome2);
+        when(binomeDao.getBinome(Mockito.eq("uid1"))).thenReturn(binome1);
+        when(binomeDao.getBinome(Mockito.eq("uid2"))).thenReturn(binome2);
     }
 
     @Test
@@ -255,7 +257,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     @Test
     public void shouldAjouterSeance() {
         // GIVEN
-        Seance seance = new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS);
+        Seance seance = new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null);
         // WHEN
         seanceManager.ajouterSeance(seance);
         // THEN
@@ -279,7 +281,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotAjouterSeanceAvecTitreNull() {
         // WHEN
         try {
-            seanceManager.ajouterSeance(new Seance(null, null, "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.ajouterSeance(new Seance(null, null, "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -293,7 +295,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotAjouterSeanceAvecTitreVide() {
         // WHEN
         try {
-            seanceManager.ajouterSeance(new Seance(null, "", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.ajouterSeance(new Seance(null, "", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -307,7 +309,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotAjouterSeanceAvecDateNull() {
         // WHEN
         try {
-            seanceManager.ajouterSeance(new Seance(null, "titre", "description", null, false, null, TypeSeance.COURS));
+            seanceManager.ajouterSeance(new Seance(null, "titre", "description", null, false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -321,7 +323,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotAjouterSeanceAvecTypeNull() {
         // WHEN
         try {
-            seanceManager.ajouterSeance(new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, null));
+            seanceManager.ajouterSeance(new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, null, null));
             fail("exception attendue");
         }
         // THEN
@@ -334,7 +336,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     @Test
     public void testModifierSeance() {
         // GIVEN
-        Seance seance = new Seance(1L, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS);
+        Seance seance = new Seance(1L, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null);
         // WHEN
         seanceManager.modifierSeance(seance);
         // THEN
@@ -360,7 +362,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotModifierSeanceAvecIdNull() {
         // WHEN
         try {
-            seanceManager.modifierSeance(new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.modifierSeance(new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -374,7 +376,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotModifierSeanceAvecTitreNull() {
         // WHEN
         try {
-            seanceManager.modifierSeance(new Seance(1L, null, "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.modifierSeance(new Seance(1L, null, "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -388,7 +390,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotModifierSeanceAvecTitreVide() {
         // WHEN
         try {
-            seanceManager.modifierSeance(new Seance(1L, "", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.modifierSeance(new Seance(1L, "", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -402,7 +404,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotModifierSeanceAvecDateNull() {
         // WHEN
         try {
-            seanceManager.modifierSeance(new Seance(1L, "titre", "description", null, false, null, TypeSeance.COURS));
+            seanceManager.modifierSeance(new Seance(1L, "titre", "description", null, false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -417,7 +419,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         // WHEN
         try {
             seanceManager
-                    .modifierSeance(new Seance(1L, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, null));
+                    .modifierSeance(new Seance(1L, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, null, null));
             fail("exception attendue");
         }
         // THEN
