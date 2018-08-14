@@ -35,17 +35,16 @@
 				</tr>
 				<th:block th:each="binomeAvecRendus : ${seanceSelectionnee.rendus}"
 					th:with="binome=${binomeAvecRendus.key},rendus=${binomeAvecRendus.value}" >
-					<tr th:each="rendu,iterStat : ${rendus}" th:id="'ligneRendu'+${binome.id}" th:class="${mapNoteEleve[binome.eleve1.id]} ? 'table-success' : ''">
+					<tr th:each="rendu,iterStat : ${rendus}" th:id="'ligneRendu'+${binome.uid}" th:class="${mapNoteEleve[binome.eleves[0].id]} ? 'table-success' : ''">
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
-							<ul th:id="'binome'+${binome.id}">
-								<li>[[${binome.eleve1.prenom}]] [[${binome.eleve1.nom}]]</li>
-								<li th:if="${binome.eleve2 != null}">[[${binome.eleve2.prenom}]] [[${binome.eleve2.nom}]]</li>
+							<ul th:id="'binome'+${binome.uid}">
+								<li th:each="eleve : ${binome.eleves}">[[${eleve.prenom}]] [[${eleve.nom}]]</li>
 							</ul>
 						</td>
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
-							<ul class="list-unstyled" th:id="'noteBinome'+${binome.id}">
-								<li th:id="'noteEleve'+${binome.eleve1.id}"><span th:if="${mapNoteEleve[binome.eleve1.id] != null}" >[[${mapNoteEleve[binome.eleve1.id].valeur}]]</span></li>
-								<li th:if="${binome.eleve2 != null}" th:id="'noteEleve'+${binome.eleve2.id}"><span th:if="${mapNoteEleve[binome.eleve2.id] != null}" >[[${mapNoteEleve[binome.eleve2.id].valeur}]]</span></li>
+							<ul class="list-unstyled" th:id="'noteBinome'+${binome.uid}">
+								<li th:each="eleve : ${binome.eleves}"
+										th:id="'noteEleve'+${eleve.id}"><span th:if="${mapNoteEleve[eleve.id] != null}" >[[${mapNoteEleve[eleve.id].valeur}]]</span></li>
 							</ul>
 						</td>
 						<td>
@@ -54,17 +53,17 @@
 						</td>
 						<td th:text="${rendu.commentaire}"></td>
 						<td th:rowspan="${#lists.size(rendus)}" th:if="${iterStat.count == 1}">
-							<button th:id="'noterTravail'+${binome.id}" type="button" class="btn btn-info btn-note"
+							<button th:id="'noterTravail'+${binome.uid}" type="button" class="btn btn-info btn-note"
 									data-toggle="modal"
 									data-target="#popupNote"
 									th:data-seance="${rendu.binome.seance.id}"
-									th:data-binome="${rendu.binome.id}"
-									th:data-eleve1="${rendu.binome.eleve1.id}"
-									th:data-eleve1PrenomNom="${rendu.binome.eleve1.prenom+' '+rendu.binome.eleve1.nom}"
-									th:data-eleve2="${rendu.binome.eleve2 ? rendu.binome.eleve2.id:null}"
-									th:data-eleve2PrenomNom="${rendu.binome.eleve2 ? rendu.binome.eleve2.prenom+' '+rendu.binome.eleve2.nom:null}" data-tooltip="tooltip" title="Gérer l'évaluation">
+									th:data-binome="${rendu.binome.uid}"
+									th:data-eleve1="${rendu.binome.eleves[0].id}"
+									th:data-eleve1PrenomNom="${rendu.binome.eleves[0].prenom+' '+rendu.binome.eleves[0].nom}"
+									th:data-eleve2="${#lists.size(rendu.binome.eleves) > 1 ? rendu.binome.eleves[1].id:null}"
+									th:data-eleve2PrenomNom="${#lists.size(rendu.binome.eleves) > 1 ? rendu.binome.eleves[1].prenom+' '+rendu.binome.eleves[1].nom:null}" data-tooltip="tooltip" title="Gérer l'évaluation">
 								<i class="fa fa-tags" aria-hidden="true"></i>
-								<span class="sr-only">Gérer l'évaluation ([[${rendu.binome.eleve1.prenom+' '+rendu.binome.eleve1.nom + (rendu.binome.eleve2 ? ' &amp; ' + rendu.binome.eleve2.prenom+' '+rendu.binome.eleve2.nom:'')}]])</span>
+								<span class="sr-only">Gérer l'évaluation ([[${rendu.binome.eleves[0].prenom+' '+rendu.binome.eleves[0].nom + (#lists.size(rendu.binome.eleves) > 1 ? ' &amp; ' + rendu.binome.eleves[1].prenom+' '+rendu.binome.eleves[1].nom:'')}]])</span>
 							</button>
 						</td>
 					</tr>

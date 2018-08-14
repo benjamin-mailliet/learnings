@@ -32,16 +32,13 @@ CREATE TABLE appel (
 );
 
 CREATE TABLE binome (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  eleve1_id int(11) NOT NULL,
-  eleve2_id int(11) DEFAULT NULL,
+  eleve_id int(11) NOT NULL,
   seance_id int(11) NOT NULL,
-  PRIMARY KEY (id),
-  KEY binome_eleve1_idx (eleve1_id),
-  KEY binome_eleve2_idx (eleve2_id),
+  binome_uid varchar(50) NOT NULL,
+  PRIMARY KEY (eleve_id, seance_id),
+  KEY binome_eleve_idx (eleve_id),
   KEY binome_seance_idx (seance_id),
-  CONSTRAINT binome_eleve1 FOREIGN KEY (eleve1_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT binome_eleve2 FOREIGN KEY (eleve2_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT binome_eleve FOREIGN KEY (eleve_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT binome_seance FOREIGN KEY (seance_id) REFERENCES seance (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
@@ -52,10 +49,8 @@ CREATE TABLE rendu_tp (
   dateRendu datetime NOT NULL,
   commentaire varchar(5000) DEFAULT NULL,
   commentaireNote varchar(5000) DEFAULT NULL,
-  binome_id int(11) NOT NULL,
-  PRIMARY KEY (id),
-  KEY rendu_tp_binome_idx (binome_id),
-  CONSTRAINT rendu_tp_binome FOREIGN KEY (binome_id) REFERENCES binome (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+  binome_uid varchar(50) NOT NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE ressource (

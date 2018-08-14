@@ -39,12 +39,11 @@
 					</div>
 					<div th:if="${tpAvecTravaux.binome != null}">
 						<h3>Binôme :</h3>
-						<p th:if="${tpAvecTravaux.binome.eleve2 != null}">
+						<p th:if="${#lists.size(tpAvecTravaux.binome.eleves) > 1}">
 							Pour ce TP, vous êtes en binôme avec
-							<strong th:if="${tpAvecTravaux.binome.eleve1.id == session.utilisateur.id}">[[${tpAvecTravaux.binome.eleve2.prenom}]] [[${tpAvecTravaux.binome.eleve2.nom}]]</strong>
-							<strong th:if="${tpAvecTravaux.binome.eleve2.id == session.utilisateur.id}">[[${tpAvecTravaux.binome.eleve1.prenom}]] [[${tpAvecTravaux.binome.eleve1.nom}]]</strong>
+							<strong th:each="eleve : ${tpAvecTravaux.binome.eleves}" th:if="${eleve.id != session.utilisateur.id}">[[${eleve.prenom}]] [[${eleve.nom}]]</strong>
 						</p>
-						<p th:if="${tpAvecTravaux.binome.eleve2 == null}">Pour ce TP, vous êtes sans binôme.</p>
+						<p th:if="${#lists.size(tpAvecTravaux.binome.eleves) == 1}">Pour ce TP, vous êtes sans binôme.</p>
 						<h3>Déjà rendu :</h3>
 						<p th:if="${tpAvecTravaux.travaux.size() == 0}">Vous n'avez encore rien rendu pour ce TP.</p>
 						<ul th:if="${tpAvecTravaux.travaux.size() > 0}">

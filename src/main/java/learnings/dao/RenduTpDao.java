@@ -1,18 +1,14 @@
 package learnings.dao;
 
-import learnings.model.Binome;
 import learnings.model.RenduTp;
-import learnings.model.Travail;
-import learnings.model.Utilisateur;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 public interface RenduTpDao {
 	RenduTp ajouterRenduTp(RenduTp renduTp);
 
-	List<RenduTp> listerRendusParBinome(Long idBinome);
+	List<RenduTp> listerRendusParBinome(String uidBinome);
 
 	List<RenduTp> listerRendusParSeance(Long idSeance);
 

@@ -16,7 +16,6 @@ import learnings.model.Binome;
 import learnings.model.Note;
 import learnings.model.RenduTp;
 import learnings.model.Seance;
-import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.FichierComplet;
 import learnings.utils.FichierUtils;
@@ -76,20 +75,20 @@ public class RenduTpManager {
 
         renduTpDao.ajouterRenduTp(rendu);
 
-        LOGGER.info(String.format("rendreTP|binome=%d|rendu=%d;%s", binome.getId(), rendu.getId(), nomFichier));
+        LOGGER.info(String.format("rendreTP|binome=%s|rendu=%d;%s", binome.getUid(), rendu.getId(), nomFichier));
     }
 
     public void ajouterBinome(Long idSeance, Long idEleve1, Long idEleve2) throws LearningsException  {
        this.checkBinome(idSeance, idEleve1, idEleve2);
 
         Binome binome = new Binome(null, new Seance(idSeance, null, null, null));
-        binome.setEleve1(this.verifierUtilisateur(idEleve1));
+        binome.getEleves().add(this.verifierUtilisateur(idEleve1));
         if (idEleve2 != null) {
-            binome.setEleve2(this.verifierUtilisateur(idEleve2));
+            binome.getEleves().add(this.verifierUtilisateur(idEleve2));
         }
 
         binomeDao.ajouterBinome(binome);
-        LOGGER.info(String.format("ajouterBinome|binome=%d|tp=%d", binome.getId(), idSeance));
+        LOGGER.info(String.format("ajouterBinome|binome=%s|tp=%d", binome.getUid(), idSeance));
     }
 
     public void enregistrerNoteTp(Long idSeance, Long idEleve, BigDecimal valeur, String commentaire) {
@@ -153,10 +152,10 @@ public class RenduTpManager {
         return eleve;
     }
 
-    protected void ajouterFichier(InputStream fichier, Travail travail) throws LearningsException {
+    protected void ajouterFichier(InputStream fichier, RenduTp renduTp) throws LearningsException {
         try {
             if (fichier != null) {
-                fichierManager.ajouterFichier(travail.getChemin(), fichier);
+                fichierManager.ajouterFichier(renduTp.getChemin(), fichier);
             }
         } catch (LearningsException e) {
             throw new LearningsException("Problème à l'enregistrement du travail.", e);

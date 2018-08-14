@@ -20,6 +20,8 @@ public class Seance implements Serializable {
 	private Date dateLimiteRendu;
 	private Date date;
 	private TypeSeance type;
+	private int nbMaxElevesParRendu;
+
 	private List<RenduTp> travauxRendus;
 	private BigDecimal sommeNotes;
 	private int nbNotes;

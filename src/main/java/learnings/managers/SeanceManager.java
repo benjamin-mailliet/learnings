@@ -1,12 +1,10 @@
 package learnings.managers;
 
 import learnings.dao.BinomeDao;
-import learnings.dao.NoteDao;
 import learnings.dao.RenduTpDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.impl.BinomeDaoImpl;
-import learnings.dao.impl.NoteDaoImpl;
 import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
@@ -41,8 +39,6 @@ public class SeanceManager {
     private RessourceDao ressourceDao = new RessourceDaoImpl();
     private RenduTpDao renduTpDao = new RenduTpDaoImpl();
     private BinomeDao binomeDao = new BinomeDaoImpl();
-    private NoteDao noteDao = new NoteDaoImpl();
-
 
     public List<Seance> listerSeances() {
         List<Seance> listeCours = seanceDao.listerSeances();
@@ -78,7 +74,7 @@ public class SeanceManager {
             Binome binome = binomeDao.getBinome(tp.getId(), idUtilisateur);
             if(binome != null) {
                 tpAvecTravaux.setBinome(binome);
-                tpAvecTravaux.setTravaux(renduTpDao.listerRendusParBinome(binome.getId()));
+                tpAvecTravaux.setTravaux(renduTpDao.listerRendusParBinome(binome.getUid()));
             }
             listeTpsAvecTravaux.add(tpAvecTravaux);
 
@@ -97,6 +93,7 @@ public class SeanceManager {
         SeanceAvecRendus seanceAvecRendus = new SeanceAvecRendus();
         seanceAvecRendus.setSeance(seance);
         List<RenduTp> rendus = renduTpDao.listerRendusParSeance(idSeance);
+        this.ajouterInformationsBinomes(rendus);
         seanceAvecRendus.setRendus(rendus.stream().collect(Collectors.groupingBy(RenduTp::getBinome)));
         return seanceAvecRendus;
     }
@@ -159,6 +156,12 @@ public class SeanceManager {
                     seance.addNote(noteSeance.getValeur());
                 }
             }
+        }
+    }
+
+    private void ajouterInformationsBinomes(List<RenduTp> rendus) {
+        for (RenduTp renduTp : rendus) {
+            renduTp.setBinome(binomeDao.getBinome(renduTp.getBinome().getUid()));
         }
     }
 }
