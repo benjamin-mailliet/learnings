@@ -4,14 +4,17 @@ import learnings.dao.BinomeDao;
 import learnings.dao.RenduTpDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
+import learnings.dao.UtilisateurDao;
 import learnings.dao.impl.BinomeDaoImpl;
 import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
+import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.model.Binome;
 import learnings.model.Note;
 import learnings.model.RenduTp;
 import learnings.model.Seance;
+import learnings.model.Utilisateur;
 import learnings.pojos.EleveAvecNotes;
 import learnings.pojos.SeanceAvecRendus;
 import learnings.pojos.TpAvecTravaux;
@@ -39,6 +42,7 @@ public class SeanceManager {
     private RessourceDao ressourceDao = new RessourceDaoImpl();
     private RenduTpDao renduTpDao = new RenduTpDaoImpl();
     private BinomeDao binomeDao = new BinomeDaoImpl();
+    private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
 
     public List<Seance> listerSeances() {
         List<Seance> listeCours = seanceDao.listerSeances();
@@ -75,6 +79,11 @@ public class SeanceManager {
             if(binome != null) {
                 tpAvecTravaux.setBinome(binome);
                 tpAvecTravaux.setTravaux(renduTpDao.listerRendusParBinome(binome.getUid()));
+            } else if (tp.getNbMaxElevesParRendu() == 1) {
+                Utilisateur eleve = utilisateurDao.getUtilisateur(idUtilisateur);
+                Binome nouveauBinomeIndividuel = binomeDao.ajouterBinome(new Binome(null, tp,eleve));
+                tpAvecTravaux.setBinome(nouveauBinomeIndividuel);
+                tpAvecTravaux.setTravaux(new ArrayList<>());
             }
             listeTpsAvecTravaux.add(tpAvecTravaux);
 

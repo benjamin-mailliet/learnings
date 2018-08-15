@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class RenduTpManager {
@@ -78,13 +79,12 @@ public class RenduTpManager {
         LOGGER.info(String.format("rendreTP|binome=%s|rendu=%d;%s", binome.getUid(), rendu.getId(), nomFichier));
     }
 
-    public void ajouterBinome(Long idSeance, Long idEleve1, Long idEleve2) throws LearningsException  {
-       this.checkBinome(idSeance, idEleve1, idEleve2);
+    public void ajouterBinome(Long idSeance, Set<Long> idsEleves) throws LearningsException  {
+       this.checkBinome(idSeance, idsEleves);
 
         Binome binome = new Binome(null, new Seance(idSeance, null, null, null));
-        binome.getEleves().add(this.verifierUtilisateur(idEleve1));
-        if (idEleve2 != null) {
-            binome.getEleves().add(this.verifierUtilisateur(idEleve2));
+        for (Long idEleve : idsEleves) {
+            binome.getEleves().add(this.verifierUtilisateur(idEleve));
         }
 
         binomeDao.ajouterBinome(binome);
@@ -128,15 +128,12 @@ public class RenduTpManager {
         return fichierManager.getFichierComplet(travail.getChemin());
     }
 
-    protected void checkBinome(Long idTp, Long idEleve1, Long idEleve2) {
-        Binome binomeEleve1 = binomeDao.getBinome(idTp, idEleve1);
-        if (binomeEleve1 != null) {
-            throw new IllegalArgumentException("L'élève est déjà dans un binôme pour ce TP.");
-        }
-        if (idEleve2 != null) {
-            Binome binomeEleve2 = binomeDao.getBinome(idTp, idEleve2);
-            if (binomeEleve2 != null) {
-                throw new IllegalArgumentException("L'élève est déjà dans un binôme pour ce TP.");
+    protected void checkBinome(Long idTp, Set<Long> idsEleves) {
+        for (Long idEleve : idsEleves) {
+            Binome binomeEleve = binomeDao.getBinome(idTp, idEleve);
+            if (binomeEleve != null) {
+                Utilisateur eleve = utilisateurDao.getUtilisateur(idEleve);
+                throw new IllegalArgumentException(String.format("L'élève %s est déjà dans un binôme pour ce TP.", eleve.getPrenom()+ " "+ eleve.getNom()));
             }
         }
     }
