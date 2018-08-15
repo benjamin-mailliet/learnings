@@ -3,8 +3,6 @@ package learnings.pojos;
 import learnings.model.Binome;
 import learnings.model.RenduTp;
 import learnings.model.Seance;
-import learnings.model.Travail;
-import learnings.model.Utilisateur;
 
 import java.util.List;
 

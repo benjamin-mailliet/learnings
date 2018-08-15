@@ -3,6 +3,7 @@ package learnings.managers;
 import learnings.dao.RenduTpDao;
 import learnings.dao.UtilisateurDao;
 import learnings.enums.Groupe;
+import learnings.model.Binome;
 import learnings.model.RenduTp;
 import learnings.model.Utilisateur;
 import org.junit.Before;

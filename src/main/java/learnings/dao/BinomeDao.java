@@ -7,5 +7,6 @@ public interface BinomeDao {
     Binome ajouterBinome(Binome binome);
 
     Binome getBinome(Long idSeance, Long idEleve);
-    Binome getBinome(Long idBinome);
+
+    Binome getBinome(String uidBinome);
 }

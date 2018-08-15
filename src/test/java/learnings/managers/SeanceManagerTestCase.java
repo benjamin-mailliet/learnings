@@ -61,8 +61,8 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     private Utilisateur utilisateur1 = new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false);
     private Utilisateur utilisateur2 = new Utilisateur(2L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false);
     private Utilisateur utilisateur3 = new Utilisateur(3L, "nom3", "prenom3", "email3", null, false);
-    private Binome binome1 = new Binome(1L, seance3, utilisateur1, null);
-    private Binome binome2 = new Binome(2L, seance3, utilisateur2, utilisateur3);
+    private Binome binome1 = new Binome("uid1", seance3, utilisateur1);
+    private Binome binome2 = new Binome("uid2", seance3, utilisateur2, utilisateur3);
     private RenduTp renduTp1 = new RenduTp(1L, null, LocalDateTime.of(2014, Month.SEPTEMBER, 3, 10, 37, 0), "/chemin/fichier.zip", "commentaire1", binome1);
     private RenduTp renduTp2 = new RenduTp(2L, null, LocalDateTime.of(2014, Month.SEPTEMBER, 3, 10, 38, 0), "/chemin/fichier.zip", "commentaire2", binome2);
 
@@ -80,7 +80,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         List<Seance> seancesRendusAccessibles = new ArrayList<>();
         seancesRendusAccessibles.add(seance3);
         when(seanceDao.listerTPNotesParDateRendu(Mockito.any(Date.class))).thenReturn(seancesRendusAccessibles);
-        when(renduTpDao.listerRendusParBinome(Mockito.eq(1L))).thenReturn(Collections.singletonList(renduTp1));
+        when(renduTpDao.listerRendusParBinome(Mockito.eq("uid1"))).thenReturn(Collections.singletonList(renduTp1));
 
         List<Ressource> ressources = new ArrayList<>();
         ressources.add(ressource1);
@@ -99,6 +99,8 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         when(binomeDao.getBinome(Mockito.eq(3L), Mockito.eq(1L))).thenReturn(binome1);
         when(binomeDao.getBinome(Mockito.eq(3L), Mockito.eq(2L))).thenReturn(binome2);
         when(binomeDao.getBinome(Mockito.eq(3L), Mockito.eq(3L))).thenReturn(binome2);
+        when(binomeDao.getBinome(Mockito.eq("uid1"))).thenReturn(binome1);
+        when(binomeDao.getBinome(Mockito.eq("uid2"))).thenReturn(binome2);
     }
 
     @Test
@@ -139,8 +141,8 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         assertThat(tpsRenduAccessible.get(0).getTravaux()).containsOnly(renduTp1);
 
         verify(seanceDao).listerTPNotesParDateRendu(Mockito.any(Date.class));
-        verify(renduTpDao).listerRendusParBinome(Mockito.eq(1L));
-        verify(renduTpDao).listerRendusParBinome(Mockito.anyLong());
+        verify(renduTpDao).listerRendusParBinome(Mockito.eq("uid1"));
+        verify(renduTpDao).listerRendusParBinome(Mockito.anyString());
     }
 
     @Test
@@ -154,7 +156,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         catch (IllegalArgumentException e) {
             assertThat(e.getMessage()).isEqualTo("L'utlisateur ne peut pas être null.");
             verify(seanceDao, Mockito.never()).listerTPNotesParDateRendu(Mockito.any(Date.class));
-            verify(renduTpDao, never()).listerRendusParBinome(Mockito.anyLong());
+            verify(renduTpDao, never()).listerRendusParBinome(Mockito.anyString());
         }
     }
 
@@ -255,7 +257,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     @Test
     public void shouldAjouterSeance() {
         // GIVEN
-        Seance seance = new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS);
+        Seance seance = new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null);
         // WHEN
         seanceManager.ajouterSeance(seance);
         // THEN
@@ -279,7 +281,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotAjouterSeanceAvecTitreNull() {
         // WHEN
         try {
-            seanceManager.ajouterSeance(new Seance(null, null, "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.ajouterSeance(new Seance(null, null, "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -293,7 +295,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotAjouterSeanceAvecTitreVide() {
         // WHEN
         try {
-            seanceManager.ajouterSeance(new Seance(null, "", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.ajouterSeance(new Seance(null, "", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -307,7 +309,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotAjouterSeanceAvecDateNull() {
         // WHEN
         try {
-            seanceManager.ajouterSeance(new Seance(null, "titre", "description", null, false, null, TypeSeance.COURS));
+            seanceManager.ajouterSeance(new Seance(null, "titre", "description", null, false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -321,7 +323,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotAjouterSeanceAvecTypeNull() {
         // WHEN
         try {
-            seanceManager.ajouterSeance(new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, null));
+            seanceManager.ajouterSeance(new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, null, null));
             fail("exception attendue");
         }
         // THEN
@@ -334,7 +336,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     @Test
     public void testModifierSeance() {
         // GIVEN
-        Seance seance = new Seance(1L, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS);
+        Seance seance = new Seance(1L, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null);
         // WHEN
         seanceManager.modifierSeance(seance);
         // THEN
@@ -360,7 +362,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotModifierSeanceAvecIdNull() {
         // WHEN
         try {
-            seanceManager.modifierSeance(new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.modifierSeance(new Seance(null, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -374,7 +376,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotModifierSeanceAvecTitreNull() {
         // WHEN
         try {
-            seanceManager.modifierSeance(new Seance(1L, null, "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.modifierSeance(new Seance(1L, null, "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -388,7 +390,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotModifierSeanceAvecTitreVide() {
         // WHEN
         try {
-            seanceManager.modifierSeance(new Seance(1L, "", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS));
+            seanceManager.modifierSeance(new Seance(1L, "", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -402,7 +404,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     public void shouldNotModifierSeanceAvecDateNull() {
         // WHEN
         try {
-            seanceManager.modifierSeance(new Seance(1L, "titre", "description", null, false, null, TypeSeance.COURS));
+            seanceManager.modifierSeance(new Seance(1L, "titre", "description", null, false, null, TypeSeance.COURS, null));
             fail("exception attendue");
         }
         // THEN
@@ -417,7 +419,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
         // WHEN
         try {
             seanceManager
-                    .modifierSeance(new Seance(1L, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, null));
+                    .modifierSeance(new Seance(1L, "titre", "description", getDate(2014, Calendar.SEPTEMBER, 6), false, null, null, null));
             fail("exception attendue");
         }
         // THEN

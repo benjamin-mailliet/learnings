@@ -20,6 +20,13 @@
             <input type="text" class="form-control" id="titre" name="titre" th:value="${seance} ? ${seance.titre}">
         </div>
         <div class="form-group">
+            <label for="type" class="control-label">Type</label>
+            <select class="form-control w-25" name="type" id="type">
+                <option value="COURS" th:selected="${seance && seance.type.name() == 'COURS'}">Cours</option>
+                <option value="TP" th:selected="${seance && seance.type.name() == 'TP'}">TP</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="description" class="control-label">Description</label>
             <textarea rows="3" class="form-control editeur-riche" id="description" name="description">[[${seance} ? ${seance.description}]]</textarea>
         </div>
@@ -49,11 +56,9 @@
             (dd/MM/yyyy HH:mm)
         </div>
         <div class="form-group">
-            <label for="type" class="control-label">Type</label>
-            <select class="form-control w-25" name="type" id="type">
-                <option value="COURS" th:selected="${seance && seance.type.name() == 'COURS'}">Cours</option>
-                <option value="TP" th:selected="${seance && seance.type.name() == 'TP'}">TP</option>
-            </select>
+            <label for="nbMaxEleves" class="control-label">Nombre maximum d'élèves par groupe</label>
+            <input type="number" class="form-control w-25" id="nbMaxEleves" name="nbMaxElevesParRendu"
+                   th:value="${seance} ? ${seance.nbMaxElevesParRendu}"/>
         </div>
         <div class="form-group">
             <input th:if="${mode == 'modification'}" type="hidden" name="id" th:value="${seance.id}"/>

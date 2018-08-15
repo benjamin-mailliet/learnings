@@ -9,7 +9,7 @@
 		<div class="container-fluid">
 			<div th:replace="fragments/messages"></div>
 			<h1 class="display-1">Rendre son TP</h1>
-			<article class="card bg-light" th:each="tpAvecTravaux : ${listeTp}">
+			<article class="card bg-light my-3" th:each="tpAvecTravaux : ${listeTp}">
 				<header class="card-header">
 					<h2>
 						[[${tpAvecTravaux.tp.titre}]]
@@ -18,19 +18,21 @@
 				</header>
 				<section class="card-body">
 					<div th:if="${tpAvecTravaux.binome == null}">
-						<p>Il faut choisir un binôme !</p>
+						<p>Ce TP est à rendre en [[${tpAvecTravaux.tp.nbMaxElevesParRendu == 2} ? 'binôme' : 'groupe de '+${tpAvecTravaux.tp.nbMaxElevesParRendu}+' élèves']].</p>
 						<form method="post" action="remisetpbinome">
-							<div class="form-group">
-								<label for="eleve2">Choisir son binôme :</label>
-								<div class="row">
+							<fieldset class="form-group">
+								<legend th:if="${tpAvecTravaux.tp.nbMaxElevesParRendu == 2}">Choisir son binôme :</legend>
+								<legend th:if="${tpAvecTravaux.tp.nbMaxElevesParRendu != 2}">Choisir ses partenaires :</legend>
+								<div class="row" th:each="index : ${#numbers.sequence(1,tpAvecTravaux.tp.nbMaxElevesParRendu - 1)}">
 									<div class="col-4">
-										<select title="binome" class="form-control small-input" id="eleve2" name="eleve2">
-											<option value="0">Pas de binôme</option>
+										<select title="binome" class="form-control small-input" th:id="${'eleve'+index}" th:name="${'eleves'}">
+											<option th:if="${tpAvecTravaux.tp.nbMaxElevesParRendu == 2}" value="0">Pas de binôme</option>
+											<option th:if="${tpAvecTravaux.tp.nbMaxElevesParRendu != 2}" value="0">Pas de partenaire</option>
 											<option th:each="binome : ${listeBinomes}" th:value="${binome.id}">[[${binome.prenom}]] [[${binome.nom}]]</option>
 										</select>
 									</div>
 								</div>
-							</div>
+							</fieldset>
 							<div class="form-group">
 								<input type="hidden" name="idtp" th:value="${tpAvecTravaux.tp.id}" />
 								<button type="submit" class="btn btn-dark">Envoyer</button>
@@ -38,13 +40,27 @@
 						</form>
 					</div>
 					<div th:if="${tpAvecTravaux.binome != null}">
-						<h3>Binôme :</h3>
-						<p th:if="${tpAvecTravaux.binome.eleve2 != null}">
-							Pour ce TP, vous êtes en binôme avec
-							<strong th:if="${tpAvecTravaux.binome.eleve1.id == session.utilisateur.id}">[[${tpAvecTravaux.binome.eleve2.prenom}]] [[${tpAvecTravaux.binome.eleve2.nom}]]</strong>
-							<strong th:if="${tpAvecTravaux.binome.eleve2.id == session.utilisateur.id}">[[${tpAvecTravaux.binome.eleve1.prenom}]] [[${tpAvecTravaux.binome.eleve1.nom}]]</strong>
-						</p>
-						<p th:if="${tpAvecTravaux.binome.eleve2 == null}">Pour ce TP, vous êtes sans binôme.</p>
+						<div th:if="${tpAvecTravaux.tp.nbMaxElevesParRendu == 1}">
+							<p>Ce TP est à rendre en individuel.</p>
+						</div>
+						<div th:if="${tpAvecTravaux.tp.nbMaxElevesParRendu == 2}">
+							<h3>Binôme :</h3>
+							<p th:if="${#lists.size(tpAvecTravaux.binome.eleves) > 1}">
+								Pour ce TP, vous êtes en binôme avec
+								<strong th:each="eleve : ${tpAvecTravaux.binome.eleves}" th:if="${eleve.id != session.utilisateur.id}">[[${eleve.prenom}]] [[${eleve.nom}]]</strong>
+							</p>
+							<p th:if="${#lists.size(tpAvecTravaux.binome.eleves) == 1}">Pour ce TP, vous êtes sans binôme.</p>
+						</div>
+						<div th:if="${tpAvecTravaux.tp.nbMaxElevesParRendu > 2}">
+							<h3>Groupe :</h3>
+							<p th:if="${#lists.size(tpAvecTravaux.binome.eleves) > 1}">
+								Pour ce TP, vous êtes en groupe avec :
+							</p>
+							<ul th:if="${#lists.size(tpAvecTravaux.binome.eleves) > 1}">
+								<li th:each="eleve : ${tpAvecTravaux.binome.eleves}" th:if="${eleve.id != session.utilisateur.id}">[[${eleve.prenom}]] [[${eleve.nom}]]</li>
+							</ul>
+							<p th:if="${#lists.size(tpAvecTravaux.binome.eleves) == 1}">Pour ce TP, vous êtes seul dans votre groupe.</p>
+						</div>
 						<h3>Déjà rendu :</h3>
 						<p th:if="${tpAvecTravaux.travaux.size() == 0}">Vous n'avez encore rien rendu pour ce TP.</p>
 						<ul th:if="${tpAvecTravaux.travaux.size() > 0}">

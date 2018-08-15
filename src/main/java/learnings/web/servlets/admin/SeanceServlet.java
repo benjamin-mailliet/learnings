@@ -71,7 +71,12 @@ public class SeanceServlet extends GenericLearningsServlet {
 		} catch (IllegalArgumentException | NullPointerException e) {
 			// Ne rien faire
 		}
-		Seance seance = new Seance(idSeance, request.getParameter("titre"), request.getParameter("description"), date, Boolean.parseBoolean(request.getParameter("isNote")), dateLimiteRendu, type);
+		Integer nbMaxElevesParRendu = null;
+		try {
+			nbMaxElevesParRendu = Integer.parseInt(request.getParameter("nbMaxElevesParRendu"));
+		} catch (NumberFormatException ignored) {}
+		Seance seance = new Seance(idSeance, request.getParameter("titre"), request.getParameter("description"), date, Boolean.parseBoolean(request.getParameter("isNote")),
+				dateLimiteRendu, type, nbMaxElevesParRendu);
 		try {
 			if (idSeance == null) {
 				SeanceManager.getInstance().ajouterSeance(seance);

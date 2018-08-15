@@ -16,7 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @WebServlet(urlPatterns = { "/eleve/remisetpbinome" })
 @MultipartConfig
@@ -33,17 +36,19 @@ public class RemiseTPBinomeServlet extends GenericLearningsServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			Long tpId = Long.parseLong(request.getParameter("idtp"));
-			Long utilisateur1Id = this.getUtilisateurCourant(request).getId();
 
-			Long utilisateur2Id = null;
-			if (request.getParameter("eleve2") != null && !"".equals(request.getParameter("eleve2"))) {
-				utilisateur2Id = Long.parseLong(request.getParameter("eleve2"));
-				// Si pas de binôme, utilisateur2Id = 0
-				if (utilisateur2Id == 0L) {
-					utilisateur2Id = null;
+			Set<Long> idsEleves = new HashSet<>();
+			idsEleves.add(this.getUtilisateurCourant(request).getId());
+
+			if (request.getParameterValues("eleves") != null) {
+				String[] idsPartenaires = request.getParameterValues("eleves");
+				for (String idPartenaireAsString : idsPartenaires) {
+					long idPartenaire = Long.parseLong(idPartenaireAsString);
+					if(idPartenaire != 0L) {
+						idsEleves.add(idPartenaire);
+					}
 				}
-
-				RenduTpManager.getInstance().ajouterBinome(tpId, utilisateur1Id, utilisateur2Id);
+				RenduTpManager.getInstance().ajouterBinome(tpId, idsEleves);
 				this.ajouterMessageSucces(request, "Le binôme a bien été enregistré.");
 			} else {
 				this.ajouterMessageErreur(request, "Veuillez sélectionner un binôme.");
