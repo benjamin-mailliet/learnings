@@ -29,8 +29,9 @@
 								[[${seance.titre}]]
 							</h2>
 						</div>
-						<div class="status display-4" th:classappend="${seance.corrige ? 'text-success' : 'text-muted'}" th:if="${seance.isNote}">
-							<i class="fas fa-star" data-toggle="tooltip" th:title="${seance.corrige ? 'Séance notée corrigée' : 'Séance notée'}"></i>
+						<div class="status display-4 text-muted" th:if="${seance.isNote}">
+							<i class="fa-star" th:classappend="${seance.corrige ? 'fas' : 'far'}"
+							   data-toggle="tooltip" th:title="${seance.corrige ? 'Séance notée corrigée' : 'Séance notée'}"></i>
 							<span class="sr-only">
 								Séance notée <th:block th:if="${seance.corrige}">corrigée</th:block>
 							</span>

@@ -35,9 +35,13 @@
 	text-align: center;
 }
 
+.card.active .card-expander{
+	background-color: #fcfcfc;
+	cursor:pointer;
+}
+
 .card.active .card-expander:hover{
     background: #eee;
-	cursor:pointer;
 }
 
 article.tp-article header.card-header span.icone{
