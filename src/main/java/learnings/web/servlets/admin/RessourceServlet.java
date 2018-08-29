@@ -1,5 +1,6 @@
 package learnings.web.servlets.admin;
 
+import learnings.enums.RessourceCategorie;
 import learnings.exceptions.LearningsException;
 import learnings.managers.RessourceManager;
 import learnings.managers.SeanceManager;
@@ -53,9 +54,15 @@ public class RessourceServlet extends GenericLearningsServlet {
         } catch (NumberFormatException e) {
             // Ne rien faire
         }
+        RessourceCategorie categorie = null;
+        try {
+            categorie = RessourceCategorie.valueOf(request.getParameter("categorie"));
+        } catch (IllegalArgumentException ignored) {
+
+        }
         try {
             Part fichier = request.getPart("fichier");
-            RessourceManager.getInstance().ajouterRessource(idSeance, request.getParameter("titre"), fichier.getSubmittedFileName(), fichier.getInputStream());
+            RessourceManager.getInstance().ajouterRessource(idSeance, request.getParameter("titre"), categorie, fichier.getSubmittedFileName(), fichier.getInputStream());
         } catch (IllegalArgumentException | LearningsException e) {
             this.ajouterMessageErreur(request, e.getMessage());
             e.printStackTrace();

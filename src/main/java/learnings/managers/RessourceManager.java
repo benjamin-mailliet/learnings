@@ -4,6 +4,7 @@ import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.dao.impl.RessourceDaoImpl;
 import learnings.dao.impl.SeanceDaoImpl;
+import learnings.enums.RessourceCategorie;
 import learnings.exceptions.LearningAccessException;
 import learnings.exceptions.LearningsException;
 import learnings.model.Ressource;
@@ -31,13 +32,16 @@ public class RessourceManager {
     private SeanceDao seanceDao = new SeanceDaoImpl();
     private RessourceDao ressourceDao = new RessourceDaoImpl();
 
-    public void ajouterRessource(Long idSeance, String titre, String nomFichier, InputStream fichier) throws LearningsException {
+    public void ajouterRessource(Long idSeance, String titre, RessourceCategorie categorie, String nomFichier, InputStream fichier) throws LearningsException {
         if (idSeance == null) {
             throw new IllegalArgumentException("L'idenfiant de la séance est null.");
         }
         Seance seance =  seanceDao.getSeance(idSeance);
         if (seance == null) {
             throw new IllegalArgumentException("La séance est inconnue.");
+        }
+        if (categorie == null) {
+            throw new IllegalArgumentException("La catégorie est incorrecte.");
         }
         String chemin = this.genererCheminRessource(idSeance, nomFichier);
         try {
@@ -46,7 +50,8 @@ public class RessourceManager {
             throw new LearningsException("Problème à l'enregistrement de la ressource.", e);
         }
 
-        Ressource ressource = new Ressource(null, titre, chemin, seance);
+
+        Ressource ressource = new Ressource(null, titre, chemin, seance, categorie);
         ressourceDao.ajouterRessource(ressource);
     }
 

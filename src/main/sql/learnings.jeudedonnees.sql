@@ -11,6 +11,7 @@ INSERT INTO seance (id, titre, description, isnote, datelimiterendu, date, type)
 INSERT INTO seance (id, titre, description, isnote, datelimiterendu, date, type) VALUES(2, 'TP1 : HTML - Les animaux laids', '<p>Tp mettant en oeuvre les acquis sur HTML et CSS avec une liste d''animaux moches.</p>', false, NULL, '2014-09-12', 'TP');
 INSERT INTO seance (id, titre, description, isnote, datelimiterendu, date, type) VALUES(1, 'HTML et CSS', '<p>Cours sur les base du HTML et du CSS.</p><ul><li>Chapitre 1 : HTML, rappel</li><li>Chapitre 2 : HTML 5</li><li>Chapitre 3 : CSS, rappel</li><li>Chapitre 4 : CSS 3</li></ul>', false, NULL, '2014-09-12', 'COURS');
 
-INSERT INTO ressource (id, chemin, titre, seance_id) VALUES(3, 'ressources/seances/ea35b8d6-TP2.pptx', 'TP2 : Bootstrap', 3);
-INSERT INTO ressource (id, chemin, titre, seance_id) VALUES(2, 'ressources/seances/91ca9088-Cours1.zip', 'Cours 1 : HTML / CSS', 1);
-INSERT INTO ressource (id, chemin, titre, seance_id) VALUES(1, 'ressources/seances/f0465006-tp1.zip', 'TP1 : les animaux laids', 2);
+INSERT INTO ressource (id, chemin, titre, seance_id, categorie) VALUES(4, 'ressources/seances/ea35b8d6-correction.zip', 'Correction du TP (zip)', 3, 'CORRECTION');
+INSERT INTO ressource (id, chemin, titre, seance_id, categorie) VALUES(3, 'ressources/seances/ea35b8d6-TP2.pptx', 'TP2 : Bootstrap', 3, 'SUPPORT');
+INSERT INTO ressource (id, chemin, titre, seance_id, categorie) VALUES(2, 'ressources/seances/91ca9088-Cours1.zip', 'Cours 1 : HTML / CSS', 1, 'SUPPORT');
+INSERT INTO ressource (id, chemin, titre, seance_id, categorie) VALUES(1, 'ressources/seances/f0465006-tp1.zip', 'TP1 : les animaux laids', 2, 'SUPPORT');

@@ -14,6 +14,7 @@
 .seance header.card-header time {
 	padding: 0 1.25rem;
 	text-align: center;
+	border-right: solid 1px #ddd;
 }
 
 .seance header.card-header time .date-fragment {

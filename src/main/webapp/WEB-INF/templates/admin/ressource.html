@@ -16,12 +16,14 @@
 					<tr>
 						<th>#</th>
 						<th>Titre</th>
+						<th>Catégorie</th>
 						<th>Chemin</th>
 						<th></th>
 					</tr>
 					<tr th:each="ressource : ${seance.ressources}">
 						<td th:text="${ressource.id}">"</td>
 						<td th:text="${ressource.titre}"></td>
+						<td th:text="${ressource.categorie}"></td>
 						<td><a th:href="'../admin/telechargerRessource?id='+${ressource.id}" th:text="${ressource.chemin}"></a></td>
 						<td>
 							<button th:href="'supprimerressource?idSeance='+${seance.id}+'&idRessource='+${ressource.id}" class="btn btn-danger btn-xs" th:aria-label="'Supprimer la ressource ('+ ${ressource.titre} + ')'">
@@ -37,10 +39,15 @@
 							<input class="form-control" type="text" id="titre" name="titre" placeholder="Titre"/>
 						</td>
 						<td>
-							<div class="custom-file">
-								<input type="file" name="fichier" id="fichier" />
-								<label class="custom-file-label" for="fichier">Fichier</label>
-							</div>
+							<label class="sr-only" for="categorie">Catégorie</label>
+							<select class="form-control" id="categorie" name="categorie">
+								<option value="CORRECTION">Correction</option>
+								<option value="SUPPORT">Support</option>
+							</select>
+						</td>
+						<td>
+							<label class="sr-only" for="fichier">Fichier</label>
+							<input class="form-control-file" type="file" name="fichier" id="fichier" />
 						</td>
 						<td>
 							<input type="hidden" name="seance" th:value="${seance.id}" />

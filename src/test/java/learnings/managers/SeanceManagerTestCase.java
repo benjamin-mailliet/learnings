@@ -6,6 +6,7 @@ import learnings.dao.RenduTpDao;
 import learnings.dao.RessourceDao;
 import learnings.dao.SeanceDao;
 import learnings.enums.Groupe;
+import learnings.enums.RessourceCategorie;
 import learnings.enums.TypeSeance;
 import learnings.model.Binome;
 import learnings.model.RenduTp;
@@ -57,7 +58,7 @@ public class SeanceManagerTestCase extends AbstractTestCase {
     private Seance seance1 = new Seance(1L, "Titre1", "Description1", getDate(2014, Calendar.SEPTEMBER, 1));
     private Seance seance2 = new Seance(2L, "Titre2", "Description2", getDate(2014, Calendar.SEPTEMBER, 2));
     private Seance seance3 = new Seance(3L, "Titre3", "Description3", getDate(2014, Calendar.SEPTEMBER, 3));
-    private Ressource ressource1 = new Ressource(1L, "ressource1", "/ressources/ressource1", seance1);
+    private Ressource ressource1 = new Ressource(1L, "ressource1", "/ressources/ressource1", seance1, RessourceCategorie.SUPPORT);
     private Utilisateur utilisateur1 = new Utilisateur(1L, "nom1", "prenom1", "email1", Groupe.GROUPE_1, false);
     private Utilisateur utilisateur2 = new Utilisateur(2L, "nom2", "prenom2", "email2", Groupe.GROUPE_2, false);
     private Utilisateur utilisateur3 = new Utilisateur(3L, "nom3", "prenom3", "email3", null, false);

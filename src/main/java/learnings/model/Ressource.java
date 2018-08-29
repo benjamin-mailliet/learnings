@@ -1,5 +1,7 @@
 package learnings.model;
 
+import learnings.enums.RessourceCategorie;
+
 import java.io.Serializable;
 
 public class Ressource implements Serializable {
@@ -10,13 +12,15 @@ public class Ressource implements Serializable {
 	private Seance seance;
 	private String chemin;
 	private String titre;
+	private RessourceCategorie categorie;
 
-	public Ressource(Long id, String titre, String chemin, Seance seance) {
+	public Ressource(Long id, String titre, String chemin, Seance seance, RessourceCategorie categorie) {
 		super();
 		this.id = id;
 		this.seance = seance;
 		this.chemin = chemin;
 		this.titre = titre;
+		this.categorie = categorie;
 	}
 
 	public Seance getSeance() {
@@ -47,4 +51,19 @@ public class Ressource implements Serializable {
 		return id;
 	}
 
+	public RessourceCategorie getCategorie() {
+		return categorie;
+	}
+
+	public void setCategorie(RessourceCategorie categorie) {
+		this.categorie = categorie;
+	}
+
+	public boolean isSupport() {
+		return RessourceCategorie.SUPPORT.equals(this.categorie);
+	}
+
+	public boolean isCorrection() {
+		return RessourceCategorie.CORRECTION.equals(this.categorie);
+	}
 }
