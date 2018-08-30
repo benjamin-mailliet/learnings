@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<title>Séances (Cours et TPs)</title>
+		<title>Séances (Cours et TPs) - Learnings</title>
 		<th:block th:replace="fragments/htmlheader" />
 		<link th:href="@{/css/seances.css}" rel="stylesheet">
 		<script th:src="@{/js/seances.js}"></script>
@@ -13,27 +13,61 @@
 			<h1 class="display-1">Cours et TPs</h1>
 			
 			<section>
-
 				<article th:each="seance : ${seances}"
 						 th:with="typeSeance=${seance.type.name()=='COURS' ? 'cours' : (seance.type.name() == 'TP' ?'tp' : '')}"
-						 th:class="${typeSeance}+'-article card bg-light my-3'" th:classappend="${seance.datePassee ? 'active' : 'text-muted'}">
+						 th:class="${typeSeance}+'-article seance card my-3'" th:classappend="${seance.datePassee ? 'active' : 'text-muted'}">
 					<header class="card-header" data-toggle="collapse" th:data-target="'#'+${typeSeance}+${seance.id}">
-						<h4>
-							<span class="icone fas" th:classappend="${seance.type.name()=='TP' ? 'fa-cog' : 'fa-folder'}"></span>
-							[[${seance.titre}]]
-							<small th:if="${seance.datePassee}">(cliquez pour ouvrir)</small>
-						</h4>
-						<time th:text="${#dates.format(seance.date, 'dd/MM/yyyy')}"></time>
+						<div class="title">
+							<time th:datetime="${#dates.format(seance.date, 'yyyy-MM-dd')}">
+								<span class="date-fragment lead" th:text="${#dates.format(seance.date, 'dd')}"></span>
+								<span class="date-fragment" th:text="${#dates.format(seance.date, 'MMM')}"></span>
+								<small class="date-fragment text-muted mb-2" th:text="${#dates.format(seance.date, 'yyyy')}"></small>
+							</time>
+							<h2 class="display-4 mx-4">
+								<span class="icone fas" th:classappend="${seance.type.name()=='TP' ? 'fa-cog' : 'fa-folder'}"></span>
+								[[${seance.titre}]]
+							</h2>
+						</div>
+						<div class="status display-4 text-muted" th:if="${seance.isNote}">
+							<i class="fa-star" th:classappend="${seance.corrige ? 'fas' : 'far'}"
+							   data-toggle="tooltip" th:title="${seance.corrige ? 'Séance notée corrigée' : 'Séance notée'}"></i>
+							<span class="sr-only">
+								Séance notée <th:block th:if="${seance.corrige}">corrigée</th:block>
+							</span>
+						</div>
 					</header>
-					<section th:if="${seance.datePassee}"
-							class="details card-body collapse" th:id="${typeSeance}+${seance.id}">
-						<div th:utext="${seance.description}"></div>
-						<p>Ressources :</p>
-						<ul>
-							<li th:each="ressource : ${seance.ressources}">
-								<a th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
-							</li>
-						</ul>
+					<section th:if="${seance.datePassee}" class="details card-body collapse" th:id="${typeSeance}+${seance.id}">
+						<div class="row">
+							<div class="col-md-4 col-sm-12" th:utext="${seance.description}"></div>
+							<div class="col-md-4 col-sm-6">
+								<h3 class="h5">Ressources</h3>
+								<ul>
+									<li th:each="ressource : ${seance.ressources}" th:if="${ressource.isSupport()}">
+										<a th:if="${!ressource.isLien()}" th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
+										<th:block th:if="${ressource.isLien()}">
+											<a  th:href="${ressource.chemin}" th:text="${ressource.titre}"></a>
+											<small><i class="fas fa-external-link-alt"></i></small>
+										</th:block>
+									</li>
+								</ul>
+							</div>
+							<div class="col-md-4 col-sm-6" th:if="${seance.isNote && seance.corrige}">
+								<h3 class="h5">Correction</h3>
+								<ul>
+									<li th:each="ressource : ${seance.ressources}" th:if="${ressource.isCorrection()}">
+										<a th:if="${!ressource.isLien()}" th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
+										<th:block th:if="${ressource.isLien()}">
+											<a  th:href="${ressource.chemin}" th:text="${ressource.titre}"></a>
+											<small><i class="fas fa-external-link-alt"></i></small>
+										</th:block>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</section>
+					<section th:if="${seance.datePassee}" class="card-body text-center py-0 card-expander" data-toggle="collapse" th:data-target="'#'+${typeSeance}+${seance.id}" role="button">
+						<span class="icone fas fa-chevron-down"></span>
+						<span class="sr-only">[[${seance.titre}]] (Afficher ou cacher le détail de la séance)</span>
 					</section>
 				</article>
 			</section>

@@ -1,5 +1,6 @@
 package learnings.model;
 
+import learnings.enums.RessourceCategorie;
 import learnings.enums.TypeSeance;
 
 import java.io.Serializable;
@@ -162,6 +163,13 @@ public class Seance implements Serializable {
 			this.sommeNotes=note;
 		}
 		this.calculerMoyenne();
+	}
+
+	public boolean isCorrige() {
+		if (this.ressources == null) {
+			return false;
+		}
+		return this.isNote && this.ressources.stream().anyMatch(r -> RessourceCategorie.CORRECTION.equals(r.getCategorie()));
 	}
 
 	private void calculerMoyenne() {

@@ -2,6 +2,7 @@ package learnings.dao.impl;
 
 import learnings.AbstractDaoTestCase;
 import learnings.dao.RessourceDao;
+import learnings.enums.RessourceCategorie;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 import org.junit.Before;
@@ -29,10 +30,10 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement()
         ) {
-            stmt.executeUpdate("INSERT INTO `seance`(`id`,`titre`,`description`,`date`, `type`) VALUES(1,'cours1','cours de debuggage','2014-08-26', 'COURS')");
-            stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(1,'ressource1','chemin ressource de cours 1',1)");
-            stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(2,'ressource2','chemin ressource de cours 2',1)");
-            stmt.executeUpdate("INSERT INTO `ressource`(`id`,`titre`,`chemin`,`seance_id`) VALUES(3,'ressource3','ressource de tp',1)");
+            stmt.executeUpdate("INSERT INTO seance(id,titre,description,date, type) VALUES(1,'cours1','cours de debuggage','2014-08-26', 'COURS')");
+            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie) VALUES(1,'ressource1','chemin ressource de cours 1',1, 'SUPPORT')");
+            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie) VALUES(2,'ressource2','chemin ressource de cours 2',1, 'SUPPORT')");
+            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie) VALUES(3,'ressource3','ressource de tp',1, 'SUPPORT')");
         }
     }
 
@@ -42,17 +43,17 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
         List<Ressource> listeRessources = ressourceDao.getRessources(new Seance(1L, "titre", "desc", new Date()));
         // THEN
         assertThat(listeRessources).hasSize(3);
-        assertThat(listeRessources).extracting("id", "titre", "chemin", "seance.titre").containsOnly(
-                tuple(1L, "ressource1", "chemin ressource de cours 1", "titre"),
-                tuple(2L, "ressource2", "chemin ressource de cours 2", "titre"),
-                tuple(3L, "ressource3", "ressource de tp", "titre")
+        assertThat(listeRessources).extracting("id", "titre", "chemin", "seance.titre", "categorie").containsOnly(
+                tuple(1L, "ressource1", "chemin ressource de cours 1", "titre", RessourceCategorie.SUPPORT),
+                tuple(2L, "ressource2", "chemin ressource de cours 2", "titre", RessourceCategorie.SUPPORT),
+                tuple(3L, "ressource3", "ressource de tp", "titre", RessourceCategorie.SUPPORT)
         );
     }
 
     @Test
     public void shouldAjouterRessource() throws Exception {
         // GIVEN
-        Ressource ressource = new Ressource(null, "monTitre", "/chemin/monFichier.zip", new Seance(1L, null, null, null));
+        Ressource ressource = new Ressource(null, "monTitre", "/chemin/monFichier.zip", new Seance(1L, null, null, null), RessourceCategorie.CORRECTION);
         // WHEN
         Ressource ressourceCreee = ressourceDao.ajouterRessource(ressource);
         // THEN
@@ -69,6 +70,7 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
                 assertThat(results.getString("titre")).isEqualTo("monTitre");
                 assertThat(results.getString("chemin")).isEqualTo("/chemin/monFichier.zip");
                 assertThat(results.getLong("seance_id")).isEqualTo(1L);
+                assertThat(results.getString("categorie")).isEqualTo("CORRECTION");
             }
         }
     }
@@ -83,7 +85,8 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
         assertThat(ressource.getChemin()).isEqualTo("chemin ressource de cours 1");
         assertThat(ressource.getSeance().getId()).isEqualTo(1L);
         assertThat(ressource.getSeance().getDescription()).isEqualTo("cours de debuggage");
-        assertThat(((Seance) ressource.getSeance()).getDate()).isEqualToIgnoringMillis(getDate(2014, Calendar.AUGUST, 26));
+        assertThat(ressource.getSeance().getDate()).isEqualToIgnoringMillis(getDate(2014, Calendar.AUGUST, 26));
+        assertThat(ressource.getCategorie()).isEqualTo(RessourceCategorie.SUPPORT);
     }
 
     @Test
