@@ -3,9 +3,11 @@ package learnings.model;
 import learnings.enums.RessourceCategorie;
 
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 public class Ressource implements Serializable {
 	private static final long serialVersionUID = -3287952175385402491L;
+    public static Pattern LIEN_PATTERN = Pattern.compile("^https?://.*");
 
 	private Long id;
 
@@ -65,5 +67,9 @@ public class Ressource implements Serializable {
 
 	public boolean isCorrection() {
 		return RessourceCategorie.CORRECTION.equals(this.categorie);
+	}
+
+	public boolean isLien() {
+		return this.chemin != null && LIEN_PATTERN.matcher(this.chemin).matches();
 	}
 }

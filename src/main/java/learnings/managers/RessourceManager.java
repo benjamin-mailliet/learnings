@@ -32,7 +32,7 @@ public class RessourceManager {
     private SeanceDao seanceDao = new SeanceDaoImpl();
     private RessourceDao ressourceDao = new RessourceDaoImpl();
 
-    public void ajouterRessource(Long idSeance, String titre, RessourceCategorie categorie, String nomFichier, InputStream fichier) throws LearningsException {
+    public void ajouterRessource(Long idSeance, String titre, RessourceCategorie categorie, String lien, String nomFichier, InputStream fichier) throws LearningsException {
         if (idSeance == null) {
             throw new IllegalArgumentException("L'idenfiant de la séance est null.");
         }
@@ -43,13 +43,22 @@ public class RessourceManager {
         if (categorie == null) {
             throw new IllegalArgumentException("La catégorie est incorrecte.");
         }
-        String chemin = this.genererCheminRessource(idSeance, nomFichier);
-        try {
-            fichierManager.ajouterFichier(chemin, fichier);
-        } catch (LearningsException e) {
-            throw new LearningsException("Problème à l'enregistrement de la ressource.", e);
-        }
 
+        String chemin;
+        if(lien != null && !"".equals(lien)) {
+            if(Ressource.LIEN_PATTERN.matcher(lien).matches()) {
+                chemin = lien;
+            } else {
+                throw new IllegalArgumentException("Le format du lien est incorrect.");
+            }
+        } else {
+            chemin = this.genererCheminRessource(idSeance, nomFichier);
+            try {
+                fichierManager.ajouterFichier(chemin, fichier);
+            } catch (LearningsException e) {
+                throw new LearningsException("Problème à l'enregistrement de la ressource.", e);
+            }
+        }
 
         Ressource ressource = new Ressource(null, titre, chemin, seance, categorie);
         ressourceDao.ajouterRessource(ressource);

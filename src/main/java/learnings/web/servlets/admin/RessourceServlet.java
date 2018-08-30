@@ -57,12 +57,12 @@ public class RessourceServlet extends GenericLearningsServlet {
         RessourceCategorie categorie = null;
         try {
             categorie = RessourceCategorie.valueOf(request.getParameter("categorie"));
-        } catch (IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException ignored) {}
 
-        }
         try {
             Part fichier = request.getPart("fichier");
-            RessourceManager.getInstance().ajouterRessource(idSeance, request.getParameter("titre"), categorie, fichier.getSubmittedFileName(), fichier.getInputStream());
+            RessourceManager.getInstance().ajouterRessource(idSeance, request.getParameter("titre"), categorie, request.getParameter("lien"),
+                    fichier.getSubmittedFileName(), fichier.getInputStream());
         } catch (IllegalArgumentException | LearningsException e) {
             this.ajouterMessageErreur(request, e.getMessage());
             e.printStackTrace();
