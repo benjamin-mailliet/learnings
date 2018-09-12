@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<title>Gestion des séances</title>
+		<title>Appel - Gestion des séances - Learnings</title>
 		<th:block th:replace="fragments/htmlheader" />
 		<script th:src="@{/js/appel.js}"></script>
 		<script th:src="@{/js/filtre.js}"></script>
@@ -9,63 +9,56 @@
 	<body>
 		<nav th:replace="fragments/menu :: admin('seance')"></nav>
 	
-		<div class="container">
+		<div class="container-fluid">
 			<div th:replace="fragments/messages"></div>
-			<header class="page-header">
-				<h1>
-					Appel de la séance "[[${seance.titre}]]"
-					<small><a href="listeseances" class="label label-default">Retour à la liste</a></small>
-				</h1>
-			</header>
+			<h1 class="display-1">Appel de la séance n°[[${seance.id}]]</h1>
+			<p><a href="listeseances" class="btn btn-outline-primary">Retour à la liste</a></p>
+			<div class="form-inline my-2">
+				<h2 class="mb-2 mr-sm-2">Filtrer la liste :</h2>
+				<label for="filter-eleve" class="sr-only">Éleve : </label>
+				<input id="filter-eleve" type="text" class="query-filter form-control mb-2 mr-sm-2" data-query-filter="eleve" placeholder="Élève"/>
+				<label for="filter-groupe" class="sr-only">Groupe : </label>
+				<select id="filter-groupe" class="query-filter form-control mb-2 mr-sm-2" data-query-filter="groupe">
+					<option></option>
+					<option>Groupe 1</option>
+					<option>Groupe 2</option>
+				</select>
+			</div>
 			<form class="form-horizontal" id="form-appel" method="post">
-				<div class="form-inline">
-					<div class="form-group">
-						<label for="filter-eleve">Eleve : </label>
-						<input id="filter-eleve" type="text" class="query-filter form-control" data-query-filter="eleve" />
-					</div>
-					<div class="form-group">
-						<label for="filter-groupe">Groupe : </label>
-						<select id="filter-groupe" class="query-filter form-control" data-query-filter="groupe">
-							<option></option>
-							<option>Groupe 1</option>
-							<option>Groupe 2</option>
-						</select>
-					</div>
-				</div>
 				<table id="tableau-appel" class="table table-bordered">
 					<tr>
-						<th>Eleve</th>
-						<th>Groupe</th>
-						<th colspan="5">Statut</th>
+						<th scope="col">Eleve</th>
+						<th scope="col">Groupe</th>
+						<th scope="col" colspan="5">Statut</th>
 					</tr>
 					<tr th:each="appel : ${appels}" th:with="cssAppelCourant=${appel.statut} ? ${cssClasses[appel.statut]} : 'active'">
-						<td data-filter="eleve" class="filter cellule-generale" th:classappend="${cssAppelCourant}">[[${appel.eleve.prenom}]] [[${appel.eleve.nom}]]</td>
-						<td data-filter="groupe" class="filter cellule-generale" th:classappend="${cssAppelCourant}">[[${appel.eleve.groupe.libelle}]]</td>
-						<td class="text-success" th:classappend="${appel.statut && appel.statut.name() == 'PRESENT'} ? 'success'">
+						<th scope="row" data-filter="eleve" class="filter cellule-generale" th:classappend="'table-'+${cssAppelCourant}">[[${appel.eleve.prenom}]] [[${appel.eleve.nom}]]</th>
+						<td data-filter="groupe" class="filter cellule-generale" th:classappend="'table-'+${cssAppelCourant}">[[${appel.eleve.groupe.libelle}]]</td>
+						<td class="text-success" th:classappend="${appel.statut && appel.statut.name() == 'PRESENT'} ? 'table-success'">
 							<label>
 								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="PRESENT" th:checked="${appel.statut && appel.statut.name() == 'PRESENT'}" class="radio-appel radio-present" />
 								Présent
 							</label>
 						</td>
-						<td class="text-warning" th:classappend="${appel.statut && appel.statut.name() == 'RETARD'} ? 'warning'">
+						<td class="text-warning" th:classappend="${appel.statut && appel.statut.name() == 'RETARD'} ? 'table-warning'">
 							<label>
 								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="RETARD" th:checked="${appel.statut && appel.statut.name() == 'RETARD'}" class="radio-appel radio-retard" />
 								Retard
 							</label>
 						</td>
-						<td class="text-info" th:classappend="${appel.statut && appel.statut.name() == 'EXCUSE'} ? 'info'">
+						<td class="text-info" th:classappend="${appel.statut && appel.statut.name() == 'EXCUSE'} ? 'table-info'">
 							<label>
 								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="EXCUSE" th:checked="${appel.statut && appel.statut.name() == 'EXCUSE'}" class="radio-appel radio-excuse" />
 								Excusé
 							</label>
 						</td>
-						<td class="text-danger" th:classappend="${appel.statut && appel.statut.name() == 'ABSENT'} ? 'danger'">
+						<td class="text-danger" th:classappend="${appel.statut && appel.statut.name() == 'ABSENT'} ? 'table-danger'">
 							<label>
 								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="ABSENT" th:checked="${appel.statut && appel.statut.name() == 'ABSENT'}" class="radio-appel radio-absent" />
 								Absent
 							</label>
 						</td>
-						<td class="text-active" th:classappend="${appel.statut == null || appel.statut.name() == 'NON_SAISI'} ? 'active'">
+						<td class="text-active" th:classappend="${appel.statut == null || appel.statut.name() == 'NON_SAISI'} ? 'table-active'">
 							<label>
 								<input type="radio" th:name="'appel.'+${appel.eleve.id}" value="NON_SAISI" th:checked="${appel.statut == null || appel.statut.name() == 'NON_SAISI'}" class="radio-appel radio-non-saisi" />
 								Non saisi
@@ -73,13 +66,24 @@
 						</td>
 					</tr>
 				</table>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="button" class="btn btn-default" id="boutonChargementSauvegardeLocale">Charger sauvegarde locale</button>
-						<button type="button" class="btn btn-default" id="boutonSauvegardeLocale">Enregistrer en local</button>
-						<button type="submit" class="btn btn-primary">Enregistrer</button>
-				    </div>
-			  </div>
+				<div class="btn-toolbar" role="toolbar">
+					<div class="btn-group mr-2" role="group">
+						<button type="button" class="btn btn-outline-secondary" id="boutonChargementSauvegardeLocale">
+							<i class="fas fa-upload" aria-hidden="true"></i>
+							Charger sauvegarde locale
+						</button>
+						<button type="button" class="btn btn-outline-secondary" id="boutonSauvegardeLocale">
+							<i class="fas fa-download" aria-hidden="true"></i>
+							Enregistrer en local
+						</button>
+				  	</div>
+					<div class="btn-group" role="group">
+						<button type="submit" class="btn btn-primary">
+							<i class="fas fa-save" aria-hidden="true"></i>
+							Enregistrer
+						</button>
+					</div>
+				</div>
 			</form>
 		</div>
 	</body>

@@ -16,7 +16,6 @@ import learnings.model.Binome;
 import learnings.model.Note;
 import learnings.model.RenduTp;
 import learnings.model.Seance;
-import learnings.model.Travail;
 import learnings.model.Utilisateur;
 import learnings.pojos.FichierComplet;
 import learnings.utils.FichierUtils;
@@ -25,6 +24,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class RenduTpManager {
@@ -76,20 +76,19 @@ public class RenduTpManager {
 
         renduTpDao.ajouterRenduTp(rendu);
 
-        LOGGER.info(String.format("rendreTP|binome=%d|rendu=%d;%s", binome.getId(), rendu.getId(), nomFichier));
+        LOGGER.info(String.format("rendreTP|binome=%s|rendu=%d;%s", binome.getUid(), rendu.getId(), nomFichier));
     }
 
-    public void ajouterBinome(Long idSeance, Long idEleve1, Long idEleve2) throws LearningsException  {
-       this.checkBinome(idSeance, idEleve1, idEleve2);
+    public void ajouterBinome(Long idSeance, Set<Long> idsEleves) throws LearningsException  {
+       this.checkBinome(idSeance, idsEleves);
 
         Binome binome = new Binome(null, new Seance(idSeance, null, null, null));
-        binome.setEleve1(this.verifierUtilisateur(idEleve1));
-        if (idEleve2 != null) {
-            binome.setEleve2(this.verifierUtilisateur(idEleve2));
+        for (Long idEleve : idsEleves) {
+            binome.getEleves().add(this.verifierUtilisateur(idEleve));
         }
 
         binomeDao.ajouterBinome(binome);
-        LOGGER.info(String.format("ajouterBinome|binome=%d|tp=%d", binome.getId(), idSeance));
+        LOGGER.info(String.format("ajouterBinome|binome=%s|tp=%d", binome.getUid(), idSeance));
     }
 
     public void enregistrerNoteTp(Long idSeance, Long idEleve, BigDecimal valeur, String commentaire) {
@@ -109,7 +108,7 @@ public class RenduTpManager {
         }
         Note note = new Note();
         note.setEleve(eleve);
-        note.setEnseignement(seance);
+        note.setSeance(seance);
         note.setValeur(valeur);
         note.setCommentaire(commentaire);
         if(noteDao.getBySeanceAndEleve(idSeance, idEleve) != null) {
@@ -129,15 +128,12 @@ public class RenduTpManager {
         return fichierManager.getFichierComplet(travail.getChemin());
     }
 
-    protected void checkBinome(Long idTp, Long idEleve1, Long idEleve2) {
-        Binome binomeEleve1 = binomeDao.getBinome(idTp, idEleve1);
-        if (binomeEleve1 != null) {
-            throw new IllegalArgumentException("L'élève est déjà dans un binôme pour ce TP.");
-        }
-        if (idEleve2 != null) {
-            Binome binomeEleve2 = binomeDao.getBinome(idTp, idEleve2);
-            if (binomeEleve2 != null) {
-                throw new IllegalArgumentException("L'élève est déjà dans un binôme pour ce TP.");
+    protected void checkBinome(Long idTp, Set<Long> idsEleves) {
+        for (Long idEleve : idsEleves) {
+            Binome binomeEleve = binomeDao.getBinome(idTp, idEleve);
+            if (binomeEleve != null) {
+                Utilisateur eleve = utilisateurDao.getUtilisateur(idEleve);
+                throw new IllegalArgumentException(String.format("L'élève %s est déjà dans un binôme pour ce TP.", eleve.getPrenom()+ " "+ eleve.getNom()));
             }
         }
     }
@@ -153,10 +149,10 @@ public class RenduTpManager {
         return eleve;
     }
 
-    protected void ajouterFichier(InputStream fichier, Travail travail) throws LearningsException {
+    protected void ajouterFichier(InputStream fichier, RenduTp renduTp) throws LearningsException {
         try {
             if (fichier != null) {
-                fichierManager.ajouterFichier(travail.getChemin(), fichier);
+                fichierManager.ajouterFichier(renduTp.getChemin(), fichier);
             }
         } catch (LearningsException e) {
             throw new LearningsException("Problème à l'enregistrement du travail.", e);

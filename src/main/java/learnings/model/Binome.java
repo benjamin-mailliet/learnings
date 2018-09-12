@@ -1,33 +1,35 @@
 package learnings.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Binome {
 
-    private Long id;
+    private String uid;
 
     private Seance seance;
 
-    private Utilisateur eleve1;
+    private List<Utilisateur> eleves;
 
-    private Utilisateur eleve2;
-
-    public Binome(Long id, Seance seance) {
-        this.id = id;
+    public Binome(String uid, Seance seance) {
+        this.uid = uid;
         this.seance = seance;
+        this.eleves = new ArrayList<>();
     }
 
-    public Binome(Long id, Seance seance, Utilisateur eleve1, Utilisateur eleve2) {
-        this.id = id;
+    public Binome(String uid, Seance seance, Utilisateur... eleves) {
+        this.uid = uid;
         this.seance = seance;
-        this.eleve1 = eleve1;
-        this.eleve2 = eleve2;
+        this.eleves = Arrays.asList(eleves);
     }
 
-    public Long getId() {
-        return id;
+    public String getUid() {
+        return uid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public Seance getSeance() {
@@ -38,20 +40,12 @@ public class Binome {
         this.seance = seance;
     }
 
-    public Utilisateur getEleve1() {
-        return eleve1;
+    public List<Utilisateur> getEleves() {
+        return eleves;
     }
 
-    public void setEleve1(Utilisateur eleve1) {
-        this.eleve1 = eleve1;
-    }
-
-    public Utilisateur getEleve2() {
-        return eleve2;
-    }
-
-    public void setEleve2(Utilisateur eleve2) {
-        this.eleve2 = eleve2;
+    public void setEleves(List<Utilisateur> eleves) {
+        this.eleves = eleves;
     }
 
     @Override
@@ -61,11 +55,11 @@ public class Binome {
 
         Binome binome = (Binome) o;
 
-        return id.equals(binome.id);
+        return uid.equals(binome.uid);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return uid.hashCode();
     }
 }

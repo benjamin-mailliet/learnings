@@ -34,7 +34,7 @@ public class ImportUtilisateurServlet extends GenericLearningsServlet {
 		try {
 			UtilisateurManager.getInstance().importerUtilisateurs(fichier.getInputStream());
 			this.ajouterMessageSucces(request, "L'import des utilisateurs est terminé.");
-		} catch (LearningsException | LearningsSecuriteException e) {
+		} catch (LearningsException e) {
 			this.ajouterMessageErreur(request, String.format("L'import des utilisateurs a levé une erreur : %s.", e.getMessage()));
 			e.printStackTrace();
 		}

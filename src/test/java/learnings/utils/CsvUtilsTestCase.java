@@ -3,7 +3,6 @@ package learnings.utils;
 import learnings.enums.Groupe;
 import learnings.exceptions.LearningsException;
 import learnings.model.Note;
-import learnings.model.Projet;
 import learnings.model.Seance;
 import learnings.model.Utilisateur;
 import learnings.pojos.EleveAvecNotes;
@@ -158,10 +157,10 @@ public class CsvUtilsTestCase {
         CsvUtils.creerCSVElevesNotes(writer, eleves, seances);
 
         //THEN
-        assertThat(writer.toString()).isEqualTo("Elève;TP 1;TP 2;Projet;Moyenne\n" +
-                "1 Eleve;11;12;13;10\n" +
-                "2 Eleve;14;15;;12\n" +
-                "3 Eleve;;18;19;13\n");
+        assertThat(writer.toString()).isEqualTo("Elève;TP 1;TP 2;Moyenne\n" +
+                "1 Eleve;11;12;10\n" +
+                "2 Eleve;14;15;12\n" +
+                "3 Eleve;;18;13\n");
     }
 
     private List<EleveAvecNotes> getElevesAvecNotes() {
@@ -169,7 +168,6 @@ public class CsvUtilsTestCase {
         eleve1.setNom("1");
         eleve1.setPrenom("Eleve");
         eleve1.setMoyenne(new BigDecimal(10));
-        eleve1.setNoteProjet(new Note(1L, new Utilisateur(1L, null, null, null, null, false), new Projet(1L, null, null, null, null), new BigDecimal(13), null));
         Map<Long, Note> mapTravaux = new HashMap<>();
         mapTravaux.put(1L, new Note(2L, new Utilisateur(1L, null, null, null, null, false), new Seance(1L, null, null, null), new BigDecimal(11), null));
         mapTravaux.put(2L, new Note(3L, new Utilisateur(1L, null, null, null, null, false), new Seance(2L, null, null, null), new BigDecimal(12), null));
@@ -188,7 +186,6 @@ public class CsvUtilsTestCase {
         eleve3.setNom("3");
         eleve3.setPrenom("Eleve");
         eleve3.setMoyenne(new BigDecimal(13));
-        eleve3.setNoteProjet(new Note(9L, new Utilisateur(3L, null, null, null, null, false), new Projet(1L, null, null, null, null), new BigDecimal(19), null));
         Map<Long, Note> mapTravaux3 = new HashMap<>();
         mapTravaux3.put(2L, new Note(8L, new Utilisateur(3L, null, null, null, null, false), new Seance(2L, null, null, null), new BigDecimal(18), null));
         eleve3.setMapSeanceNote(mapTravaux3);

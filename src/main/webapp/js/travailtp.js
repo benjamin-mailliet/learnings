@@ -2,11 +2,9 @@ function afficherFormNote(isNoteParEleve) {
     if(isNoteParEleve) {
         $('#noteParEleve').show();
         $('#noteBinome').hide();
-        $('.modal-dialog').css({width: '900px'});
     }else{
         $('#noteParEleve').hide();
         $('#noteBinome').show();
-        $('.modal-dialog').css({width: '600px'});
     }
 }
 $(document).ready(function(){
@@ -100,8 +98,8 @@ $(document).ready(function(){
 
     var actualiserLigneTableau = function(idBinome) {
         var ligneBinome = $("#ligneRendu" + idBinome);
-        if (!ligneBinome.hasClass("success")) {
-            ligneBinome.addClass("success");
+        if (!ligneBinome.hasClass("table-success")) {
+            ligneBinome.addClass("table-success");
         }
     };
 
@@ -125,9 +123,6 @@ $(document).ready(function(){
             })
     };
 
-
-
-
     $("#validerNote").click(function(){
         var idSeance = $("#idSeanceNote").val();
         if($('#activerNoteParEleve').is(':checked')){
@@ -143,33 +138,4 @@ $(document).ready(function(){
             }
         }
     });
-
-    /*var getBodyMail = function(){
-        return encodeURI($("#noteComment").val().replace("[[note]]",$("#noteValue").val()));
-    };
-
-    var getEmailEleves = function(travailId){
-        var emails = "";
-        $("#mailTravail"+travailId).find("li").each(function(index, element){
-           emails = emails + ";"+element.textContent;
-        });
-        return emails;
-    };
-
-    var getObjectMail = function(){
-        var titreTravail = "";
-        var seance = $("#idSeance");
-        if(seance.length>0) {
-            titreTravail = seance.find("option[selected]")[0].textContent;
-        }else{
-            titreTravail = $("#idProjet").find("option[selected]")[0].textContent;
-        }
-        return "Note :  ".concat(titreTravail);
-    };
-
-    $("#mailNote").click(function(){
-        window.location = "mailto:"+getEmailEleves($("#idTravail").val())+"?subject="+getObjectMail()+"&body="+getBodyMail();
-    });*/
-
-
 });

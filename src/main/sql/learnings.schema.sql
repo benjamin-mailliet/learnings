@@ -18,15 +18,7 @@ CREATE TABLE seance (
   datelimiterendu datetime DEFAULT NULL,
   date date NOT NULL,
   type varchar(50) NOT NULL,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE projet (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  titre varchar(100) NOT NULL,
-  description varchar(5000) NOT NULL,
-  datelimiterendulot1 datetime NOT NULL,
-  datelimiterendulot2 datetime NOT NULL,
+  nb_max_binome int(11) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -41,34 +33,14 @@ CREATE TABLE appel (
 );
 
 CREATE TABLE binome (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  eleve1_id int(11) NOT NULL,
-  eleve2_id int(11) DEFAULT NULL,
-  seance_id int(11) NOT NULL,
-  PRIMARY KEY (id),
-  KEY binome_eleve1_idx (eleve1_id),
-  KEY binome_eleve2_idx (eleve2_id),
-  KEY binome_seance_idx (seance_id),
-  CONSTRAINT binome_eleve1 FOREIGN KEY (eleve1_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT binome_eleve2 FOREIGN KEY (eleve2_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT binome_seance FOREIGN KEY (seance_id) REFERENCES seance (id) ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-
-CREATE TABLE rendu_projet (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  chemin varchar(1000) DEFAULT NULL,
-  urlRepository varchar(1000) DEFAULT NULL,
-  note decimal(4,2) DEFAULT NULL,
-  dateRendu datetime NOT NULL,
-  projet_id int(11) NOT NULL,
-  commentaire varchar(5000) DEFAULT NULL,
-  commentaireNote varchar(5000) DEFAULT NULL,
   eleve_id int(11) NOT NULL,
-  PRIMARY KEY (id),
-  KEY projettransversal_id (projet_id),
-  KEY rendu_projet_eleve_idx (eleve_id),
-  CONSTRAINT rendu_projet_eleve FOREIGN KEY (eleve_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT rendu_projet_ibfk_2 FOREIGN KEY (projet_id) REFERENCES projet (id)
+  seance_id int(11) NOT NULL,
+  binome_uid varchar(50) NOT NULL,
+  PRIMARY KEY (eleve_id, seance_id),
+  KEY binome_eleve_idx (eleve_id),
+  KEY binome_seance_idx (seance_id),
+  CONSTRAINT binome_eleve FOREIGN KEY (eleve_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT binome_seance FOREIGN KEY (seance_id) REFERENCES seance (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 CREATE TABLE rendu_tp (
@@ -78,10 +50,8 @@ CREATE TABLE rendu_tp (
   dateRendu datetime NOT NULL,
   commentaire varchar(5000) DEFAULT NULL,
   commentaireNote varchar(5000) DEFAULT NULL,
-  binome_id int(11) NOT NULL,
-  PRIMARY KEY (id),
-  KEY rendu_tp_binome_idx (binome_id),
-  CONSTRAINT rendu_tp_binome FOREIGN KEY (binome_id) REFERENCES binome (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+  binome_uid varchar(50) NOT NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE ressource (
@@ -89,26 +59,21 @@ CREATE TABLE ressource (
   chemin varchar(1000) NOT NULL,
   titre varchar(100) NOT NULL,
   seance_id int(11) DEFAULT NULL,
-  projet_id int(11) DEFAULT NULL,
+  categorie varchar(20) NOT NULL,
   PRIMARY KEY (id),
   KEY seance_id (seance_id),
-  KEY ressource_ibfk_2 (projet_id),
-  CONSTRAINT ressource_ibfk_1 FOREIGN KEY (seance_id) REFERENCES seance (id),
-  CONSTRAINT ressource_ibfk_2 FOREIGN KEY (projet_id) REFERENCES projet (id)
+  CONSTRAINT ressource_ibfk_1 FOREIGN KEY (seance_id) REFERENCES seance (id)
 );
 
 CREATE TABLE note (
   id int(11) NOT NULL AUTO_INCREMENT,
   eleve_id int(11) NOT NULL,
   seance_id int(11) DEFAULT NULL,
-  projet_id int(11) DEFAULT NULL,
   valeur decimal(4,2) DEFAULT NULL,
   commentaire mediumtext,
   PRIMARY KEY (id),
   KEY note_eleve_fk_idx (eleve_id),
   KEY note_seance_fk_idx (seance_id),
-  KEY note_projet_fk_idx (projet_id),
   CONSTRAINT note_eleve_fk FOREIGN KEY (eleve_id) REFERENCES utilisateur (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT note_projet_fk FOREIGN KEY (projet_id) REFERENCES projet (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT note_seance_fk FOREIGN KEY (seance_id) REFERENCES seance (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

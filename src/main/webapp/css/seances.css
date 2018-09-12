@@ -1,12 +1,50 @@
-.panel-info header.panel-heading{
+.seance header.card-header {
+	display: inline-flex;
+	justify-content:space-between;
+	align-items: center;
+	padding: 0;
+}
+
+.seance header.card-header .title {
+	display: inline-flex;
+	justify-content:flex-start;
+	align-items: center;
+}
+
+.seance header.card-header time {
+	padding: 0 1.25rem;
+	text-align: center;
+	border-right: solid 1px #ddd;
+}
+
+.seance header.card-header time .date-fragment {
+	display: block;
+	text-transform: capitalize;
+}
+
+.seance header.card-header time .date-fragment.lead {
+	font-size: 2.5em;
+}
+
+.seance header.card-header time small.date-fragment {
+	font-size: 0.5em;
+}
+
+.seance header.card-header .status {
+	padding: 0 1.25rem;
+	text-align: center;
+}
+
+.card.active .card-expander{
+	background-color: #fcfcfc;
 	cursor:pointer;
 }
 
-.panel-info header.panel-heading:hover{
-	background-color: #D3E6F0;
+.card.active .card-expander:hover{
+    background: #eee;
 }
 
-article.tp-article header.panel-heading span.glyphicon{
+article.tp-article header.card-header span.icone{
 	-webkit-transition: all 2s ease-out;
 	-moz-transition: all 2s ease-out;
 	-ms-transition: all 2s ease-out;
@@ -22,7 +60,7 @@ article.tp-article header.panel-heading span.glyphicon{
 	
 }
 
-article.tp-article.rotated header.panel-heading span.glyphicon{
+article.tp-article.rotated header.card-header span.icone{
 	-webkit-transition: all 2s ease-out;
 	-moz-transition: all 2s ease-out;
 	-ms-transition: all 2s ease-out;
@@ -33,7 +71,36 @@ article.tp-article.rotated header.panel-heading span.glyphicon{
 	-webkit-transform: rotate(202.5deg);
 	-o-transform: rotate(202.5deg);
 	-ms-transform: rotate(202.5deg);
-	transform: rotate(202.5deg);	
-	
+	transform: rotate(202.5deg);
+}
+
+article .card-expander span.icone {
+    -webkit-transition: all 1s ease-out;
+    -moz-transition: all 1s ease-out;
+    -ms-transition: all 1s ease-out;
+    -o-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+
+
+    -moz-transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    transform: scale(1, 1);
+
+}
+
+article.expanded .card-expander span.icone {
+    -webkit-transition: all 1s ease-out;
+    -moz-transition: all 1s ease-out;
+    -ms-transition: all 1s ease-out;
+    -o-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+
+    -moz-transform: scale(1, -1);
+    -webkit-transform: scale(1, -1);
+    -o-transform: scale(1, -1);
+    -ms-transform: scale(1, -1);
+    transform: scale(1, -1);
 }
 

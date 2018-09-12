@@ -1,20 +1,13 @@
 package learnings.managers;
 
 import learnings.dao.NoteDao;
-import learnings.dao.ProjetDao;
-import learnings.dao.RenduProjetDao;
 import learnings.dao.RenduTpDao;
 import learnings.dao.UtilisateurDao;
 import learnings.dao.impl.NoteDaoImpl;
-import learnings.dao.impl.ProjetDaoImpl;
-import learnings.dao.impl.RenduProjetDaoImpl;
 import learnings.dao.impl.RenduTpDaoImpl;
 import learnings.dao.impl.UtilisateurDaoImpl;
 import learnings.exceptions.LearningsException;
-import learnings.exceptions.LearningsSecuriteException;
 import learnings.model.Note;
-import learnings.model.Projet;
-import learnings.model.RenduProjet;
 import learnings.model.RenduTp;
 import learnings.model.Utilisateur;
 import learnings.pojos.EleveAvecNotes;
@@ -24,7 +17,6 @@ import learnings.utils.FichierUtils;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +40,7 @@ public class UtilisateurManager {
 
     private UtilisateurDao utilisateurDao = new UtilisateurDaoImpl();
     private RenduTpDao renduTpDao = new RenduTpDaoImpl();
-    private RenduProjetDao renduProjetDao = new RenduProjetDaoImpl();
     private MotDePasseManager motDePasseManager = new MotDePasseManager();
-	private ProjetDao projetDao = new ProjetDaoImpl();
     private NoteDao noteDao = new NoteDaoImpl();
 
 
@@ -72,7 +62,7 @@ public class UtilisateurManager {
         return utilisateurDao.getUtilisateur(email);
     }
 
-    public boolean validerMotDePasse(String email, String motDePasseAVerifier) throws LearningsSecuriteException {
+    public boolean validerMotDePasse(String email, String motDePasseAVerifier) {
         if (email == null || "".equals(email)) {
             throw new IllegalArgumentException("L'identifiant doit être renseigné.");
         }
@@ -91,8 +81,7 @@ public class UtilisateurManager {
             throw new IllegalArgumentException("L'id de l'utilisateur ne peut pas être null.");
         }
         List<RenduTp> rendusTp = renduTpDao.listerRendusParUtilisateur(id);
-        List<RenduProjet> rendusProjet = renduProjetDao.listerRendusParUtilisateur(id);
-            if (rendusTp.size() > 0 || rendusProjet.size() > 0) {
+            if (rendusTp.size() > 0) {
             throw new IllegalArgumentException("Impossible de supprimer un utilisateur avec des travaux rendus.");
         }
         utilisateurDao.supprimerUtilisateur(id);
@@ -118,7 +107,7 @@ public class UtilisateurManager {
     /**
      * Réinitialise le mot de passe de l'utilisateur avec pour valeur son email
      */
-    public void reinitialiserMotDePasse(Long id) throws LearningsSecuriteException {
+    public void reinitialiserMotDePasse(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("L'identifiant de l'utilisateur ne peut pas être null.");
         }
@@ -131,7 +120,7 @@ public class UtilisateurManager {
         LOGGER.info(String.format("Utilisateur|reinitialiserMotDePasse|id=%d", id));
     }
 
-    public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) throws LearningsSecuriteException {
+    public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) {
         if (utilisateur.getEmail() == null || "".equals(utilisateur.getEmail())) {
             throw new IllegalArgumentException("L'adresse email doit être renseigné.");
         }
@@ -148,7 +137,7 @@ public class UtilisateurManager {
         return nouvelUtilisateur;
     }
 
-    public void modifierMotDePasse(Long id, String motDePasse, String confirmationMotDePasse) throws LearningsSecuriteException {
+    public void modifierMotDePasse(Long id, String motDePasse, String confirmationMotDePasse) {
         if (motDePasse == null || "".equals(motDePasse) || confirmationMotDePasse == null || "".equals(confirmationMotDePasse)) {
             throw new IllegalArgumentException("Les mots de passe doivent être renseignés.");
         }
@@ -177,11 +166,7 @@ public class UtilisateurManager {
         List<Note> notesEleve = noteDao.listerNotesParUtilisateur(eleve.getId());
         Map<Long, Note> notesSeance = new HashMap<>();
         for (Note note : notesEleve) {
-            if (note.getEnseignement() instanceof Projet) {
-                eleveComplet.setNoteProjet(note);
-            } else {
-                notesSeance.put(note.getEnseignement().getId(), note);
-            }
+            notesSeance.put(note.getSeance().getId(), note);
         }
 
         eleveComplet.setMapSeanceNote(notesSeance);
@@ -199,16 +184,12 @@ public class UtilisateurManager {
 
 	private BigDecimal calculMoyenneEleve(EleveAvecNotes eleveComplet){
 		BigDecimal somme = new BigDecimal(0);
-		Integer quotient = 0;
+		int quotient = 0;
         for (Note note : eleveComplet.getMapSeanceNote().values()) {
             somme = somme.add(note.getValeur());
             quotient++;
         }
 
-		if(eleveComplet.getNoteProjet()!=null ){
-			somme = somme.add(eleveComplet.getNoteProjet().getValeur().multiply(new BigDecimal(Note.COEFF_PROJET)));
-			quotient += Note.COEFF_PROJET;
-		}
 		if(quotient>0) {
 			return somme.divide(new BigDecimal(quotient), 2, RoundingMode.HALF_EVEN);
 		}else{
@@ -216,7 +197,7 @@ public class UtilisateurManager {
 		}
     }
 
-    public void importerUtilisateurs(InputStream utilisateursCsvInputStream) throws LearningsException, LearningsSecuriteException {
+    public void importerUtilisateurs(InputStream utilisateursCsvInputStream) throws LearningsException {
         List<String> utilisateursCsv = FichierUtils.getLignes(utilisateursCsvInputStream);
 
         List<Utilisateur> utilisateursACreer = CsvUtils.parserCsvVersUtilisateurs(utilisateursCsv);

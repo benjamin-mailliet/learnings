@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<title>Liens utiles</title>
+		<title>Liens utiles - Learnings</title>
 		<th:block th:replace="fragments/htmlheader" />
 		<link th:href="@{/css/liensutiles.css}" rel="stylesheet">
 	</head>
 	<body>
 	<nav th:replace="fragments/menu :: principal('liensutiles')"></nav>
-		<div class="container">
+		<div class="container-fluid">
 			<div th:replace="fragments/messages"></div>
-			<header class="row page-header"><h1>Liens utiles</h1></header>
+			<h1 class="display-1">Liens utiles</h1>
 			<div class="row">
-				<div class=" col-md-12">
-					<article class="panel panel-default">
-						<div class="panel-heading"><h4>Essentiels</h4></div>
+				<div class=" col-12">
+					<article class="card bg-light my-3">
+						<div class="card-header"><h4>Essentiels</h4></div>
 	  					<table class="table">
 							<tr>
 								<th></th>
@@ -54,10 +54,10 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class=" col-md-6">
-					<article class="panel panel-default">
-						<div class="panel-heading"><h4>Développer un site en Java</h4></div>
-						<div class="panel-body">
+				<div class="col-12 col-md-6">
+					<article class="card bg-light my-3">
+						<div class="card-header"><h4>Développer un site en Java</h4></div>
+						<div class="card-body">
 	  						<p>Développer un site web avec Java nécessite quelques outils listés ci-dessous.</p>
 						</div>
 	  					<table class="table">
@@ -80,9 +80,9 @@
 	  					</table>
 					</article>
 				</div>
-				<div class=" col-md-6">
-					<article class="panel panel-default">
-						<div class="panel-heading"><h4>Base de données</h4></div>
+				<div class="col-12 col-md-6">
+					<article class="card bg-light my-3">
+						<div class="card-header"><h4>Base de données</h4></div>
 	  					<table class="table">
 							<tr>
 								<td><a href="http://dev.mysql.com/downloads/mysql/" target="_blank">MySQL 5.7</a></td>
@@ -101,10 +101,10 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class=" col-md-6">
-					<article class="panel panel-default">
-						<div class="panel-heading"><h4>Travail collaboratif</h4></div>
-						<div class="panel-body">
+				<div class="col-12 col-md-6">
+					<article class="card bg-light my-3">
+						<div class="card-header"><h4>Travail collaboratif</h4></div>
+						<div class="card-body">
 	  						<p>Travailler à plusieurs développeurs sur un même projet entraîne des problématiques spécifiques : partage des sources, gestion des conflits... Des outils permettent de faciliter ce travail.</p>
 						</div>
 	  					<table class="table">
@@ -134,10 +134,10 @@
 	  					</table>
 					</article>
 				</div>
-				<div class=" col-md-6">
-					<article class="panel panel-default">
-						<div class="panel-heading"><h4>Héberger son site en JavaEE</h4></div>
-						<div class="panel-body">
+				<div class="col-12 col-md-6">
+					<article class="card bg-light my-3">
+						<div class="card-header"><h4>Héberger son site en JavaEE</h4></div>
+						<div class="card-body">
 	  						<p>Héberger des sites web en Java est plus compliqué que d'héberger un site web PHP. Voici quelques services permettant de le faire.</p>
 						</div>
 	  					<table class="table">
@@ -151,9 +151,9 @@
 							</tr>
 	  					</table>
 					</article>
-					<article class="panel panel-default">
-						<div class="panel-heading"><h4>Code source de ce site</h4></div>
-						<div class="panel-body">
+					<article class="card bg-light my-3">
+						<div class="card-header"><h4>Code source de ce site</h4></div>
+						<div class="card-body">
 							<p>Le code source de ce site est disponible en intégralité sur <a href="https://github.com/benjamin-mailliet/learnings-devwebhei" title="Projet Learnings sur GitHub" target="_blank">GitHub</a>. N'hésitez à pas à aller le parcourir !</p>
 						</div>
 					</article>

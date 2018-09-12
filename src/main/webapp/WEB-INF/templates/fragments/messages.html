@@ -1,26 +1,30 @@
 <div  xmlns:th="http://www.thymeleaf.org">
-	<div class="alert alert-danger" role="alert" th:if="${messagesErreur != null && #lists.size(messagesErreur) > 0}">
-		<ul th:if="${#lists.size(messagesErreur) > 1}">
-			<li th:each="message : ${messagesErreur}">[[${message}]]</li>
-		</ul>
-		<p th:if="${#lists.size(messagesErreur) == 1}">[[${messagesErreur[0]}]]</p>
-	</div>
-	<div class="alert alert-warning" role="alert" th:if="${messagesWarn != null && #lists.size(messagesWarn) > 0}">
-		<ul th:if="${#lists.size(messagesWarn) > 1}">
-			<li th:each="message : ${messagesWarn}">[[${message}]]</li>
-		</ul>
-		<p th:if="${#lists.size(messagesWarn) == 1}">[[${messagesWarn[0]}]]</p>
-	</div>
-	<div class="alert alert-info" role="alert" th:if="${messagesInfo != null && #lists.size(messagesInfo) > 0}">
-		<ul th:if="${#lists.size(messagesInfo) > 1}">
-			<li th:each="message : ${messagesInfo}">[[${message}]]</li>
-		</ul>
-		<p th:if="${#lists.size(messagesInfo) == 1}">[[${messagesInfo[0]}]]</p>
-	</div>
-	<div class="alert alert-success" role="alert" th:if="${messagesSucces != null && #lists.size(messagesSucces) > 0}">
-		<ul th:if="${#lists.size(messagesSucces) > 1}">
-			<li th:each="message : ${messagesSucces}">[[${message}]]</li>
-		</ul>
-		<p th:if="${#lists.size(messagesSucces) == 1}">[[${messagesSucces[0]}]]</p>
+	<div class="row" th:if="${nbMessagesErreur > 0 || nbMessagesWarn > 0 || nbMessagesInfo > 0 || nbMessagesSucces > 0}">
+		<div class="col-12 mt-3">
+			<div class="alert alert-danger" role="alert" th:if="${nbMessagesErreur > 0}">
+				<ul th:if="${nbMessagesErreur > 1}">
+					<li th:each="message : ${messagesErreur}">[[${message}]]</li>
+				</ul>
+				<p class="mb-0" th:if="${nbMessagesErreur == 1}">[[${messagesErreur[0]}]]</p>
+			</div>
+			<div class="alert alert-warning" role="alert" th:if="${nbMessagesWarn > 0}">
+				<ul th:if="${nbMessagesWarn > 1}">
+					<li th:each="message : ${messagesWarn}">[[${message}]]</li>
+				</ul>
+				<p class="mb-0" th:if="${nbMessagesWarn == 1}">[[${messagesWarn[0]}]]</p>
+			</div>
+			<div class="alert alert-info" role="alert" th:if="${nbMessagesInfo > 0}">
+				<ul th:if="${nbMessagesInfo > 1}">
+					<li th:each="message : ${messagesInfo}">[[${message}]]</li>
+				</ul>
+				<p class="mb-0" th:if="${nbMessagesInfo == 1}">[[${messagesInfo[0]}]]</p>
+			</div>
+			<div class="alert alert-success" role="alert" th:if="${nbMessagesSucces > 0}">
+				<ul th:if="${nbMessagesSucces > 1}">
+					<li th:each="message : ${messagesSucces}">[[${message}]]</li>
+				</ul>
+				<p class="mb-0" th:if="${nbMessagesSucces == 1}">[[${messagesSucces[0]}]]</p>
+			</div>
+		</div>
 	</div>
 </div>

@@ -22,12 +22,12 @@ public class RenduTpDaoImpl extends GenericDaoImpl implements RenduTpDao{
     public RenduTp ajouterRenduTp(RenduTp renduTp) {
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(
-                     "INSERT INTO rendu_tp(chemin, dateRendu, commentaire, binome_id) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
+                     "INSERT INTO rendu_tp(chemin, dateRendu, commentaire, binome_uid) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
         ) {
             stmt.setString(1, renduTp.getChemin());
             stmt.setTimestamp(2, Timestamp.valueOf(renduTp.getDateRendu()));
             stmt.setString(3, renduTp.getCommentaire());
-            stmt.setLong(4, renduTp.getBinome().getId());
+            stmt.setString(4, renduTp.getBinome().getUid());
 
             stmt.executeUpdate();
 
@@ -43,18 +43,17 @@ public class RenduTpDaoImpl extends GenericDaoImpl implements RenduTpDao{
     }
 
     @Override
-    public List<RenduTp> listerRendusParBinome(Long idBinome) {
+    public List<RenduTp> listerRendusParBinome(String uidBinome) {
         List<RenduTp> rendus = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
-                     .prepareStatement("SELECT * FROM rendu_tp r JOIN binome b  ON b.id = r.binome_id WHERE b.id = ?")
+                     .prepareStatement("SELECT * FROM rendu_tp r WHERE r.binome_uid = ?")
         ) {
-            stmt.setLong(1, idBinome);
+            stmt.setString(1, uidBinome);
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     rendus.add(new RenduTp(results.getLong("r.id"), results.getBigDecimal("r.note"), results.getTimestamp("r.dateRendu").toLocalDateTime(),
-                            results.getString("r.chemin"), results.getString("r.commentaire"), new Binome(results.getLong("b.id"),
-                            new Seance(results.getLong("b.seance_id"), null, null, null))));
+                            results.getString("r.chemin"), results.getString("r.commentaire"), new Binome(results.getString("r.binome_uid"), null)));
                 }
             }
         } catch (SQLException e) {
@@ -68,17 +67,12 @@ public class RenduTpDaoImpl extends GenericDaoImpl implements RenduTpDao{
         List<RenduTp> rendus = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
-                     .prepareStatement("SELECT * FROM rendu_tp r JOIN binome b  ON b.id = r.binome_id " +
-                             "JOIN utilisateur e1 ON b.eleve1_id = e1.id LEFT JOIN utilisateur e2 ON b.eleve2_id = e2.id " +
-                             "WHERE b.seance_id = ?")
+                     .prepareStatement("SELECT * FROM rendu_tp r WHERE r.binome_uid IN (SELECT b.binome_uid FROM binome b WHERE b.seance_id = ?)")
         ) {
             stmt.setLong(1, idSeance);
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    Binome binome = new Binome(results.getLong("b.id"),
-                            new Seance(results.getLong("b.seance_id"), null, null, null),
-                            JdbcMapperUtils.mapperVersUtilisateur(results, "e1"),
-                            JdbcMapperUtils.mapperVersUtilisateur(results, "e2"));
+                    Binome binome = new Binome(results.getString("r.binome_uid"),null);
                     rendus.add(new RenduTp(results.getLong("r.id"), results.getBigDecimal("r.note"), results.getTimestamp("r.dateRendu").toLocalDateTime(),
                             results.getString("r.chemin"), results.getString("r.commentaire"), binome));
                 }
@@ -94,15 +88,13 @@ public class RenduTpDaoImpl extends GenericDaoImpl implements RenduTpDao{
         List<RenduTp> rendus = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection
-                     .prepareStatement("SELECT * FROM rendu_tp r JOIN binome b  ON b.id = r.binome_id WHERE b.eleve1_id = ? OR b.eleve2_id = ?")
+                     .prepareStatement("SELECT * FROM rendu_tp r WHERE r.binome_uid IN (SELECT b.binome_uid FROM binome b WHERE b.eleve_id = ?)")
         ) {
             stmt.setLong(1, idUtilisateur);
-            stmt.setLong(2, idUtilisateur);
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
                     rendus.add(new RenduTp(results.getLong("r.id"), results.getBigDecimal("r.note"), results.getTimestamp("r.dateRendu").toLocalDateTime(),
-                            results.getString("r.chemin"), results.getString("r.commentaire"), new Binome(results.getLong("b.id"),
-                            new Seance(results.getLong("b.seance_id"), null, null, null))));
+                            results.getString("r.chemin"), results.getString("r.commentaire"), new Binome(results.getString("r.binome_uid"), null)));
                 }
             }
         } catch (SQLException e) {
@@ -115,17 +107,13 @@ public class RenduTpDaoImpl extends GenericDaoImpl implements RenduTpDao{
     public RenduTp getRendu(Long idRendu) {
         RenduTp rendu = null;
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM rendu_tp r JOIN binome b  ON b.id = r.binome_id " +
-                     "JOIN utilisateur e1 ON b.eleve1_id = e1.id LEFT JOIN utilisateur e2 ON b.eleve2_id = e2.id " +
-                     " WHERE r.id = ?")
+             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM rendu_tp r  WHERE r.id = ?")
         ) {
             stmt.setLong(1, idRendu);
             try (ResultSet results = stmt.executeQuery()) {
                 if (results.next()) {
                     rendu = new RenduTp(results.getLong("r.id"), results.getBigDecimal("r.note"), results.getTimestamp("r.dateRendu").toLocalDateTime(),
-                            results.getString("r.chemin"), results.getString("r.commentaire"), new Binome(results.getLong("b.id"),
-                            new Seance(results.getLong("b.seance_id"), null, null, null),JdbcMapperUtils.mapperVersUtilisateur(results, "e1"),
-                            JdbcMapperUtils.mapperVersUtilisateur(results, "e2")));
+                            results.getString("r.chemin"), results.getString("r.commentaire"), new Binome(results.getString("r.binome_uid"), null));
                 }
             }
         } catch (SQLException e) {
@@ -144,8 +132,6 @@ public class RenduTpDaoImpl extends GenericDaoImpl implements RenduTpDao{
             stmt.setLong(3, idRendu);
 
             stmt.executeUpdate();
-            stmt.close();
-            connection.close();
         } catch (SQLException e) {
             throw new LearningsSQLException(e);
         }

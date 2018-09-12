@@ -1,7 +1,6 @@
 package learnings.dao.impl;
 
 import learnings.dao.BinomeDao;
-import learnings.enums.Groupe;
 import learnings.exceptions.LearningsSQLException;
 import learnings.model.Binome;
 import learnings.model.Seance;
@@ -12,32 +11,25 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.util.UUID;
 
 public class BinomeDaoImpl extends GenericDaoImpl implements BinomeDao {
     @Override
     public Binome ajouterBinome(Binome binome) {
+        String binomeUid = UUID.randomUUID().toString();
         try (Connection connection = getConnection();
              PreparedStatement stmt = connection.prepareStatement(
-                     "INSERT INTO binome(eleve1_id, eleve2_id, seance_id) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS)
+                     "INSERT INTO binome(seance_id, binome_uid, eleve_id) VALUES(?, ?, ?)")
         ) {
-            stmt.setLong(1, binome.getEleve1().getId());
-            if(binome.getEleve2() != null) {
-                stmt.setLong(2, binome.getEleve2().getId());
-            } else {
-                stmt.setNull(2, Types.INTEGER);
-            }
-            stmt.setLong(3, binome.getSeance().getId());
+            stmt.setLong(1, binome.getSeance().getId());
+            stmt.setString(2, binomeUid);
 
-            stmt.executeUpdate();
-
-            try (ResultSet ids = stmt.getGeneratedKeys()) {
-                if (ids.next()) {
-                    binome.setId(ids.getLong(1));
-                }
+            for (Utilisateur eleve : binome.getEleves()) {
+                stmt.setLong(3, eleve.getId());
+                stmt.executeUpdate();
             }
 
+            binome.setUid(binomeUid);
         } catch (SQLException e) {
             throw new LearningsSQLException(e);
         }
@@ -48,16 +40,15 @@ public class BinomeDaoImpl extends GenericDaoImpl implements BinomeDao {
     public Binome getBinome(Long idSeance, Long idEleve) {
         Binome binome = null;
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM binome b JOIN utilisateur e1 ON b.eleve1_id = e1.id LEFT JOIN utilisateur e2 ON b.eleve2_id = e2.id WHERE b.seance_id = ? AND (b.eleve1_id = ? OR b.eleve2_id = ?)")
+             PreparedStatement stmt = connection.prepareStatement(
+                     "SELECT * FROM binome b " +
+                             "JOIN utilisateur e ON b.eleve_id = e.id " +
+                             "WHERE b.binome_uid = (SELECT uid.binome_uid FROM binome uid where uid.eleve_id = ? AND uid.seance_id = ?);")
         ) {
-            stmt.setLong(1, idSeance);
-            stmt.setLong(2, idEleve);
-            stmt.setLong(3, idEleve);
+            stmt.setLong(1, idEleve);
+            stmt.setLong(2, idSeance);
             try (ResultSet results = stmt.executeQuery()) {
-                if(results.next()) {
-                    binome = new Binome(results.getLong("b.id"), new Seance(results.getLong("b.seance_id"), null, null, null),
-                            JdbcMapperUtils.mapperVersUtilisateur(results, "e1"), JdbcMapperUtils.mapperVersUtilisateur(results, "e2"));
-                }
+                binome = construireBinome(results);
             }
         } catch (SQLException e) {
             throw new LearningsSQLException(e);
@@ -67,20 +58,34 @@ public class BinomeDaoImpl extends GenericDaoImpl implements BinomeDao {
     }
 
     @Override
-    public Binome getBinome(Long idBinome) {
+    public Binome getBinome(String uidBinome) {
         Binome binome = null;
         try (Connection connection = getConnection();
-             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM binome b JOIN utilisateur e1 ON b.eleve1_id = e1.id JOIN utilisateur e2 ON b.eleve2_id = e2.id WHERE b.id = ?)")
+             PreparedStatement stmt = connection.prepareStatement(
+                     "SELECT * FROM binome b " +
+                             "JOIN utilisateur e ON b.eleve_id = e.id " +
+                             "WHERE b.binome_uid = ?")
         ) {
-            stmt.setLong(1, idBinome);
+            stmt.setString(1, uidBinome);
             try (ResultSet results = stmt.executeQuery()) {
-                binome = new Binome(results.getLong("b.id"), new Seance(results.getLong("b.seance_id"), null, null, null),
-                        JdbcMapperUtils.mapperVersUtilisateur(results, "e1"),JdbcMapperUtils.mapperVersUtilisateur(results, "e2"));
+                binome = construireBinome(results);
             }
         } catch (SQLException e) {
             throw new LearningsSQLException(e);
         }
 
+        return binome;
+    }
+
+    private Binome construireBinome(ResultSet results) throws SQLException {
+        Binome binome = null;
+        if (results.next()) {
+            binome = new Binome(results.getString("b.binome_uid"), new Seance(results.getLong("b.seance_id"), null, null, null));
+            binome.getEleves().add(JdbcMapperUtils.mapperVersUtilisateur(results, "e"));
+            while (results.next()) {
+                binome.getEleves().add(JdbcMapperUtils.mapperVersUtilisateur(results, "e"));
+            }
+        }
         return binome;
     }
 }

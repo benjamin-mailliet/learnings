@@ -6,9 +6,21 @@
 	<td th:text="${utilisateur.groupe} ? ${utilisateur.groupe.libelle}"></td>
 	<td class="isAdminCell" th:text="${utilisateur.admin ? 'Oui' : 'Non'}"></td>
 	<td>
-		<button type="button" class="btn btn-primary btn-xs reinitMdpUtilisateurAction" title="Réinitialiser le mot de passe"><span class="glyphicon glyphicon-repeat"></span></button>
-		<button type="button" class="btn btn-danger btn-xs supprimerUtilisateurAction" title="Supprimer l'utilisateur"><span class="glyphicon glyphicon-trash"></span></button>
-		<button th:style="${utilisateur.admin} ? 'display:none;'" type="button" class="btn btn-success btn-xs donnerAdminUtilisateurAction" title="Donner l'admin"><span class="glyphicon glyphicon-chevron-up"></span></button>
-		<button th:style="${!utilisateur.admin} ? 'display:none;'" type="button" class="btn btn-warning btn-xs enleverAdminUtilisateurAction" title="Enlever l'admin"><span class="glyphicon glyphicon-chevron-down"></span></button>
+		<button type="button" class="btn btn-info btn-sm reinitMdpUtilisateurAction" data-toggle="tooltip" title="Réinitialiser le mot de passe">
+			<i class="fas fa-unlock"></i>
+			<span class="sr-only">Réinitialiser le mot de passe de [[${utilisateur.prenom + ' ' + utilisateur.nom}]]"</span>
+		</button>
+		<button type="button" class="btn btn-danger btn-sm supprimerUtilisateurAction" data-toggle="tooltip" title="Supprimer l'utilisateur">
+			<i class="fas fa-trash"></i>
+			<span class="sr-only">Supprimer l'utilisateur [[${utilisateur.prenom + ' ' + utilisateur.nom}]]"</span>
+		</button>
+		<button th:style="${utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-success btn-sm donnerAdminUtilisateurAction" data-toggle="tooltip" title="Donner l'admin">
+			<i class="fas fa-chevron-up"></i>
+			<span class="sr-only">Donner l'admin à [[${utilisateur.prenom + ' ' + utilisateur.nom}]]"</span>
+		</button>
+		<button th:style="${!utilisateur.admin ? 'display:none;' : ''}" type="button" class="btn btn-warning btn-sm enleverAdminUtilisateurAction" data-toggle="tooltip" title="Enlever l'admin">
+			<i class="fas fa-chevron-down"></i>
+			<span class="sr-only">Enlever l'admin à [[${utilisateur.prenom + ' ' + utilisateur.nom}]]"</span>
+		</button>
 	</td>
 </tr>

@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<title>Import des utilisateurs</title>
+		<title>Import des utilisateurs - Learnings</title>
 		<th:block th:replace="fragments/htmlheader" />
 	</head>
 	<body>
 		<nav th:replace="fragments/menu :: admin('utilisateur')"></nav>
-		<div class="container">
+		<div class="container-fluid">
 			<div th:replace="fragments/messages"></div>
-			<header class="page-header">
-				<h1>
-					Import des utilisateurs
-					<small><a href="utilisateur" class="label label-default">Retour à la liste</a></small>
-				</h1>
-			</header>
+			<h1 class="display-1">Import des utilisateurs</h1>
+			<p><a href="utilisateur" class="btn btn-outline-primary">Retour à la liste</a></p>
 			<form class="form-horizontal" method="post" enctype="multipart/form-data">
-				<div class="well">
+				<div class="jumbotron">
 					<p>Il est possible d'importer les utilisateurs à partir d'un fichier CSV avec les champs suivants séparés par des points-virgule <code>;</code> :</p>
 					<ul>
 						<li>Nom : non vide</li>
@@ -26,16 +22,19 @@
 					</ul>
 					<p>La ligne d'entête <code>NOM;PRENOM;EMAIL;GROUPE;ADMIN</code> est facultative.</p>
 				</div>
-				<div class="form-group">
-					<label for="fichier" class="col-sm-2 control-label">Fichier :</label>
-					<div class="col-sm-6">
-						<input type="file" class="form-control" id="fichier" name="fichier">
+				<div class="form-group w-50">
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="fichier-label">Fichier</span>
+						</div>
+						<div class="custom-file">
+							<input type="file" class="custom-file-input" id="inputGroupFile01" name="fichier" aria-describedby="fichier-label">
+							<label class="custom-file-label" for="inputGroupFile01">Sélectionner le fichier</label>
+						</div>
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-primary">Importer</button>
-					</div>
+					<button type="submit" class="btn btn-primary">Importer</button>
 				</div>
 			</form>
 		</div>

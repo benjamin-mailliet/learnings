@@ -1,12 +1,12 @@
 package learnings.dao.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import org.mariadb.jdbc.MariaDbDataSource;
 
 import javax.sql.DataSource;
-
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class DataSourceProvider {
 
@@ -18,7 +18,7 @@ public class DataSourceProvider {
 		return DataSourceProviderHolder.instance;
 	}
 
-	private MysqlDataSource dataSource;
+	private MariaDbDataSource dataSource;
 
 	private DataSourceProvider() {
 		initDataSource();
@@ -32,13 +32,17 @@ public class DataSourceProvider {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		dataSource = new MysqlDataSource();
-		dataSource.setServerName(jdbcProperties.getProperty("servername"));
-		dataSource.setPort(Integer.parseInt(jdbcProperties.getProperty("port")));
-		dataSource.setDatabaseName(jdbcProperties.getProperty("databasename"));
-		dataSource.setUser(jdbcProperties.getProperty("user"));
-		dataSource.setPassword(jdbcProperties.getProperty("password"));
+
+		try {
+			dataSource = new MariaDbDataSource();
+			dataSource.setServerName(jdbcProperties.getProperty("servername"));
+			dataSource.setPort(Integer.parseInt(jdbcProperties.getProperty("port")));
+			dataSource.setDatabaseName(jdbcProperties.getProperty("databasename"));
+			dataSource.setUser(jdbcProperties.getProperty("user"));
+			dataSource.setPassword(jdbcProperties.getProperty("password"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public DataSource getDataSource() {
