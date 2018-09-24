@@ -169,7 +169,7 @@ public class Seance implements Serializable {
 		if (this.ressources == null) {
 			return false;
 		}
-		return this.isNote && this.ressources.stream().anyMatch(r -> RessourceCategorie.CORRECTION.equals(r.getCategorie()));
+		return this.ressources.stream().anyMatch(r -> RessourceCategorie.CORRECTION.equals(r.getCategorie()));
 	}
 
 	private void calculerMoyenne() {

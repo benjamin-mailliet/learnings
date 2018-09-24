@@ -91,14 +91,14 @@ public class RessourceManager {
             throw new IllegalArgumentException("L'idenfiant de la ressource est null.");
         }
         Ressource ressource = ressourceDao.getRessource(idRessource);
-        if (ressource != null) {
+        if (ressource != null && !ressource.isLien()) {
             try {
                 fichierManager.supprimerFichier(ressource.getChemin());
-                ressourceDao.supprimerRessource(idRessource);
             } catch (LearningsException e) {
                 throw new LearningsException("Problème à la suppression de la ressource.", e);
             }
         }
+        ressourceDao.supprimerRessource(idRessource);
     }
 
     protected String genererCheminRessource(Long idSeance, String nomFichier) {
