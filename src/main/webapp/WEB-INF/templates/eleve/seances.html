@@ -29,11 +29,15 @@
 							</h2>
 						</div>
 						<div class="status display-4 text-muted" th:if="${seance.isNote}">
-							<i class="fa-star" th:classappend="${seance.corrige ? 'fas' : 'far'}"
+							<i class="fas" th:classappend="${seance.corrige ? 'fa-clipboard-check' : 'fa-clipboard'}"
 							   data-toggle="tooltip" th:title="${seance.corrige ? 'Séance notée corrigée' : 'Séance notée'}"></i>
 							<span class="sr-only">
 								Séance notée <th:block th:if="${seance.corrige}">corrigée</th:block>
 							</span>
+						</div>
+						<div class="status display-4 text-muted" th:if="${!seance.isNote && seance.corrige}">
+							<i class="fas fa-check-circle" data-toggle="tooltip" title="Séance corrigée"></i>
+							<span class="sr-only">Séance corrigée</span>
 						</div>
 					</header>
 					<section th:if="${seance.datePassee}" class="details card-body collapse" th:id="${typeSeance}+${seance.id}">
@@ -51,7 +55,7 @@
 									</li>
 								</ul>
 							</div>
-							<div class="col-md-4 col-sm-6" th:if="${seance.isNote && seance.corrige}">
+							<div class="col-md-4 col-sm-6" th:if="${seance.corrige}">
 								<h3 class="h5">Correction</h3>
 								<ul>
 									<li th:each="ressource : ${seance.ressources}" th:if="${ressource.isCorrection()}">
