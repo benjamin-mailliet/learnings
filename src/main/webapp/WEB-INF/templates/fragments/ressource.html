@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="ressource(ressource)">
+        <th:block th:if="${ressource.isTelechargement()}">
+            <a th:if="${!ressource.isLien()}" th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
+            <small><i class="fas fa-file-download"></i></small>
+        </th:block>
+        <th:block th:if="${ressource.isMarkdown()}">
+            <a th:if="${!ressource.isLien()}" th:href="'sujet?id='+${ressource.id}" th:text="${ressource.titre}"></a>
+            <small><i class="fas fa-file-alt"></i></small>
+        </th:block>
+        <th:block th:if="${ressource.isLien()}">
+            <a  th:href="${ressource.chemin}" th:text="${ressource.titre}"></a>
+            <small><i class="fas fa-external-link-alt"></i></small>
+        </th:block>
+    </div>
+</html>

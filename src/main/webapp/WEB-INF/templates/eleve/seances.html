@@ -46,25 +46,13 @@
 							<div class="col-md-4 col-sm-6">
 								<h3 class="h5">Ressources</h3>
 								<ul>
-									<li th:each="ressource : ${seance.ressources}" th:if="${ressource.isSupport()}">
-										<a th:if="${!ressource.isLien()}" th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
-										<th:block th:if="${ressource.isLien()}">
-											<a  th:href="${ressource.chemin}" th:text="${ressource.titre}"></a>
-											<small><i class="fas fa-external-link-alt"></i></small>
-										</th:block>
-									</li>
+									<li th:each="ressource : ${seance.ressources}" th:if="${ressource.isSupport()}" th:include="~{ fragments/ressource :: ressource(${ressource})}"></li>
 								</ul>
 							</div>
 							<div class="col-md-4 col-sm-6" th:if="${seance.corrige}">
 								<h3 class="h5">Correction</h3>
 								<ul>
-									<li th:each="ressource : ${seance.ressources}" th:if="${ressource.isCorrection()}">
-										<a th:if="${!ressource.isLien()}" th:href="'telechargerRessource?id='+${ressource.id}" th:text="${ressource.titre}"></a>
-										<th:block th:if="${ressource.isLien()}">
-											<a  th:href="${ressource.chemin}" th:text="${ressource.titre}"></a>
-											<small><i class="fas fa-external-link-alt"></i></small>
-										</th:block>
-									</li>
+									<li th:each="ressource : ${seance.ressources}" th:if="${ressource.isCorrection()}" th:include="~{ fragments/ressource :: ressource(${ressource})}"></li>
 								</ul>
 							</div>
 						</div>

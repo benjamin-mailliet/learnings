@@ -3,6 +3,7 @@ package learnings.dao.impl;
 import learnings.AbstractDaoTestCase;
 import learnings.dao.RessourceDao;
 import learnings.enums.RessourceCategorie;
+import learnings.enums.RessourceFormat;
 import learnings.model.Ressource;
 import learnings.model.Seance;
 import org.junit.Before;
@@ -31,9 +32,9 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
              Statement stmt = connection.createStatement()
         ) {
             stmt.executeUpdate("INSERT INTO seance(id,titre,description,date, type) VALUES(1,'cours1','cours de debuggage','2014-08-26', 'COURS')");
-            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie) VALUES(1,'ressource1','chemin ressource de cours 1',1, 'SUPPORT')");
-            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie) VALUES(2,'ressource2','chemin ressource de cours 2',1, 'SUPPORT')");
-            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie) VALUES(3,'ressource3','ressource de tp',1, 'SUPPORT')");
+            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie, format) VALUES(1,'ressource1','chemin ressource de cours 1',1, 'SUPPORT', 'AUTRE')");
+            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie, format) VALUES(2,'ressource2','chemin ressource de cours 2',1, 'SUPPORT', 'AUTRE')");
+            stmt.executeUpdate("INSERT INTO ressource(id,titre,chemin,seance_id, categorie, format) VALUES(3,'ressource3','ressource de tp',1, 'SUPPORT', 'AUTRE')");
         }
     }
 
@@ -53,7 +54,7 @@ public class RessourceDaoTestCase extends AbstractDaoTestCase {
     @Test
     public void shouldAjouterRessource() throws Exception {
         // GIVEN
-        Ressource ressource = new Ressource(null, "monTitre", "/chemin/monFichier.zip", new Seance(1L, null, null, null), RessourceCategorie.CORRECTION);
+        Ressource ressource = new Ressource(null, "monTitre", "/chemin/monFichier.zip", new Seance(1L, null, null, null), RessourceCategorie.CORRECTION, RessourceFormat.AUTRE);
         // WHEN
         Ressource ressourceCreee = ressourceDao.ajouterRessource(ressource);
         // THEN

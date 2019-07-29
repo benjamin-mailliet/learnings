@@ -60,6 +60,7 @@ CREATE TABLE ressource (
   titre varchar(100) NOT NULL,
   seance_id int(11) DEFAULT NULL,
   categorie varchar(20) NOT NULL,
+  format varchar(20) NOT NULL,
   PRIMARY KEY (id),
   KEY seance_id (seance_id),
   CONSTRAINT ressource_ibfk_1 FOREIGN KEY (seance_id) REFERENCES seance (id)
