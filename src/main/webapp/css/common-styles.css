@@ -14,3 +14,7 @@ div.form-inline .form-group{
 div.form-inline{
     margin-bottom: 10px;
 }
+
+#document-content {
+    -webkit-print-color-adjust: exact;
+}

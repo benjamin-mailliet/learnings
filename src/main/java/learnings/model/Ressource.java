@@ -1,6 +1,7 @@
 package learnings.model;
 
 import learnings.enums.RessourceCategorie;
+import learnings.enums.RessourceFormat;
 
 import java.io.Serializable;
 import java.util.regex.Pattern;
@@ -15,14 +16,15 @@ public class Ressource implements Serializable {
 	private String chemin;
 	private String titre;
 	private RessourceCategorie categorie;
+	private RessourceFormat format;
 
-	public Ressource(Long id, String titre, String chemin, Seance seance, RessourceCategorie categorie) {
-		super();
+	public Ressource(Long id, String titre, String chemin, Seance seance, RessourceCategorie categorie, RessourceFormat format) {
 		this.id = id;
 		this.seance = seance;
 		this.chemin = chemin;
 		this.titre = titre;
 		this.categorie = categorie;
+		this.format = format;
 	}
 
 	public Seance getSeance() {
@@ -61,6 +63,14 @@ public class Ressource implements Serializable {
 		this.categorie = categorie;
 	}
 
+	public RessourceFormat getFormat() {
+		return format;
+	}
+
+	public void setFormat(RessourceFormat format) {
+		this.format = format;
+	}
+
 	public boolean isSupport() {
 		return RessourceCategorie.SUPPORT.equals(this.categorie);
 	}
@@ -70,6 +80,14 @@ public class Ressource implements Serializable {
 	}
 
 	public boolean isLien() {
-		return this.chemin != null && LIEN_PATTERN.matcher(this.chemin).matches();
+		return RessourceFormat.LIEN.equals(this.format);
+	}
+
+	public boolean isMarkdown() {
+		return RessourceFormat.MARKDOWN.equals(this.format);
+	}
+
+	public boolean isTelechargement() {
+		return RessourceFormat.AUTRE.equals(this.format);
 	}
 }

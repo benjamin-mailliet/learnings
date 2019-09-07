@@ -72,9 +72,9 @@
 						<h3>Envoyer un fichier :</h3>
 						<form role="form" method="post" enctype="multipart/form-data">
 							<div class="input-group mb-3">
-								<div class="custom-file">
-									<input type="file" class="custom-file-input" id="fichiertp" name="fichiertp" aria-describedby="fichiertpMaxSize">
-									<label class="custom-file-label" for="fichiertp">Fichier zip de votre TP</label>
+								<div>
+									<label class="sr-only" for="fichiertp">Fichier zip de votre TP</label>
+									<input type="file" id="fichiertp" name="fichiertp" aria-describedby="fichiertpMaxSize">
 								</div>
 							</div>
 							<p id="fichiertpMaxSize" class="font-weight-light text-secondary">Attention à ne pas dépasser les 10 Mo.</p>

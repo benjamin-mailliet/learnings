@@ -26,7 +26,8 @@
 					<td th:text="${ressource.categorie}"></td>
 					<td>
 						<th:block th:if="${!ressource.isLien()}">
-							<i class="fas fa-file-download" aria-hidden="true"></i>
+							<i class="fas fa-file-download" aria-hidden="true" th:if="${ressource.isTelechargement()}"></i>
+							<i class="fab fa-markdown" aria-hidden="true" th:if="${ressource.isMarkdown()}"></i>
 							<a th:href="'../admin/telechargerRessource?id='+${ressource.id}" th:text="${ressource.chemin}"></a>
 						</th:block>
 						<th:block th:if="${ressource.isLien()}">
@@ -51,14 +52,19 @@
 				<div class="form-group">
 					<label for="categorie">Catégorie</label>
 					<select class="form-control" id="categorie" name="categorie">
-						<option value="CORRECTION">Correction</option>
 						<option value="SUPPORT">Support</option>
+						<option value="CORRECTION">Correction</option>
 					</select>
 				</div>
 				<div class="form-row">
 					<div class="form-group col-md-6">
 						<label for="fichier">Fichier</label>
 						<input class="form-control-file" type="file" name="fichier" id="fichier" />
+						<label for="format">Format</label>
+						<select class="form-control" id="format" name="format">
+							<option value="AUTRE">Fichier classique</option>
+							<option value="MARKDOWN">Fichier Markdown</option>
+						</select>
 					</div>
 					<div class="form-group col-md-6">
 						<label for="lien">Lien</label>
