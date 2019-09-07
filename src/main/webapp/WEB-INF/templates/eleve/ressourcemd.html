@@ -3,20 +3,26 @@
 	<head>
 		<title>Séances (Cours et TPs) - Learnings</title>
 		<th:block th:replace="fragments/htmlheader" />
-		<link th:href="@{/css/seances.css}" rel="stylesheet">
-		<script th:src="@{/js/seances.js}"></script>
 
 		<link rel="stylesheet" th:href="@{/highlight/magula.css}">
 		<script th:src="@{/highlight/highlight.pack.js}"></script>
 		<script>hljs.initHighlightingOnLoad();</script>
-
 	</head>
 	<body>
 		<nav th:replace="fragments/menu :: principal('seances')"></nav>
 		<div class="container">
 			<div th:replace="fragments/messages"></div>
-			<h1 class="display-1" th:text="${ressource.titre}"></h1>
-			<section th:utext="${ressource.html}"></section>
+			<h1 id="titre-principal" class="display-1" th:text="${ressource.titre}"></h1>
+			<div class="d-print-none card text-center my-3">
+				<div class="card-body">
+					<p>Si vous souhaitez avoir le document sous forme de fichier, vous pouvez imprimer la page et générer un PDF.</p>
+					<button class="btn btn-secondary" onclick="window.print()">
+						<i class="fas fa-print"></i>
+						Imprimer
+					</button>
+				</div>
+			</div>
+			<section id="document-content" th:utext="${ressource.html}"></section>
 		</div>
 	</body>
 </html>
